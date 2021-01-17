@@ -1,0 +1,6 @@
+# Ignore these directories
+.vs/
+bin/
+.git/
+# files
+**.vcxproj**
