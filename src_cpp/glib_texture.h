@@ -1,9 +1,10 @@
 #ifndef GLIB_ATEXTURE_H
 #define GLIB_ATEXTURE_H
 
-#include <glib_tools.h>
+#include <glib_core.hpp>
 
 #if (defined GLIB_GAPI)
+#include <glib_tools.h>
 namespace GLIB
 {
 	/// SubTexture1d struct
@@ -97,7 +98,6 @@ namespace GLIB
 	{
 	public:
 		ATexture(const char* strName);
-		ATexture(ATexture& rCpy);
 		virtual ~ATexture();
 
 		// --getters
@@ -108,6 +108,8 @@ namespace GLIB
 		// --setters
 		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
 		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
+		// --predicates
+		inline Bit IsBound() const { return m_bIsBound; }
 
 		// --core_methods
 		virtual void Bind(UInt32 unTexSlot) = 0;
@@ -116,10 +118,13 @@ namespace GLIB
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override { return true; }
 		virtual bool LoadF(const char* strFPath) override { return true; }
+	protected:
+		mutable Bit m_bIsBound;
 		UInt32 m_unRId;
 		UInt32 m_unTexSlot;
 		TextureInfo m_TexInfo;
 		ImageInfo m_ImgInfo;
+	protected:
 		static UByte s_ClearColorData[4];
 	};
 	/// Abstract Texture1d class
@@ -127,7 +132,6 @@ namespace GLIB
 	{
 	public:
 		ATexture1d(const char* strName);
-		ATexture1d(ATexture1d& rCpy);
 		virtual ~ATexture1d();
 
 		// --getters
@@ -145,13 +149,13 @@ namespace GLIB
 		virtual bool LoadF(const char* strFPath) override;
 
 		static ATexture1d* Create(const char* strName);
+		static void Create(const char* strName, RefKeeper<ATexture1d>& rTex);
 	};
 	/// Abstract Texture2d class
 	class GLIB_API ATexture2d : public ATexture
 	{
 	public:
 		ATexture2d(const char* strName);
-		ATexture2d(ATexture2d& rCpy);
 		virtual ~ATexture2d();
 
 		// --getters
@@ -170,6 +174,7 @@ namespace GLIB
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;
 		static ATexture2d* Create(const char* strName);
+		static void Create(const char* strName, RefKeeper<ATexture2d>& rTex);
 	private:
 		DArray<SubTexture2d> m_SubTexs;
 	};
@@ -178,7 +183,6 @@ namespace GLIB
 	{
 	public:
 		ATexture3d(const char* strName);
-		ATexture3d(ATexture3d& rCpy);
 		virtual ~ATexture3d();
 
 		// --getters
@@ -198,6 +202,7 @@ namespace GLIB
 		virtual bool LoadF(const char* strFPath) override;
 
 		static ATexture3d* Create(const char* strName);
+		static void Create(const char* strName, RefKeeper<ATexture3d>& rTex);
 	};
 }
 #endif	// GLIB_GAPI
@@ -209,7 +214,6 @@ namespace GLIB
 	{
 	public:
 		Texture1dOgl(const char* strName);
-		Texture1dOgl(Texture1dOgl& rCpy);
 		~Texture1dOgl();
 
 		// --setters
@@ -226,7 +230,6 @@ namespace GLIB
 	{
 	public:
 		Texture2dOgl(const char* strName);
-		Texture2dOgl(Texture2dOgl& rCpy);
 		~Texture2dOgl();
 
 		// --setters
@@ -243,7 +246,6 @@ namespace GLIB
 	{
 	public:
 		Texture3dOgl(const char* strName);
-		Texture3dOgl(Texture3dOgl& rCpy);
 		~Texture3dOgl();
 
 		// --setters
@@ -257,5 +259,4 @@ namespace GLIB
 	};
 }
 #endif // GLIB_GAPI
-
 #endif // GLIB_ATEXTURE_H

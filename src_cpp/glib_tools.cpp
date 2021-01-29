@@ -8,12 +8,12 @@
 // Functions
 namespace GLIB
 {
-	void OGL_ClearErr()
+	void OglClearErr()
 	{// glGetError gets last message and clears errorLog
 		while (glGetError() != GL_NO_ERROR);
 	}
 
-	bool OGL_ErrLog(const char* funcName, const char* file, int line)
+	bool OglErrLog(const char* funcName, const char* file, int line)
 	{// Get error and match error message for it
 		UInt32 errorCode;
 		while ((errorCode = glGetError()) != GL_NO_ERROR)
@@ -49,7 +49,7 @@ namespace GLIB
 
 	Int32 OglErrLogShader(ShaderTypes shaderType, UInt32 shaderID)
 	{
-		if (shaderID == 0) return GLIB_ERR_UNKNOWN_ID;
+		if (shaderID == 0) return NWL_ERR_UNKNOWN_ID;
 		Int32 success = 0;
 		Int32 errLogSize = 0;
 		String errLog;
@@ -66,7 +66,7 @@ namespace GLIB
 
 				glGetShaderInfoLog(shaderID, errLogSize, NULL, &errLog[0]);
 				NWL_ERR(errLog);
-				return GLIB_ERR_SHADER_COMPILE;
+				return NWL_ERR_SHADER_COMPILE;
 			}
 		}
 		else
@@ -79,7 +79,7 @@ namespace GLIB
 
 				glGetProgramInfoLog(shaderID, errLogSize, NULL, &errLog[0]);
 				NWL_ERR(&errLog[0]);
-				return GLIB_ERR_SHADER_LINK;
+				return NWL_ERR_SHADER_LINK;
 			}
 		}
 		return GLIB_OK;

@@ -1,8 +1,6 @@
 #include <glib_pch.hpp>
 #include "glib_material.h"
 
-#include <core/glib_engine.h>
-
 #include <glib_buffer.h>
 #include <glib_texture.h>
 #include <glib_shader.h>
@@ -11,8 +9,6 @@ namespace GLIB
 {
 	GMaterial::GMaterial(const char* strName) :
 		ADataRes(strName) { ADataRes::AddDataRes<GMaterial>(this); }
-	GMaterial::GMaterial(GMaterial& rCpy) :
-		GMaterial(&rCpy.m_strName[0]) { }
 	GMaterial::~GMaterial() { ADataRes::RmvDataRes<GMaterial>(GetId()); }
 
 	// --setters

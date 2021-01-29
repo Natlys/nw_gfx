@@ -2,15 +2,14 @@
 #include "glib_shader.h"
 
 #if (defined GLIB_GAPI)
-#include <core/glib_engine.h>
-#include <core/glib_api.h>
+#include <glib_engine.h>
+#include <glib_api.h>
 #include <glib_buffer.h>
-
 namespace GLIB
 {
 	ASubShader::ASubShader(const char* strName, ShaderTypes sdType) :
 		ADataRes(strName),
-		m_shdType(sdType), m_unRId(0), m_strCode("") { ADataRes::AddDataRes<ASubShader>(this); }
+		m_shdType(sdType), m_unRId(0), m_strCode(""), m_pOverShader(nullptr) { ADataRes::AddDataRes<ASubShader>(this); }
 	ASubShader::~ASubShader() { ADataRes::RmvDataRes<ASubShader>(GetId()); }
 
 	// --==<data_methods>==--
@@ -18,58 +17,104 @@ namespace GLIB
 	bool ASubShader::LoadF(const char* strFPath) { return true; }
 	// --==</data_methods>==--
 
-	// --core_methods
+	// --==<core_methods>==--
 	ASubShader* ASubShader::Create(const char* strName, ShaderTypes sdType)
 	{
 		ASubShader* pSubShader = nullptr;
-		switch (GEngine::Get().GetGApi()->GetType()) {
+		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: pSubShader = new SubShaderOgl(strName, sdType); break;
+		case GAPI_OPENGL: pSubShader = GEngine::Get().NewT<SubShaderOgl>(strName, sdType); break;
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics Api is not defined"); break;
 		}
 		return pSubShader;
 	}
+	void ASubShader::Create(const char* strName, ShaderTypes sdType, RefOwner<ASubShader>& rSubShader)
+	{
+		switch (GEngine::Get().GetGApiType()) {
+	#if (GLIB_GAPI & GLIB_GAPI_OGL)
+		case GAPI_OPENGL: rSubShader.MakeRef<SubShaderOgl>(strName, sdType); break;
+	#endif // GLIB_GAPI
+		default: NWL_ERR("Graphics Api is not defined"); break;
+		}
+	}
+	void ASubShader::Create(const char* strName, ShaderTypes sdType, RefKeeper<ASubShader>& rSubShader)
+	{
+		switch (GEngine::Get().GetGApiType()) {
+	#if (GLIB_GAPI & GLIB_GAPI_OGL)
+		case GAPI_OPENGL: rSubShader.MakeRef<SubShaderOgl>(strName, sdType); break;
+	#endif // GLIB_GAPI
+		default: NWL_ERR("Graphics Api is not defined"); break;
+		}
+	}
+	// --==</core_methods>==--
 }
 namespace GLIB
 {
 	AShader::AShader(const char* strName) :
 		ADataRes(strName),
-		m_unRId(0), m_strCode("") { ADataRes::AddDataRes<AShader>(this); }
+		m_unRId(0), m_strCode(""), m_bIsEnabled(false) { ADataRes::AddDataRes<AShader>(this); }
 	AShader::~AShader() { ADataRes::RmvDataRes<AShader>(GetId()); }
 
 	// --==<data_methods>==--
 	bool AShader::SaveF(const char* strFPath)
 	{
 		String strFile = m_strCode;
-		if (!GEngine::Get().SaveFShaderCode(strFPath, this)) { return false; }
 		return true;
 	}
 	bool AShader::LoadF(const char* strFPath)
 	{
 		bool bSuccess = false;
-		if (GEngine::Get().LoadFShaderCode(strFPath, this)) {
-			if (!Compile()) {
-				String strFile = m_strCode;
-				bSuccess = false;
-			}
-			else { bSuccess = true; }
+		std::fstream fStream(strFPath);
+		
+		if (!fStream.is_open()) { return false; }
+		fStream.seekg(0, std::ios::end);
+		m_strCode.resize(fStream.tellg());
+		fStream.seekg(0);
+		fStream.read(&m_strCode[0], m_strCode.size());
+		fStream.close();
+		
+		if (!Compile()) {
+			String strFile = m_strCode;
+			bSuccess = false;
 		}
+		else { bSuccess = true; }
+
 		return bSuccess;
 	}
 	// --==</data_methods>==--
 
+	// --==<core_methods>==--
 	AShader* AShader::Create(const char* strName)
 	{
 		AShader* pShader = nullptr;
-		switch (GEngine::Get().GetGApi()->GetType()) {
+		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: pShader = new ShaderOgl(strName); break;
+		case GAPI_OPENGL: pShader = GEngine::Get().NewT<ShaderOgl>(strName); break;
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics Api is not defined"); break;
 		}
 		return pShader;
 	}
+	void AShader::Create(const char* strName, RefOwner<AShader>& rShader)
+	{
+		switch (GEngine::Get().GetGApiType()) {
+	#if (GLIB_GAPI & GLIB_GAPI_OGL)
+		case GAPI_OPENGL: rShader.MakeRef<ShaderOgl>(strName); break;
+	#endif // GLIB_GAPI
+		default: NWL_ERR("Graphics Api is not defined"); break;
+		}
+	}
+	void AShader::Create(const char* strName, RefKeeper<AShader>& rShader)
+	{
+		switch (GEngine::Get().GetGApiType()) {
+	#if (GLIB_GAPI & GLIB_GAPI_OGL)
+		case GAPI_OPENGL: rShader.MakeRef<ShaderOgl>(strName); break;
+	#endif // GLIB_GAPI
+		default: NWL_ERR("Graphics Api is not defined"); break;
+		}
+	}
+	// --==</core_methods>==--
 }
 #endif	// GLIB_GAPI
 #if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -79,12 +124,10 @@ namespace GLIB
 {
 	// Constructor&Destructor
 	SubShaderOgl::SubShaderOgl(const char* strName, ShaderTypes sdType) :
-		ASubShader(strName, sdType),
-		m_pOverShader(nullptr) { Reset(); }
+		ASubShader(strName, sdType) { Reset(); }
 	SubShaderOgl::~SubShaderOgl(){ Reset(); }
 
 	// getters
-	const AShader* SubShaderOgl::GetOverShader() const { return dynamic_cast<const AShader*>(m_pOverShader); }
 	// core_methods
 	void SubShaderOgl::Attach(AShader* pOverShader) {
 		Detach();
@@ -221,26 +264,31 @@ namespace GLIB
 // ShaderOgl
 namespace GLIB
 {
-	ShaderOgl::ShaderOgl(const char* strName) :
-		AShader(strName) { }
+	ShaderOgl::ShaderOgl(const char* strName) : AShader(strName) { }
 	ShaderOgl::~ShaderOgl() { }
 
 	// --==<core_methods>==--
 	void ShaderOgl::Enable() {
+		if (m_bIsEnabled) { return; }
 		glUseProgram(m_unRId);
 		for (UInt8 bi = 0; bi < m_shdLayout.GetBlocks().size(); bi++) {
 			glUniformBlockBinding(m_unRId, bi, m_shdLayout.GetBlock(bi).unBindPoint);
 		}
+		m_bIsEnabled = true;
 	}
-	void ShaderOgl::Disable() { glUseProgram(0); }
+	void ShaderOgl::Disable() {
+		if (!m_bIsEnabled) { return; }
+		glUseProgram(0);
+		m_bIsEnabled = false;
+	}
 
 	bool ShaderOgl::Compile()
 	{
 		Reset();
 		if (!CodeProc()) { return false; }
 		for (auto& rSub : m_SubShaders) {
-			rSub.Attach(this);
-			if (!rSub.Compile()) { return false; }
+			rSub->Attach(this);
+			if (!rSub->Compile()) { return false; }
 		}
 		glLinkProgram(m_unRId);
 		if (OglErrLogShader(ST_SHADER, m_unRId) != 0) return false;
@@ -291,13 +339,15 @@ namespace GLIB
 				}
 			}
 
-			if (strToken == "vertex") { m_SubShaders.push_back(SubShaderOgl(&(m_strName + "_" + strToken)[0], ST_VERTEX)); }
-			else if (strToken == "geometry") { m_SubShaders.push_back(SubShaderOgl(&(m_strName + "_" + strToken)[0], ST_GEOMETRY)); }
-			else if (strToken == "pixel" || strToken == "fragment") { m_SubShaders.push_back(SubShaderOgl(&(m_strName + "_" + strToken)[0], ST_PIXEL)); }
+			RefKeeper<ASubShader> pSubShader(GEngine::Get().GetMemory());
+			if (strToken == "vertex") { pSubShader.MakeRef<SubShaderOgl>(&(m_strName + "_" + strToken)[0], ST_VERTEX); }
+			else if (strToken == "geometry") { pSubShader.MakeRef<SubShaderOgl>(&(m_strName + "_" + strToken)[0], ST_GEOMETRY); }
+			else if (strToken == "pixel") { pSubShader.MakeRef<SubShaderOgl>(&(m_strName + "_" + strToken)[0], ST_PIXEL); }
 			else { continue; }
+			m_SubShaders.push_back(pSubShader);
 
 			auto& rSub = m_SubShaders.back();
-			rSub.SetCode(&strCodeStream.str()[0]);
+			rSub->SetCode(&strCodeStream.str()[0]);
 			strCodeStream = std::stringstream();
 		}
 

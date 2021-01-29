@@ -1,5 +1,5 @@
-#ifndef GLIB_BUFFER_H
-#define GLIB_BUFFER_H
+#ifndef GLIB_GBUFFER_H
+#define GLIB_GBUFFER_H
 
 #include <glib_tools.h>
 
@@ -123,21 +123,36 @@ namespace GLIB
 	/// Bind -> Draw -> Unbind
 	class GLIB_API AVertexBuf
 	{
+	protected:
+		AVertexBuf();
+		AVertexBuf(const AVertexBuf& rCpy) = delete;
 	public:
 		virtual ~AVertexBuf() = default;
 
 		// --getters
-		virtual inline Size GetDataSize() const = 0;
-		virtual inline const VertexBufLayout& GetLayout() = 0;
+		inline Size GetDataSize() const { return m_szData; }
+		inline const VertexBufLayout& GetLayout() { return m_bufLayout; }
 		// --setters
-		virtual void SetData(Size szData, const void* pVtxData = nullptr) = 0;
-		virtual void SetSubData(Size szData, const void* pVtxData, Size szOffset = 0) = 0;
+		virtual void SetData(Size szData, const Ptr pVtxData = nullptr) = 0;
+		virtual void SetSubData(Size szData, const Ptr pVtxData, Size szOffset = 0) = 0;
 		virtual void SetLayout(const VertexBufLayout& rBufLayout) = 0;
+		// --predicates
+		inline Bit IsBound() const { return m_bIsBound; }
 		// --core_methods
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static AVertexBuf* Create(Size szAlloc, const void* pVtxData = nullptr);
+		static AVertexBuf* Create();
+		static void Create(Size szAlloc, const Ptr pVtxData, RefOwner<AVertexBuf>& rVtxBuf);
+		static void Create(Size szAlloc, const Ptr pVtxData, RefKeeper<AVertexBuf>& rVtxBuf);
+		// --operators
+		Ptr operator new[](Size szMem) = delete;
+		void operator delete(Ptr pBlock) = delete;
+		void operator delete[](Ptr pBlock) = delete;
+	protected:
+		mutable Bit m_bIsBound;
+		Size m_szData;
+		VertexBufLayout m_bufLayout;
 	};
 	/// Abstract IndexBuffer Class
 	/// Interface:
@@ -148,42 +163,69 @@ namespace GLIB
 	/// Bind -> Bind VertexBuffer -> Draw -> Unbind both Buffers
 	class GLIB_API AIndexBuf
 	{
+	protected:
+		AIndexBuf();
+		AIndexBuf(const AIndexBuf& rCpy) = delete;
 	public:
 		virtual ~AIndexBuf() = default;
 
 		// --getters
-		virtual inline Size GetDataSize() const = 0;
+		inline Size GetDataSize() const { return m_szData; }
 		// --setters
-		virtual void SetData(Size szAlloc, const void* pIdxData = nullptr) = 0;
-		virtual void SetSubData(Size szData, const void* pIdxData, Size szOffset = 0) = 0;
+		virtual void SetData(Size szAlloc, const Ptr pIdxData = nullptr) = 0;
+		virtual void SetSubData(Size szData, const Ptr pIdxData, Size szOffset = 0) = 0;
+		// --predicates
+		inline Bit IsBound() const { return m_bIsBound; }
 		// --core_methods
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static AIndexBuf* Create(Size szAlloc, const void* pIdxData = nullptr);
+		static AIndexBuf* Create();
+		static void Create(Size szAlloc, const Ptr pIdxData, RefOwner<AIndexBuf>& rIdxBuf);
+		static void Create(Size szAlloc, const Ptr pIdxData, RefKeeper<AIndexBuf>& rIdxBuf);
+		// --operators
+		void operator delete(Ptr pBlock) = delete;
+		void operator delete[](Ptr pBlock) = delete;
+	protected:
+		mutable Bit m_bIsBound;
+		Size m_szData;
 	};
 	/// Abstract ShaderBuffer class
 	/// Description:
 	/// -- Is used by shaders as opengl uniform setter, or as directx constant buffer
 	class GLIB_API AShaderBuf
 	{
+	protected:
+		AShaderBuf();
+		AShaderBuf(const AShaderBuf& rCpy) = delete;
 	public:
 		virtual ~AShaderBuf() = default;
 
 		// --getters
-		virtual inline Size GetDataSize() const = 0;
-		virtual inline const ShaderBufLayout& GetLayout() = 0;
+		inline Size GetDataSize() const { return m_szData; }
+		virtual inline const ShaderBufLayout& GetLayout() { return m_bufLayout; }
 		// --setters
-		virtual void SetData(Size szData, const void* pData = nullptr) = 0;
-		virtual void SetSubData(Size szData, const void* pData, Size szOffset = 0) = 0;
+		virtual void SetData(Size szData, const Ptr pShdData = nullptr) = 0;
+		virtual void SetSubData(Size szData, const Ptr pShdData, Size szOffset = 0) = 0;
 		virtual void SetLayout(const ShaderBufLayout& rShdLayout) = 0;
+		// --predicates
+		inline Bit IsBound() const { return m_bIsBound; }
 		// --core_methods
 		virtual void Bind() const = 0;
 		virtual void Bind(UInt32 unPoint) const = 0;
 		virtual void Bind(UInt32 unPoint, Size szData, Size szOffset = 0) const = 0;
 		virtual void Unbind() const = 0;
 
-		static AShaderBuf* Create(Size szAlloc, const void* pShaderData = nullptr);
+		static AShaderBuf* Create();
+		static void Create(Size szAlloc, const Ptr pShaderData, RefOwner<AShaderBuf>& rShdBuf);
+		static void Create(Size szAlloc, const Ptr pShaderData, RefKeeper<AShaderBuf>& rShdBuf);
+		// --operators
+		void operator delete(Ptr pBlock) = delete;
+		void operator delete[](Ptr pBlock) = delete;
+	protected:
+		mutable Bit m_bIsBound;
+		Size m_szData;
+		ShaderBufLayout m_bufLayout;
 	};
 }
 #endif	// GLIB_GAPI
@@ -198,11 +240,8 @@ namespace GLIB
 		~VertexBufOgl();
 
 		// --setters
-		virtual inline Size GetDataSize() const override { return m_szData; }
-		virtual inline VertexBufLayout& GetLayout() override { return m_BufLayout; }
-		// --setters
-		virtual void SetData(Size szAlloc, const void* pVtxData = nullptr) override;
-		virtual void SetSubData(Size szAlloc, const void* pVtxData, Size szOffset = 0) override;
+		virtual void SetData(Size szAlloc, const Ptr pVtxData = nullptr) override;
+		virtual void SetSubData(Size szAlloc, const Ptr pVtxData, Size szOffset = 0) override;
 		virtual void SetLayout(const VertexBufLayout& rBufLayout) override;
 
 		// --core_methods
@@ -211,9 +250,6 @@ namespace GLIB
 	private:
 		UInt32 m_unRIdVB;
 		UInt32 m_unRIdVA;
-		Size m_szData;
-
-		VertexBufLayout m_BufLayout;
 	};
 	/// IndexBufOgl class
 	class GLIB_API IndexBufOgl : public AIndexBuf
@@ -222,18 +258,14 @@ namespace GLIB
 		IndexBufOgl();
 		~IndexBufOgl();
 
-		// --getters
-		virtual inline Size GetDataSize() const override { return m_szData; }
 		// --setters
-
+		virtual void SetData(Size szData, const Ptr pIdxData = nullptr) override;
+		virtual void SetSubData(Size szData, const Ptr pIdxData, Size szOffset = 0) override;
 		// --core_methods
-		virtual void SetData(Size szData, const void* pIdxData = nullptr) override;
-		virtual void SetSubData(Size szData, const void* pIdxData, Size szOffset = 0) override;
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 	private:
 		UInt32 m_unRId;
-		Size m_szData;
 	};
 	/// ShaderBufOgl class
 	class GLIB_API ShaderBufOgl : public AShaderBuf
@@ -243,11 +275,9 @@ namespace GLIB
 		~ShaderBufOgl();
 
 		// --getters
-		virtual inline Size GetDataSize() const override { return m_szData; }
-		virtual inline const ShaderBufLayout& GetLayout() override { return m_BufLayout; }
 		// --setters
-		virtual void SetData(Size szAlloc, const void* pVtxData = nullptr) override;
-		virtual void SetSubData(Size szAlloc, const void* pVtxData, Size szOffset = 0) override;
+		virtual void SetData(Size szAlloc, const Ptr pVtxData = nullptr) override;
+		virtual void SetSubData(Size szAlloc, const Ptr pVtxData, Size szOffset = 0) override;
 		virtual void SetLayout(const ShaderBufLayout& rBufLayout) override;
 		// --core_methods
 		virtual void Bind() const override;
@@ -256,10 +286,7 @@ namespace GLIB
 		virtual void Unbind() const override;
 	private:
 		UInt32 m_unRId;
-		Size m_szData;
-
-		ShaderBufLayout m_BufLayout;
 	};
 }
 #endif // GLIB_GAPI
-#endif	// GLIB_BUFFER_H
+#endif	// GLIB_GBUFFER_H

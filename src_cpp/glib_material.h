@@ -2,11 +2,11 @@
 #define GLIB_GMATERIAL_H
 
 #include <glib_tools.h>
+#include <glib_core.hpp>
 
 namespace GLIB
 {
 	/// GraphicsMaterial Class
-	/// Description:
 	class GLIB_API GMaterial : public ADataRes
 	{
 	public:
@@ -14,7 +14,6 @@ namespace GLIB
 		using Colors = HashMap<String, V4f>;
 	public:
 		GMaterial(const char* strName);
-		GMaterial(GMaterial& rCpy);
 		virtual ~GMaterial();
 
 		// --getters

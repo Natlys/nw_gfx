@@ -1,6 +1,7 @@
 #ifndef GLIB_TOOLS_H
 #define GLIB_TOOLS_H
-#include <glib_decl.hpp>
+
+#include <glib_core.hpp>
 
 #if (defined GLIB_GAPI)
 // Functions
@@ -13,7 +14,7 @@ namespace GLIB
 		case SDT_INT16:	case SDT_UINT16:	case SDT_SAMPLER:	szData = 4;	break;
 		case SDT_INT32:	case SDT_UINT32:	case SDT_FLOAT32:	szData = 4;	break;
 		case SDT_FLOAT64:										szData = 8;	break;
-		default:	NWL_ERR("Invalid shader data type");			szData = 0;	break;
+		default:	NWL_ERR("Invalid shader data type");		szData = 0;	break;
 		}
 		return szData * unCount;
 	}
@@ -25,11 +26,11 @@ namespace GLIB
 		case SDT_INT32:	case SDT_UINT32:	case SDT_SAMPLER:	szAll = 4;	break;
 		case SDT_FLOAT32:										szAll = 4;	break;
 		case SDT_FLOAT64:										szAll = 8;	break;
-		default:	NWL_ERR("Invalid shader data type");			szAll = 0;	break;
+		default:	NWL_ERR("Invalid shader data type");		szAll = 0;	break;
 		}
 		return szAll * ((unCount + (szAll - 1)) & ~(szAll - 1));
 	}
-	inline const char* SdType_GetString(ShaderDataTypes sdType) {
+	inline const char* SdTypeGetStr(ShaderDataTypes sdType) {
 		return sdType == SDT_BOOL ? "boolean" :
 			sdType == SDT_INT8 ? "byte" : sdType == SDT_UINT8 ? "unsigned byte" :
 			sdType == SDT_INT16 ? "short" : sdType == SDT_UINT16 ? "unsigned short" :
@@ -100,17 +101,16 @@ namespace GLIB
 	/// DrawObjectData struct
 	struct GLIB_API DrawObjectData
 	{
-		DArray<UByte> vtxData = DArray<UByte>(1, 1);
-		DArray<UInt32> idxData = DArray<UInt32>(1, 1);
+		DArray<Byte> vtxData = DArray<Byte>(1, 1);
+		DArray<Byte> idxData = DArray<Byte>(1, 1);
 		UInt8 unDrawOrder = 0;
 		GMaterial* pGMtl = nullptr;
 	public:
 		// --getters
-		inline const UByte* GetVtxData() const { return &vtxData[0]; }
-		inline const UInt32* GetIdxData() const { return &idxData[0]; }
+		inline Byte* GetVtxData() { return &vtxData[0]; }
+		inline Byte* GetIdxData() { return &idxData[0]; }
 		inline Size GetVtxSize() const { return vtxData.size(); }
-		inline Size GetIdxSize() const { return idxData.size() * sizeof(UInt32); }
-		inline Size GetIdxCount() const { return idxData.size(); }
+		inline Size GetIdxSize() const { return idxData.size(); }
 		// --operators
 		inline bool operator>	(const DrawObjectData& rDOData)	const { return rDOData.unDrawOrder > unDrawOrder; }
 		inline bool operator>=	(const DrawObjectData& rDOData)	const { return rDOData.unDrawOrder >= unDrawOrder; }
@@ -135,7 +135,7 @@ namespace GLIB
 	/// RenderAttributes struct
 	/// Description:
 	/// -- Check and change renderer attributes for more or less performance/resource usage
-	struct GLIB_API GEngineInfo
+	struct GLIB_API DrawerInfo
 	{
 	public:
 		// --counters
@@ -340,19 +340,28 @@ namespace GLIB
 }
 #endif	// GLIB_GAPI
 #if (GLIB_GAPI & GLIB_GAPI_OGL)
-#define GL_DEBUG_ERR_LOG(errType, objectID) (OglErrLogShader(errType, objectID))
-#define GL_DEBUG_ERR_LOG(errType, objectID) (OGL_ErrLog_Shader(errType, objectID))
+#if (defined GLIB_DEBUG)
+#if (GLIB_GAPI & GLIB_GAPI_OGL)
+// --opengl_debug
+	#define OGL_CALL(function) OglClearErr();\
+		function;\
+		NWL_ASSERT(OglErrLog(#function, NWL_FNAME_APATH((std::string)__FILE__), __LINE__), "GL_ERROR: ")
+	#define OGL_SHADER_ERR_LOG(errType, objectID) (OglErrLogShader(errType, objectID))
+	#define OGL_SHADER_ERR_LOG(errType, objectID) (OglErrLogShader(errType, objectID))
+#endif // GLIB_GAPI
+#else
+#define OGL_CALL(function);
+#endif // GLIB_DEBUG
 // Functions
 namespace GLIB
 {
 	// Debug
 	/// Clear GL error buffer
-	extern void OGL_ClearErr();
+	extern void OglClearErr();
 	/// Return suitable error message accordingly to glGetError()
-	extern bool OGL_ErrLog(const char* funcName, const char* file, int line);
+	extern bool OglErrLog(const char* funcName, const char* file, int line);
 	/// Get compile and linking status return true if there are errors
 	extern int OglErrLogShader(ShaderTypes ShaderType, UInt32 unShaderId);
-	extern int OGL_ErrLog_Shader(ShaderTypes ShaderType, UInt32 unShaderId);
 }
 #endif // GLIB_GAPI
 #endif // GLIB_TOOLS_H

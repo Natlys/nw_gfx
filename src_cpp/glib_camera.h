@@ -1,9 +1,18 @@
-#ifndef GLIB_CAMERA_H
-#define GLIB_CAMERA_H
+#ifndef GLIB_GCAMERA_H
+#define GLIB_GCAMERA_H
+
 #include <glib_core.hpp>
 
 namespace GLIB
 {
+	enum GCameraTypes {
+		GCT_ORTHO = 0,
+		GCT_PERSPECT = 1
+	};
+	enum GCameraModes {
+		GCM_2D = 2,
+		GCM_3D = 3
+	};
 	/// GraphicsCamera struct
 	/// Description:
 	/// -- Makes all relevant rotation and movement calculations
@@ -14,9 +23,6 @@ namespace GLIB
 	/// -> Get transform matricies: proj and view
 	struct GLIB_API GCamera
 	{
-	public:
-		enum GCameraModes;
-		enum GCameraTypes;
 	public:
 		union {
 			struct {
@@ -75,15 +81,6 @@ namespace GLIB
 				zCrd = 1.0f;
 			}
 		}
-	public:
-		enum GCameraTypes {
-			GCT_ORTHO = 0,
-			GCT_PERSPECT = 1
-		};
-		enum GCameraModes {
-			GCM_2D = 2,
-			GCM_3D = 3
-		};
 	private:
 		Mat4f m_m4View, m_m4Proj;
 
@@ -91,4 +88,4 @@ namespace GLIB
 		GCameraModes m_gcMode;
 	};
 }
-#endif // GLIB_CAMERA_H
+#endif // GLIB_GCAMERA_H

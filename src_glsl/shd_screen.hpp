@@ -15,7 +15,7 @@ void main(){
 	vs_out.texCrd = atb_texCrd;
 }
 
-#shader_type fragment
+#shader_type pixel
 #version 400 core
 
 out vec4 ps_pxClr;
