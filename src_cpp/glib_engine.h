@@ -29,9 +29,9 @@ namespace GLIB
 		Bit IsRunning() { return m_bIsRunning; }
 
 		// --core_methods
-		bool Init(Size szMemory);
+		void Run();
+		bool Init();
 		void Quit();
-		void Run(Size szMemory);
 		void Update();
 		// --data_methods
 		bool SaveFImage(const char* strFPath, ImageInfo* pImgInfo);

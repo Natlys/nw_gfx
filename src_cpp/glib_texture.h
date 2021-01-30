@@ -80,14 +80,19 @@ namespace GLIB
 		UByte* ClrData;
 		Int32 nWidth = 1, nHeight = 1, nDepth = 1;
 		Int32 nChannels = 1;
+	public:
+		inline Size GetDataSize() { return nChannels * nWidth * nHeight * nDepth; }
 	};
 	/// TextureInfo struct
 	struct GLIB_API TextureInfo
 	{
 	public:
-		TextureConfigs WrapTypeS = TC_WRAP_REPEAT, WrapTypeT = TC_WRAP_REPEAT, WrapTypeR = TC_WRAP_REPEAT;
-		TextureConfigs FilterMin = TC_FILTER_NEAREST, FilterMag = TC_FILTER_NEAREST;
-		TextureConfigs Format = TC_FORMAT_RGBA, InterFormat = TC_FORMAT_RGBA;
+		TextureWraps WrapTypeS = TXW_REPEAT, WrapTypeT = TXW_REPEAT, WrapTypeR = TXW_REPEAT;
+		TextureFilters FilterMin = TXF_NEAREST, FilterMag = TXF_NEAREST;
+		TextureFormats texFormat = TXF_RGBA, texInterFormat = TXF_RGBA;
+		PixelFormats pxFormat = PXF_UINT8;
+		Bit bGenMipmap = true;
+		Bit bGenSubImage = true;
 	};
 	/// Abstract Texture class
 	/// Description:
@@ -103,8 +108,8 @@ namespace GLIB
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
 		inline UInt32 GetTexSlot() const { return m_unTexSlot; }
-		inline const TextureInfo& GetTexInfo() const { return m_TexInfo; }
-		inline const ImageInfo& GetImgInfo() const { return m_ImgInfo; }
+		inline const TextureInfo& GetTexInfo() const { return m_texInfo; }
+		inline const ImageInfo& GetImgInfo() const { return m_imgInfo; }
 		// --setters
 		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
 		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
@@ -112,7 +117,7 @@ namespace GLIB
 		inline Bit IsBound() const { return m_bIsBound; }
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) = 0;
+		virtual void Bind(UInt32 unTexSlot = 0) = 0;
 		virtual void Unbind() = 0;
 		virtual void Remake() = 0;
 		// --data_methods
@@ -122,8 +127,8 @@ namespace GLIB
 		mutable Bit m_bIsBound;
 		UInt32 m_unRId;
 		UInt32 m_unTexSlot;
-		TextureInfo m_TexInfo;
-		ImageInfo m_ImgInfo;
+		TextureInfo m_texInfo;
+		ImageInfo m_imgInfo;
 	protected:
 		static UByte s_ClearColorData[4];
 	};
@@ -135,13 +140,13 @@ namespace GLIB
 		virtual ~ATexture1d();
 
 		// --getters
-		inline UInt32 GetWidth() const { return m_ImgInfo.nWidth; }
+		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
 		// --setters
 		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
 		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) = 0;
+		virtual void Bind(UInt32 unTexSlot = 0) = 0;
 		virtual void Unbind() = 0;
 		virtual void Remake() = 0;
 		// --data_methods
@@ -159,15 +164,15 @@ namespace GLIB
 		virtual ~ATexture2d();
 
 		// --getters
-		inline UInt32 GetWidth() const { return m_ImgInfo.nWidth; }
-		inline UInt32 GetHeight() const { return m_ImgInfo.nHeight; }
+		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
+		inline UInt32 GetHeight() const { return m_imgInfo.nHeight; }
 		inline const DArray<SubTexture2d>& GetSubTexs() const { return m_SubTexs; }
 		// --setters
 		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
 		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
 		void SetSubTexs(const DArray<SubTexture2d>& rSubTexs);
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) = 0;
+		virtual void Bind(UInt32 unTexSlot = 0) = 0;
 		virtual void Unbind() = 0;
 		virtual void Remake() = 0;
 		// --data_methods
@@ -186,9 +191,9 @@ namespace GLIB
 		virtual ~ATexture3d();
 
 		// --getters
-		inline UInt32 GetWidth() const { return m_ImgInfo.nWidth; }
-		inline UInt32 GetHeight() const { return m_ImgInfo.nHeight; }
-		inline UInt32 GetDepth() const { return m_ImgInfo.nDepth; }
+		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
+		inline UInt32 GetHeight() const { return m_imgInfo.nHeight; }
+		inline UInt32 GetDepth() const { return m_imgInfo.nDepth; }
 		// --setters
 		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
 		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
@@ -221,7 +226,7 @@ namespace GLIB
 		virtual void SetInfo(const ImageInfo& rImgInfo) override;
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) override;
+		virtual void Bind(UInt32 unTexSlot = 0) override;
 		virtual void Unbind() override;
 		virtual void Remake() override;
 	};
@@ -237,7 +242,7 @@ namespace GLIB
 		virtual void SetInfo(const ImageInfo& rImgInfo) override;
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) override;
+		virtual void Bind(UInt32 unTexSlot = 0) override;
 		virtual void Unbind() override;
 		virtual void Remake() override;
 	};
@@ -253,7 +258,7 @@ namespace GLIB
 		virtual void SetInfo(const ImageInfo& rImgInfo) override;
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) override;
+		virtual void Bind(UInt32 unTexSlot = 0) override;
 		virtual void Unbind() override;
 		virtual void Remake() override;
 	};

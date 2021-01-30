@@ -54,6 +54,11 @@ namespace GLIB
 	}
 	void GMaterial::Disable()
 	{
+		auto itTex = m_Textures.begin();
+		for (UInt8 txi = 0; txi < m_Textures.size(); txi++) {
+			itTex->second->Unbind();
+			itTex++;
+		}
 		m_pShader->Disable();
 	}
 	// --data_methods

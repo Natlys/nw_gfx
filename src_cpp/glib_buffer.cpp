@@ -24,7 +24,7 @@ namespace GLIB
 		}
 		return pVB;
 	}
-	void AVertexBuf::Create(Size szAlloc, const Ptr pIdxData, RefOwner<AVertexBuf>& rVtxBuf)
+	void AVertexBuf::Create(RefOwner<AVertexBuf>& rVtxBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -32,9 +32,8 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rVtxBuf->SetData(szAlloc, pIdxData);
 	}
-	void AVertexBuf::Create(Size szAlloc, const Ptr pIdxData, RefKeeper<AVertexBuf>& rVtxBuf)
+	void AVertexBuf::Create(RefKeeper<AVertexBuf>& rVtxBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -42,7 +41,6 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rVtxBuf->SetData(szAlloc, pIdxData);
 	}
 	// --==</AVertexBuf>==--
 	// --==<AIndexBuf>==--
@@ -60,7 +58,7 @@ namespace GLIB
 		}
 		return pIB;
 	}
-	void AIndexBuf::Create(Size szAlloc, const Ptr pIdxData, RefOwner<AIndexBuf>& rIdxBuf)
+	void AIndexBuf::Create(RefOwner<AIndexBuf>& rIdxBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -68,9 +66,8 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rIdxBuf->SetData(szAlloc, pIdxData);
 	}
-	void AIndexBuf::Create(Size szAlloc, const Ptr pIdxData, RefKeeper<AIndexBuf>& rIdxBuf)
+	void AIndexBuf::Create(RefKeeper<AIndexBuf>& rIdxBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -78,7 +75,6 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rIdxBuf->SetData(szAlloc, pIdxData);
 	}
 	// --==</AIndexBuf>==--
 	// --==<AShaderBuf>==--
@@ -95,7 +91,7 @@ namespace GLIB
 		}
 		return pSB;
 	}
-	void AShaderBuf::Create(Size szAlloc, const Ptr pIdxData, RefOwner<AShaderBuf>& rShdBuf)
+	void AShaderBuf::Create(RefOwner<AShaderBuf>& rShdBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -103,9 +99,8 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rShdBuf->SetData(szAlloc, pIdxData);
 	}
-	void AShaderBuf::Create(Size szAlloc, const Ptr pIdxData, RefKeeper<AShaderBuf>& rShdBuf)
+	void AShaderBuf::Create(RefKeeper<AShaderBuf>& rShdBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
 	#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -113,7 +108,6 @@ namespace GLIB
 	#endif // GLIB_GAPI
 		default: NWL_ERR("Graphics API is not defined"); break;
 		}
-		rShdBuf->SetData(szAlloc, pIdxData);
 	}
 	// --==</AShaderBuf>==--
 }

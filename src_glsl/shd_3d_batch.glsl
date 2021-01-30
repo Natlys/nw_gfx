@@ -20,7 +20,8 @@ layout(std140) uniform unf_Matrices{
 
 void main()
 {
-	gl_Position = unf_camProj * unf_camView * atb_mdlTransform *
+	gl_Position = unf_camProj * unf_camView *
+	atb_mdlTransform *
 	vec4(atb_vtxCrd.xyz, 1.0f);
 
 	vs_out.vtxClr = atb_vtxClr;

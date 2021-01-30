@@ -50,7 +50,7 @@ namespace GLIB
 	{
 	public:
 		AGApi(GApiTypes gapiType);
-		AGApi(AGApi& rCpy) = delete;
+		AGApi(const AGApi& rCpy) = delete;
 		virtual ~AGApi() = default;
 		
 		// --getters

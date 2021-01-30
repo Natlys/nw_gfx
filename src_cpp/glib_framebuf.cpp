@@ -3,41 +3,28 @@
 
 #if (defined GLIB_GAPI)
 #include <glib_engine.h>
-#include <glib_texture.h>
 #include <glib_api.h>
+#include <glib_texture.h>
 namespace GLIB
 {
 	AFrameBuf::AFrameBuf(const char* strName, const FrameBufInfo& rfbInfo) :
 		ADataRes(strName),
 		m_unRId(0), m_bIsBound(false),
-		m_texColor(RefKeeper<ATexture2d>(GEngine::Get().GetMemory())),
-		m_texDepth(RefKeeper<ATexture2d>(GEngine::Get().GetMemory())),
-		m_texStencil(RefKeeper<ATexture2d>(GEngine::Get().GetMemory())),
 		m_Info(rfbInfo),
-		m_rgbaClear { 0.5f, 0.5f, 0.5f, 1.0f }
+		m_DepthAttach(0), m_ColorAttach(RefKeeper<ATexture2d>(GEngine::Get().GetMemory())),
+		m_rgbaClear{0.5f, 0.5f, 0.5f, 1.0f}
 	{
-		String strAtchName = "fbc_" + m_strName;
-		ATexture2d::Create(&strAtchName[0], m_texColor);
-		strAtchName = "fbd_" + m_strName;
-		ATexture2d::Create(&strAtchName[0], m_texDepth);
-		strAtchName = "fbs_" + m_strName;
-		ATexture2d::Create(&strAtchName[0], m_texStencil);
-
+		String strClrName = strName;
+		ATexture2d::Create(&strClrName[0], m_ColorAttach);
 		ADataRes::AddDataRes<AFrameBuf>(this);
 	}
 	AFrameBuf::~AFrameBuf() { ADataRes::RmvDataRes<AFrameBuf>(GetId()); }
 
-	AFrameBuf* AFrameBuf::Create(const char* strName, const FrameBufInfo& rfbInfo)
-	{
-		AFrameBuf* pFB = nullptr;
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GApiTypes::GAPI_OPENGL: pFB = GEngine::Get().NewT<FrameBufOgl>(strName, rfbInfo); break;
-	#endif // GLIB_GAPI
-		default: NWL_ERR("Graphics API is not defined"); break;
-		}
-		return pFB;
-	}
+	// --setters
+	void AFrameBuf::SetSizeWH(UInt32 unWidth, UInt32 unHeight) { m_Info.unWidth = unWidth; m_Info.unHeight = unHeight; Remake(); }
+	void AFrameBuf::SetClearColor(V4f rgbaClear) { m_rgbaClear = rgbaClear; }
+
+	// --core_methods
 	void AFrameBuf::Create(const char* strName, const FrameBufInfo& rfbInfo, RefOwner<AFrameBuf>& rfBuf)
 	{
 		switch (GEngine::Get().GetGApiType()) {
@@ -60,86 +47,86 @@ namespace GLIB
 #endif // GLIB_GAPI
 #if (GLIB_GAPI & GLIB_GAPI_OGL)
 #include <glad/glad.h>
-namespace GLIB
-{
-	FrameBufOgl::FrameBufOgl(const char* strName, const FrameBufInfo& rfbInfo) :
-		AFrameBuf(strName, rfbInfo) { Remake(); }
-	FrameBufOgl::~FrameBufOgl() { glDeleteFramebuffers(1, &m_unRId); }
-
-	// --setters
-	void FrameBufOgl::SetSizeWH(UInt32 unWidth, UInt32 unHeight) {
-		m_Info.unWidth = unWidth; m_Info.unHeight = unHeight; Remake();
-	}
-	void FrameBufOgl::SetClearColor(V4f rgbaClear) { m_rgbaClear = rgbaClear; glClearColor(rgbaClear.r, rgbaClear.g, rgbaClear.b, rgbaClear.a); }
-
-	// --==<core_methods>==--
-	void FrameBufOgl::Bind() const {
-		if (m_bIsBound) { return; }
-		glBindFramebuffer(GL_FRAMEBUFFER, m_unRId);
-		m_bIsBound = true;
-	}
-	void FrameBufOgl::Unbind() const {
-		if (!m_bIsBound) { return; }
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		m_bIsBound = false;
-	}
-
-	void FrameBufOgl::Remake()
+	namespace GLIB
 	{
-		if (m_Info.unHeight > 4096 || m_Info.unHeight == 0 ||
-			m_Info.unWidth > 4096 || m_Info.unWidth == 0) { return; }
-		if (m_unRId != 0) { glDeleteFramebuffers(1, &m_unRId); }
+		// Constructor&Destructor
+		FrameBufOgl::FrameBufOgl(const char* strName, const FrameBufInfo& rfbInfo) :
+			AFrameBuf(strName, rfbInfo) { Remake();}
+		FrameBufOgl::~FrameBufOgl()
+		{ glDeleteFramebuffers(1, &m_unRId); glDeleteRenderbuffers(1, &m_DepthAttach); }
 
-		glCreateFramebuffers(1, &m_unRId);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_unRId);
+		// --==<Core methods>==--
+		void FrameBufOgl::Bind() const {
+			if (m_bIsBound) { return; }
+			glBindFramebuffer(GL_FRAMEBUFFER, m_unRId);
+			glViewport(0, 0, GetWidth(), GetHeight());
+			m_bIsBound = true;
+		}
+		void FrameBufOgl::Unbind() const {
+			if (!m_bIsBound) { return; }
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			m_bIsBound = false;
+		}
 
-		ImageInfo ImgInfo;
-		TextureInfo TexInfo;
+		void FrameBufOgl::Remake()
+		{
+			if (m_Info.unHeight > 4096 || m_Info.unHeight == 0 ||
+				m_Info.unWidth > 4096 || m_Info.unWidth == 0) { return; }
+			if (m_unRId != 0) {
+				glDeleteFramebuffers(1, &m_unRId);
+				glDeleteRenderbuffers(1, &m_DepthAttach);
+			}
 
-		ImgInfo.ClrData = nullptr;
-		ImgInfo.nDepth = 1;
-		ImgInfo.nWidth = GetWidth();
-		ImgInfo.nHeight = GetHeight();
-		
-		if (true) {
+			glCreateFramebuffers(1, &m_unRId);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_unRId);
+
+			ImageInfo ImgInfo;
+			ImgInfo.ClrData = nullptr;
 			ImgInfo.nChannels = 4;
-			TexInfo.FilterMag = TexInfo.FilterMin = TC_FILTER_LINEAR;
-			TexInfo.InterFormat = TC_FORMAT_RGBA8; TexInfo.Format = TC_FORMAT_RGBA8;
-			m_texColor->SetInfo(TexInfo);
-			m_texColor->SetInfo(ImgInfo);
-			m_texColor->Remake();
-			m_texColor->Bind(0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texColor->GetRenderId(), 0);
-			m_texColor->Unbind();
+			ImgInfo.nWidth = GetWidth();
+			ImgInfo.nHeight = GetHeight();
+			TextureInfo TexInfo;
+			TexInfo.FilterMag = TexInfo.FilterMin = TXF_LINEAR;
+			TexInfo.texInterFormat = TXF_RGBA8; TexInfo.texFormat = TXF_RGBA;
+			m_ColorAttach->SetInfo(TexInfo);
+			m_ColorAttach->SetInfo(ImgInfo);
+			m_ColorAttach->Remake();
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttach->GetRenderId(), 0);
+
+			glCreateRenderbuffers(1, &m_DepthAttach);
+			glBindRenderbuffer(GL_RENDERBUFFER, m_DepthAttach);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, GetWidth(), GetHeight());
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttach);
+
+			bool bIsCompleted = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+			NWL_ASSERT(bIsCompleted, "FrameBufOgl is not created!");
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-		if (false) {
-			ImgInfo.nChannels = 1;
-			TexInfo.FilterMag = TexInfo.FilterMin = TC_FILTER_LINEAR;
-			TexInfo.InterFormat = TC_FORMAT_UINT_24_8; TexInfo.Format = TC_FORMAT_DEPTH_STENCIL;
-			m_texDepth->SetInfo(TexInfo);
-			m_texDepth->SetInfo(ImgInfo);
-			m_texDepth->Remake();
-			m_texDepth->Bind(0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_texDepth->GetRenderId(), 0);
-			m_texDepth->Unbind();
-		}
-		if (false) {
-			ImgInfo.nChannels = 1;
-			TexInfo.FilterMag = TexInfo.FilterMin = TC_FILTER_LINEAR;
-			TexInfo.InterFormat = TC_FORMAT_UINT_24_8; TexInfo.Format = TC_FORMAT_RED;
-			m_texStencil->SetInfo(TexInfo);
-			m_texStencil->SetInfo(ImgInfo);
-			m_texStencil->Remake();
-			m_texStencil->Bind(0);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_texStencil->GetRenderId(), 0);
-			m_texStencil->Unbind();
+		void FrameBufOgl::Clear() {
+			UInt32 unMask = 0;
+			unMask |= m_ColorAttach.GetRef() != nullptr ? FB_COLOR : 0;
+			unMask |= m_DepthAttach != 0 ? FB_DEPTH : 0;
+			glClearColor(m_rgbaClear.r, m_rgbaClear.g, m_rgbaClear.b, m_rgbaClear.a);
+			glClear(unMask);
 		}
 
-		bool bIsCompleted = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
-		NWL_ASSERT(bIsCompleted, "FrameBufOgl is not created!");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		void FrameBufOgl::ReadPixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nW, Int32 nH)
+		{
+			Bind();
+			glReadBuffer(GL_COLOR_ATTACHMENT0);
+			glReadPixels(nX, nY, nW, nH, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+			Unbind();
+		}
+		void FrameBufOgl::WritePixels(Ptr pData, Int32 nW, Int32 nH)
+		{
+			Bind();
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+			glDrawPixels(nW, nH, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+			Unbind();
+		}
+		// --==</core_methods>==--
 	}
-	void FrameBufOgl::Clear(UInt32 unAttachmentsMask) { glClear(unAttachmentsMask); }
-	// --==</Core methods>==--
-}
 #endif // GLIB_GAPI

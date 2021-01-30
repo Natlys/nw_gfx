@@ -12,8 +12,8 @@ namespace GLIB
 {
 	ATexture::ATexture(const char* strName) :
 		ADataRes(strName),
-		m_unRId(0), m_unTexSlot(0),
-		m_TexInfo(TextureInfo()), m_ImgInfo(ImageInfo()) { ADataRes::AddDataRes<ATexture>(this); }
+		m_unRId(0), m_unTexSlot(0), m_bIsBound(false),
+		m_texInfo(TextureInfo()), m_imgInfo(ImageInfo()) { ADataRes::AddDataRes<ATexture>(this); }
 	ATexture::~ATexture() { ADataRes::RmvDataRes<ATexture>(GetId()); }
 
 	// --==<ATexture1d>==--
@@ -40,14 +40,14 @@ namespace GLIB
 			bSuccess = false;
 		}
 		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.Format = TC_FORMAT_RED; TexInfoTemp.InterFormat = TC_FORMAT_RED; break;
-		case 2: NWL_ERR("Unsupported format!"); break;
-		case 3: TexInfoTemp.InterFormat = TC_FORMAT_RGB; TexInfoTemp.Format = TC_FORMAT_RGB; break;
-		case 4: TexInfoTemp.Format = TC_FORMAT_RGBA; TexInfoTemp.InterFormat = TC_FORMAT_RGBA8; break;
+		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
+		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
+		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
+		default: NWL_ERR("Unsupported format!"); break;
 		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TC_FILTER_NEAREST;
-		TexInfoTemp.Format = TexInfoTemp.InterFormat = TC_FORMAT_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TC_WRAP_REPEAT;
+		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
+		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
+		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
 
 		SetInfo(TexInfoTemp);
 		SetInfo(ImgInfoTemp);
@@ -63,7 +63,7 @@ namespace GLIB
 
 	void ATexture2d::SetSubTexs(const DArray<SubTexture2d>& rSubTexs) {
 		m_SubTexs = rSubTexs;
-		for (auto& rSub : m_SubTexs) { rSub.pOverTex = this; rSub.whOverTexSize = { m_ImgInfo.nWidth, m_ImgInfo.nHeight }; }
+		for (auto& rSub : m_SubTexs) { rSub.pOverTex = this; rSub.whOverTexSize = { m_imgInfo.nWidth, m_imgInfo.nHeight }; }
 	}
 	
 	// --data_methods
@@ -85,14 +85,14 @@ namespace GLIB
 			bSuccess = false;
 		}
 		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.Format = TC_FORMAT_RED; TexInfoTemp.InterFormat = TC_FORMAT_RED; break;
-		case 2: NWL_ERR("Unsupported format!"); break;
-		case 3: TexInfoTemp.InterFormat = TC_FORMAT_RGB; TexInfoTemp.Format = TC_FORMAT_RGB; break;
-		case 4: TexInfoTemp.Format = TC_FORMAT_RGBA; TexInfoTemp.InterFormat = TC_FORMAT_RGBA8; break;
+		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
+		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
+		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
+		default: NWL_ERR("Unsupported format!"); break;
 		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TC_FILTER_NEAREST;
-		TexInfoTemp.Format = TexInfoTemp.InterFormat = TC_FORMAT_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TC_WRAP_REPEAT;
+		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
+		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
+		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
 
 		SetInfo(TexInfoTemp);
 		SetInfo(ImgInfoTemp);
@@ -126,14 +126,14 @@ namespace GLIB
 			bSuccess = false;
 		}
 		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.Format = TC_FORMAT_RED; TexInfoTemp.InterFormat = TC_FORMAT_RED; break;
-		case 2: NWL_ERR("Unsupported format!"); break;
-		case 3: TexInfoTemp.InterFormat = TC_FORMAT_RGB; TexInfoTemp.Format = TC_FORMAT_RGB; break;
-		case 4: TexInfoTemp.Format = TC_FORMAT_RGBA; TexInfoTemp.InterFormat = TC_FORMAT_RGBA8; break;
+		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
+		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
+		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
+		default: NWL_ERR("Unsupported format!"); break;
 		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TC_FILTER_NEAREST;
-		TexInfoTemp.Format = TexInfoTemp.InterFormat = TC_FORMAT_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TC_WRAP_REPEAT;
+		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
+		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
+		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
 
 		SetInfo(TexInfoTemp);
 		SetInfo(ImgInfoTemp);
@@ -211,11 +211,11 @@ namespace GLIB
 
 	// --setters
 	void Texture1dOgl::SetInfo(const TextureInfo& rTexInfo) {
-		m_TexInfo = rTexInfo;
+		m_texInfo = rTexInfo;
 	}
 	void Texture1dOgl::SetInfo(const ImageInfo& rImgInfo) {
 		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
-		m_ImgInfo = rImgInfo;
+		m_imgInfo = rImgInfo;
 	}
 
 	// --==<Interface Methods>==--
@@ -240,15 +240,15 @@ namespace GLIB
 		glCreateTextures(GL_TEXTURE_1D, 1, &m_unRId);
 
 		glBindTexture(GL_TEXTURE_1D, m_unRId);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_TexInfo.FilterMin);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_TexInfo.FilterMag);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_TexInfo.WrapTypeS);
-		glTexImage1D(GL_TEXTURE_1D, 0, m_TexInfo.InterFormat,
-			m_ImgInfo.nWidth, 0,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
+		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+		glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
+			m_imgInfo.nWidth, 0,
+			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
 		glTexSubImage1D(GL_TEXTURE_1D, 0,
-			0, m_ImgInfo.nWidth,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
+			0, m_imgInfo.nWidth,
+			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
 		glGenerateMipmap(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, 0);
 	}
@@ -260,11 +260,11 @@ namespace GLIB
 
 	// --setters
 	void Texture2dOgl::SetInfo(const TextureInfo& rTexInfo) {
-		m_TexInfo = rTexInfo;
+		m_texInfo = rTexInfo;
 	}
 	void Texture2dOgl::SetInfo(const ImageInfo& rImgInfo) {
 		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
-		m_ImgInfo = rImgInfo;
+		m_imgInfo = rImgInfo;
 		SetSubTexs(GetSubTexs());
 	}
 
@@ -285,22 +285,26 @@ namespace GLIB
 	}
 	void Texture2dOgl::Remake()
 	{
-		if (m_unRId != 0) { glDeleteTextures(1, &m_unRId); m_unRId = 0; }
+		OGL_CALL(
+		if (m_unRId != 0) { Unbind(); glDeleteTextures(1, &m_unRId); m_unRId = 0; }
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_unRId);
-
+		
 		glBindTexture(GL_TEXTURE_2D, m_unRId);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_TexInfo.FilterMin);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_TexInfo.FilterMag);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_TexInfo.WrapTypeS);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_TexInfo.WrapTypeT);
-		glTexImage2D(GL_TEXTURE_2D, 0, m_TexInfo.InterFormat,
-			m_ImgInfo.nWidth, m_ImgInfo.nHeight, 0,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
-		glTexSubImage2D(GL_TEXTURE_2D, 0,
-			0, 0, m_ImgInfo.nWidth, m_ImgInfo.nHeight,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
+			m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
+			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+		if (m_texInfo.bGenSubImage) {
+			glTexSubImage2D(GL_TEXTURE_2D, 0,
+				0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+		}
+		if (m_texInfo.bGenMipmap) { glGenerateMipmap(GL_TEXTURE_2D); }
 		glBindTexture(GL_TEXTURE_2D, 0);
+		)
 	}
 	// --==</core_methods>==--
 	
@@ -311,11 +315,11 @@ namespace GLIB
 
 	// --setters
 	void Texture3dOgl::SetInfo(const TextureInfo& rTexInfo) {
-		m_TexInfo = rTexInfo;
+		m_texInfo = rTexInfo;
 	}
 	void Texture3dOgl::SetInfo(const ImageInfo& rImgInfo) {
 		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
-		m_ImgInfo = rImgInfo;
+		m_imgInfo = rImgInfo;
 	}
 
 	// --==<Interface Methods>==--
@@ -341,17 +345,17 @@ namespace GLIB
 		glCreateTextures(GL_TEXTURE_3D, 1, &m_unRId);
 		
 		glBindTexture(GL_TEXTURE_2D, m_unRId);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_TexInfo.FilterMin);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_TexInfo.FilterMag);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_TexInfo.WrapTypeS);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_TexInfo.WrapTypeT);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_TexInfo.WrapTypeR);
-		glTexImage3D(GL_TEXTURE_3D, 0, m_TexInfo.InterFormat,
-			m_ImgInfo.nWidth, m_ImgInfo.nHeight, m_ImgInfo.nDepth, 0,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
+		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
+		glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
+			m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
+			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
 		glTexSubImage3D(GL_TEXTURE_3D, 0,
-			0, 0, 0, m_ImgInfo.nWidth, m_ImgInfo.nHeight, m_ImgInfo.nDepth,
-			m_TexInfo.Format, GL_UNSIGNED_BYTE, &m_ImgInfo.ClrData[0]);
+			0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
+			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
 		glGenerateMipmap(GL_TEXTURE_3D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

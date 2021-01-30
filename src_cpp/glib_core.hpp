@@ -90,22 +90,20 @@ typedef double GLclampd;
 #define GL_UNSIGNED_INT						0x1405
 #define GL_FLOAT							0x1406
 #define GL_DOUBLE							0x140A
-#define GL_SAMPLER_1D 0x8B5D
-#define GL_UNSIGNED_INT_24_8 0x84FA
-#define GL_DEPTH_STENCIL 0x84F9
-#define GL_DEPTH24_STENCIL8 0x88F0
+#define GL_SAMPLER_1D						0x8B5D
+#define GL_UNSIGNED_INT_24_8				0x84FA
 // --==</data_types_ogl>==--
 
 // --==<data_types_glib>==--
 #define GLIB_ZERO 0
 #define GLIB_ONE 1
 #define GLIB_BOOL			GL_BOOL
-#define GLIB_INT16		GL_SHORT
-#define GLIB_UINT16		GL_UNSIGNED_SHORT
+#define GLIB_INT16			GL_SHORT
+#define GLIB_UINT16			GL_UNSIGNED_SHORT
 #define GLIB_INT8			GL_BYTE
-#define GLIB_UINT8		GL_UNSIGNED_BYTE
-#define GLIB_INT32		GL_INT
-#define GLIB_UINT32		GL_UNSIGNED_INT
+#define GLIB_UINT8			GL_UNSIGNED_BYTE
+#define GLIB_INT32			GL_INT
+#define GLIB_UINT32			GL_UNSIGNED_INT
 #define GLIB_FLOAT32		GL_FLOAT
 #define GLIB_FLOAT64		GL_DOUBLE
 #define GLIB_FLOAT32_VEC2	(GLIB_FLOAT32 + 0x0020)
@@ -115,9 +113,7 @@ typedef double GLclampd;
 #define GLIB_FLOAT32_MAT3	(GLIB_FLOAT32 + 0x0200)
 #define GLIB_FLOAT32_MAT4	(GLIB_FLOAT32 + 0x0300)
 #define GLIB_SAMPLER_1D		GL_SAMPLER_1D
-#define GLIB_UINT_24_8			GL_UNSIGNED_INT_24_8
-#define GLIB_DEPTH_STENCIL		GL_DEPTH_STENCIL
-#define GLIB_DEPTH24_STENCIL8	GL_DEPTH24_STENCIL8
+#define GLIB_UINT24_8		GL_UNSIGNED_INT_24_8
 // --==</data_types_glib>==--
 
 // --==<draw_modes_ogl>==--
@@ -138,7 +134,7 @@ typedef double GLclampd;
 #define GL_POLYGON 0x0009
 // --==</draw_modes_ogl>==--
 
-// --==<draw_modes_nw>==--
+// --==<draw_modes_glib>==--
 #define GLIB_POINT 0x1B00
 #define GLIB_LINE 0x1B01
 #define GLIB_FILL 0x1B02
@@ -163,15 +159,15 @@ typedef double GLclampd;
 #define GL_RIGHT 0x0407
 #define GL_FRONT_AND_BACK 0x0408
 // --==</planes_ogl>==--
-// --==<planes_nw>==--
+// --==<planes_glib>==--
 #define GLIB_FRONT GL_FRONT
 #define GLIB_BACK GL_BACK
 #define GLIB_LEFT GL_LEFT
 #define GLIB_RIGHT GL_RIGHT
 #define GLIB_FRONT_AND_BACK GL_FRONT_AND_BACK
-// --==</planes_nw>==--
+// --==</planes_glib>==--
 
-// --==<Shaders_ogl>==--
+// --==<shaders_ogl>==--
 #define GL_SHADER 0x82E1
 #define GL_PROGRAM 0x82E2
 #define GL_FRAGMENT_SHADER 0x8B30
@@ -184,7 +180,7 @@ typedef double GLclampd;
 #define GL_ATTACHED_SHADERS 0x8B85
 // --==<shaders_ogl>==--
 
-// --==<shaders_nw>==--
+// --==<shaders_glib>==--
 #define GLIB_SHADER				GL_PROGRAM
 #define GLIB_SHADER_VERTEX		GL_VERTEX_SHADER
 #define GLIB_SHADER_GEOMETRY		GL_GEOMETRY_SHADER
@@ -192,7 +188,7 @@ typedef double GLclampd;
 
 #define GLIB_COMPILE_STATUS		GL_COMPILE_STATUS
 #define GLIB_LINK_STATUS			GL_LINK_STATUS
-// --==</Shaders_GLIB>==--
+// --==</shaders_glib>==--
 
 // --==<configurations_ogl>==--
 #define GL_SRC_COLOR 0x0300
@@ -230,7 +226,7 @@ typedef double GLclampd;
 #define GL_DECR				0x1E03
 // --==</configurations_ogl>==--
 
-// --==<configurations_nw>==--
+// --==<configurations_glib>==--
 #define GLIB_SRC_COLOR GL_SRC_COLOR
 #define GLIB_ONE_MINUS_SRC_COLOR	GL_ONE_MINUS_SRC_COLOR
 #define GLIB_SRC_ALPHA				GL_SRC_ALPHA
@@ -264,7 +260,7 @@ typedef double GLclampd;
 #define GLIB_REPLACE			 GL_REPLACE	
 #define GLIB_INCR				 GL_INCR		
 #define GLIB_DECR				 GL_DECR		
-// --==</configurations_nw>==--
+// --==</configurations_glib>==--
 
 // --==<expressions_ogl>==--
 // --constants
@@ -299,7 +295,7 @@ typedef double GLclampd;
 #define GL_NAND 0x150E
 // --==</expressions_ogl>==--
 
-// --==<expressions_nw>==--
+// --==<expressions_glib>==--
 // --constants
 #define GLIB_NONE 0
 #define GLIB_FALSE 0
@@ -328,9 +324,9 @@ typedef double GLclampd;
 #define GLIB_COPY_INVERTED 0x150C
 #define GLIB_OR_INVERTED 0x150D
 #define GLIB_NAND 0x150E
-// --==</expressions_nw>==--
+// --==</expressions_glib>==--
 
-// --==<color_formats_ogl>==--
+// --==<pixel_formats_ogl>==--
 #define GL_COLOR 0x1800
 #define GL_RED 0x1903
 #define GL_GREEN 0x1904
@@ -339,9 +335,9 @@ typedef double GLclampd;
 #define GL_RGB 0x1907
 #define GL_RGBA 0x1908
 #define GL_RGBA8 0x8058
-// --==</color_formats_ogl>==--
+// --==</pixel_formats_ogl>==--
 
-// --==<color_formats_glib>==--
+// --==<pixel_formats_glib>==--
 #define GLIB_COLOR		GL_COLOR
 #define GLIB_RED		GL_RED
 #define GLIB_GREEN		GL_GREEN
@@ -350,13 +346,16 @@ typedef double GLclampd;
 #define GLIB_RGB		GL_RGB
 #define GLIB_RGBA		GL_RGBA
 #define GLIB_RGBA8		GL_RGBA8
-// --==</color_formats_glib>==--
+// --==</pixel_formats_glib>==--
 
 // --==<textures_ogl>==--
 // --types
 #define GL_TEXTURE_1D 0x0DE0
 #define GL_TEXTURE_2D 0x0DE1
 #define GL_TEXTURE_3D 0x0DE2
+#define GL_DEPTH_STENCIL 0x84F9
+#define GL_DEPTH24_STENCIL8 0x88F0
+#define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
 // --filters
 #define GL_TEXTURE_MAG_FILTER 0x2800
 #define GL_TEXTURE_MIN_FILTER 0x2801
@@ -370,23 +369,26 @@ typedef double GLclampd;
 #define GL_REPEAT 0x2901
 // --==</textures_ogl>==--
 
-// --==<textures_nw>==--
+// --==<textures_glib>==--
 // --types
-#define GLIB_TEXTURE_1D	GL_TEXTURE_1D
-#define GLIB_TEXTURE_2D	GL_TEXTURE_2D
-#define GLIB_TEXTURE_3D	GL_TEXTURE_3D
+#define GLIB_TEXTURE_1D					GL_TEXTURE_1D
+#define GLIB_TEXTURE_2D					GL_TEXTURE_2D
+#define GLIB_TEXTURE_3D					GL_TEXTURE_3D
+#define GLIB_DEPTH_STENCIL				GL_DEPTH_STENCIL
+#define GLIB_DEPTH24_STENCIL8			GL_DEPTH24_STENCIL8
+#define GLIB_DEPTH_STENCIL_ATTACHMENT	GL_DEPTH_STENCIL_ATTACHMENT
 // --filters
 #define GLIB_TEXTURE_MAG_FILTER			GL_TEXTURE_MAG_FILTER
 #define GLIB_TEXTURE_MIN_FILTER			GL_TEXTURE_MIN_FILTER
 #define GLIB_TEXTURE_FILTER_NEAREST		GL_NEAREST
 #define GLIB_TEXTURE_FILTER_LINEAR		GL_LINEAR
 // --wrappers
-#define GLIB_TEXTURE_WRAP_S			GL_TEXTURE_WRAP_S
-#define GLIB_TEXTURE_WRAP_T			GL_TEXTURE_WRAP_T
-#define GLIB_TEXTURE_WRAP_R			GL_TEXTURE_WRAP_R
-#define GLIB_TEXTURE_WRAP_CLAMP		GL_CLAMP
+#define GLIB_TEXTURE_WRAP_S				GL_TEXTURE_WRAP_S
+#define GLIB_TEXTURE_WRAP_T				GL_TEXTURE_WRAP_T
+#define GLIB_TEXTURE_WRAP_R				GL_TEXTURE_WRAP_R
+#define GLIB_TEXTURE_WRAP_CLAMP			GL_CLAMP
 #define GLIB_TEXTURE_WRAP_REPEAT		GL_REPEAT
-// --==</textures_nw>==--
+// --==</textures_glib>==--
 
 // --==<gbuffers_ogl>==--
 #define GL_ARRAY_BUFFER 0x8892
@@ -402,17 +404,17 @@ typedef double GLclampd;
 // --==</buffers_ogl>==--
 
 
-// --==<gbuffers_nw>==--
+// --==<gbuffers_glib>==--
 #define GLIB_GBUFFER_VERTEX GL_ARRAY_BUFFER
 #define GLIB_GBUFFER_INDEX GL_ELEMENT_ARRAY_BUFFER
 #define GLIB_GBUFFER_SHADER GL_UNIFORM_BUFFER
-// --==</gbuffers_nw>==--
+// --==</gbuffers_glib>==--
 
-// --==<framebuffers_nw>==--
+// --==<framebuffers_glib>==--
 #define GLIB_BUFFER_COLOR_BIT					GL_COLOR_BUFFER_BIT
 #define GLIB_BUFFER_DEPTH_BIT					GL_DEPTH_BUFFER_BIT
 #define GLIB_BUFFER_STENCIL_BIT				GL_STENCIL_BUFFER_BIT
-// --==</framebuffers_nw>==--
+// --==</framebuffers_glib>==--
 
 // --==<data_load_types_ogl>==--
 #define GL_STATIC_DRAW 0x88E4
@@ -420,11 +422,11 @@ typedef double GLclampd;
 #define GL_DYNAMIC_DRAW 0x88E8
 // --==</data_load_types_ogl>==--
 
-// --==<data_load_types_nw>==--
+// --==<data_load_types_glib>==--
 #define GLIB_STATIC_DRAW		GL_STATIC_DRAW 
 #define GLIB_STREAM_DRAW		GL_STREAM_DRAW 
 #define GLIB_DYNAMIC_DRAW		GL_DYNAMIC_DRAW
-// --==</data_load_types_nw>==--
+// --==</data_load_types_glib>==--
 
 // --==<error_codes_ogl>==--
 #define GL_NO_ERROR                       0
@@ -436,7 +438,7 @@ typedef double GLclampd;
 #define GL_OUT_OF_MEMORY                  0x0505
 // --==</error_codes_ogl>==--
 
-// --==<error_codes_nw>==--
+// --==<error_codes_glib>==--
 #define GLIB_OK							GL_NO_ERROR         
 #define GLIB_INVALID_ENUM					GL_INVALID_ENUM     
 #define GLIB_INVALID_VALUE				GL_INVALID_VALUE    
@@ -460,7 +462,7 @@ typedef double GLclampd;
 #define GLIB_ERR_SHADER_LOAD_FAIL			0b1001'0000'0000
 #define GLIB_ERR_SHADER_LINK				0b1011'0000'0000
 #define GLIB_ERR_SHADER_COMPILE			0b1100'0000'0000
-// --==</error_codes_nw>==--
+// --==</error_codes_glib>==--
 
 // --==<info_ogl>==--
 #define GL_VENDOR                         0x1F00
@@ -610,8 +612,7 @@ namespace GLIB
 		BC_ONE_MUNUS_DST_ALPHA = GLIB_ONE_MINUS_DST_ALPHA,
 		BC_ONE_MINUS_DST_COLOR = GLIB_ONE_MINUS_DST_COLOR,
 	};
-	enum DepthConfigs : UInt32
-	{
+	enum DepthConfigs : UInt32 {
 		DC_EQUAL = GLIB_EQUAL,
 		DC_LESS = GLIB_LESS, DC_LEQUAL = GLIB_LEQUAL,
 		DC_GREATER = GLIB_GREATER, DC_GEQUAL = GLIB_GEQUAL,
@@ -622,15 +623,33 @@ namespace GLIB
 		SC_INCR = GLIB_INCR, SC_DECR = GLIB_DECR
 	};
 	enum TextureTypes : UInt32 {
-		TT_1D = GLIB_TEXTURE_1D, TT_2D = GLIB_TEXTURE_2D, TT_3D = GLIB_TEXTURE_3D,
+		TXT_NONE = 0,
+		TXT_1D = GLIB_TEXTURE_1D, TXT_2D = GLIB_TEXTURE_2D, TXT_3D = GLIB_TEXTURE_3D,
 	};
-	enum TextureConfigs : UInt32 {
-		TC_WRAP_REPEAT = GLIB_TEXTURE_WRAP_REPEAT, TC_WRAP_CLAMP = GLIB_TEXTURE_WRAP_CLAMP,
-		TC_FILTER_LINEAR = GLIB_TEXTURE_FILTER_LINEAR, TC_FILTER_NEAREST = GLIB_TEXTURE_FILTER_NEAREST,
-		TC_FORMAT_RED = GLIB_RED, TC_FORMAT_GREEN = GLIB_GREEN, TC_FORMAT_BLUE = GLIB_BLUE,
-		TC_FORMAT_RGB = GLIB_RGB, TC_FORMAT_RGBA = GLIB_RGBA, TC_FORMAT_RGBA8 = GLIB_RGBA8,
-		TC_FORMAT_DEPTH_STENCIL = GLIB_DEPTH_STENCIL,
-		TC_FORMAT_UINT_24_8 = GLIB_UINT_24_8
+	enum TextureWraps : UInt32 {
+		TXW_NONE = 0, TXW_REPEAT = GLIB_TEXTURE_WRAP_REPEAT, TXW_CLAMP = GLIB_TEXTURE_WRAP_CLAMP,
+	};
+	enum TextureFilters : UInt32 {
+		TXF_LINEAR = GLIB_TEXTURE_FILTER_LINEAR, TXF_NEAREST = GLIB_TEXTURE_FILTER_NEAREST,
+	};
+	enum TextureFormats : UInt32 {
+		TXF_NONE = 0,
+		TXF_RED = GLIB_RED, TXF_GREEN = GLIB_GREEN, TXF_BLUE = GLIB_BLUE,
+		TXF_RGB = GLIB_RGB, TXF_RGBA = GLIB_RGBA, TXF_RGBA8 = GLIB_RGBA8,
+		TXF_DEPTH_STENCIL = GLIB_DEPTH_STENCIL,
+		TXF_DEPTH24_STENCIL8 = GLIB_DEPTH24_STENCIL8,
+	};
+	enum PixelFormats : UInt32 {
+		PXF_NONE = 0,
+		PXF_INT8 = GLIB_INT8, PXF_UINT8 = GLIB_UINT8,
+		PXF_INT32 = GLIB_INT32, PXF_UINT32 = GLIB_UINT32,
+		PXF_UINT24_8 = GLIB_UINT24_8
+	};
+	enum FBAttachTypes : UInt32 {
+		FBAT_NONE = 0,
+		FBAT_COLOR_RGB, FBAT_COLOR_RGBA,
+		FBAT_INT,
+		FBAT_DEPTH, FBAT_STENCIL, FBAT_DEPTH_STENCIL
 	};
 	//	--==</structs_enums>==--
 

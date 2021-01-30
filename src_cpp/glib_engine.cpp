@@ -25,10 +25,21 @@ namespace GLIB
 
 	// --setters
 	// --==<core_methods>==--
-	bool GEngine::Init(Size szMemory)
+	void GEngine::Run()
+	{
+		Init();
+		if (!m_bIsRunning) { return; }
+
+		auto& fnUpdate = [this]()->void {
+			while (m_bIsRunning) { Update(); }
+			Quit();
+		};
+		m_thrRun = Thread(fnUpdate);
+	}
+	bool GEngine::Init()
 	{
 		if (m_bIsRunning) { return false; }
-		GetMemory() = MemArena(new Byte[szMemory], szMemory);
+		GetMemory() = MemArena(new Byte[1 << 20], 1 << 20);
 
 	#if (defined GLIB_GAPI)
 		#if (GLIB_GAPI & GLIB_GAPI_OGL)
@@ -50,14 +61,6 @@ namespace GLIB
 
 		delete[] GetMemory().GetDataBeg();
 		GetMemory() = MemArena(nullptr, 0);
-	}
-	void GEngine::Run(Size szMemory) {
-		if (!Init(szMemory)) { return; }
-		auto& fnUpdate = [this]()->void {
-			while (m_bIsRunning) { Update(); }
-			Quit();
-		};
-		m_thrRun = Thread(fnUpdate);
 	}
 	void GEngine::Update()
 	{

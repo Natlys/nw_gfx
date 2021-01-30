@@ -143,8 +143,8 @@ namespace GLIB
 		virtual void Unbind() const = 0;
 
 		static AVertexBuf* Create();
-		static void Create(Size szAlloc, const Ptr pVtxData, RefOwner<AVertexBuf>& rVtxBuf);
-		static void Create(Size szAlloc, const Ptr pVtxData, RefKeeper<AVertexBuf>& rVtxBuf);
+		static void Create(RefOwner<AVertexBuf>& rVtxBuf);
+		static void Create(RefKeeper<AVertexBuf>& rVtxBuf);
 		// --operators
 		Ptr operator new[](Size szMem) = delete;
 		void operator delete(Ptr pBlock) = delete;
@@ -181,8 +181,8 @@ namespace GLIB
 		virtual void Unbind() const = 0;
 
 		static AIndexBuf* Create();
-		static void Create(Size szAlloc, const Ptr pIdxData, RefOwner<AIndexBuf>& rIdxBuf);
-		static void Create(Size szAlloc, const Ptr pIdxData, RefKeeper<AIndexBuf>& rIdxBuf);
+		static void Create(RefOwner<AIndexBuf>& rIdxBuf);
+		static void Create(RefKeeper<AIndexBuf>& rIdxBuf);
 		// --operators
 		void operator delete(Ptr pBlock) = delete;
 		void operator delete[](Ptr pBlock) = delete;
@@ -217,8 +217,8 @@ namespace GLIB
 		virtual void Unbind() const = 0;
 
 		static AShaderBuf* Create();
-		static void Create(Size szAlloc, const Ptr pShaderData, RefOwner<AShaderBuf>& rShdBuf);
-		static void Create(Size szAlloc, const Ptr pShaderData, RefKeeper<AShaderBuf>& rShdBuf);
+		static void Create(RefOwner<AShaderBuf>& rShdBuf);
+		static void Create(RefKeeper<AShaderBuf>& rShdBuf);
 		// --operators
 		void operator delete(Ptr pBlock) = delete;
 		void operator delete[](Ptr pBlock) = delete;
