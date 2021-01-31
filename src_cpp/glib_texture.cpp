@@ -3,362 +3,177 @@
 
 #if (defined GLIB_GAPI)
 #include <glib_engine.h>
-#include <glib_api.h>
 #include <stb_image.h>
-
-UByte GLIB::ATexture::s_ClearColorData[4] = { 255, 255, 255, 255 };
-
-namespace GLIB
-{
-	ATexture::ATexture(const char* strName) :
-		ADataRes(strName),
-		m_unRId(0), m_unTexSlot(0), m_bIsBound(false),
-		m_texInfo(TextureInfo()), m_imgInfo(ImageInfo()) { ADataRes::AddDataRes<ATexture>(this); }
-	ATexture::~ATexture() { ADataRes::RmvDataRes<ATexture>(GetId()); }
-
-	// --==<ATexture1d>==--
-	ATexture1d::ATexture1d(const char* strName) :
-	ATexture(strName) { ADataRes::AddDataRes<ATexture1d>(this); }
-	ATexture1d::~ATexture1d() { ADataRes::RmvDataRes<ATexture1d>(GetId()); }
-	
-	// --data_methods
-	bool ATexture1d::SaveF(const char* strFPath) { return true; }
-	bool ATexture1d::LoadF(const char* strFPath)
-	{
-		String strFile("");
-		Size szBytes = 0;
-		bool bSuccess = true;
-
-		ImageInfo ImgInfoTemp;
-		TextureInfo TexInfoTemp;
-
-		ImgInfoTemp.ClrData = stbi_load(strFPath, &ImgInfoTemp.nWidth, &ImgInfoTemp.nHeight, &ImgInfoTemp.nChannels, 0);
-		if (ImgInfoTemp.ClrData == nullptr) {
-			ImgInfoTemp.nWidth = ImgInfoTemp.nHeight = ImgInfoTemp.nDepth;
-			ImgInfoTemp.nChannels = 4;
-			ImgInfoTemp.ClrData = &s_ClearColorData[0];
-			bSuccess = false;
-		}
-		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
-		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
-		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
-		default: NWL_ERR("Unsupported format!"); break;
-		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
-		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
-
-		SetInfo(TexInfoTemp);
-		SetInfo(ImgInfoTemp);
-		Remake();
-
-		return bSuccess;
-	}
-
-	// --==<ATexture2d>==--
-	ATexture2d::ATexture2d(const char* strName) :
-		ATexture(strName) { ADataRes::AddDataRes<ATexture2d>(this); }
-	ATexture2d::~ATexture2d() { ADataRes::RmvDataRes<ATexture2d>(GetId()); }
-
-	void ATexture2d::SetSubTexs(const DArray<SubTexture2d>& rSubTexs) {
-		m_SubTexs = rSubTexs;
-		for (auto& rSub : m_SubTexs) { rSub.pOverTex = this; rSub.whOverTexSize = { m_imgInfo.nWidth, m_imgInfo.nHeight }; }
-	}
-	
-	// --data_methods
-	bool ATexture2d::SaveF(const char* strFPath) { return true; }
-	bool ATexture2d::LoadF(const char* strFPath)
-	{
-		String strFile("");
-		Size szBytes = 0;
-		bool bSuccess = true;
-
-		ImageInfo ImgInfoTemp;
-		TextureInfo TexInfoTemp;
-
-		ImgInfoTemp.ClrData = stbi_load(strFPath, &ImgInfoTemp.nWidth, &ImgInfoTemp.nHeight, &ImgInfoTemp.nChannels, 0);
-		if (ImgInfoTemp.ClrData == nullptr) {
-			ImgInfoTemp.nWidth = ImgInfoTemp.nHeight = ImgInfoTemp.nDepth;
-			ImgInfoTemp.nChannels = 4;
-			ImgInfoTemp.ClrData = &s_ClearColorData[0];
-			bSuccess = false;
-		}
-		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
-		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
-		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
-		default: NWL_ERR("Unsupported format!"); break;
-		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
-		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
-
-		SetInfo(TexInfoTemp);
-		SetInfo(ImgInfoTemp);
-		Remake();
-
-		return bSuccess;
-	}
-	// --==</ATexture2d>==--
-
-	// --==<ATexture3d>==--
-	ATexture3d::ATexture3d(const char* strName) :
-		ATexture(strName) { ADataRes::AddDataRes<ATexture3d>(this); }
-	ATexture3d::~ATexture3d() { ADataRes::RmvDataRes<ATexture3d>(GetId()); }
-
-	// --data_methods
-	bool ATexture3d::SaveF(const char* strFPath) { return true; }
-	bool ATexture3d::LoadF(const char* strFPath)
-	{
-		String strFile("");
-		Size szBytes = 0;
-		bool bSuccess = true;
-
-		ImageInfo ImgInfoTemp;
-		TextureInfo TexInfoTemp;
-
-		ImgInfoTemp.ClrData = stbi_load(strFPath, &ImgInfoTemp.nWidth, &ImgInfoTemp.nHeight, &ImgInfoTemp.nChannels, 0);
-		if (ImgInfoTemp.ClrData == nullptr) {
-			ImgInfoTemp.nWidth = ImgInfoTemp.nHeight = ImgInfoTemp.nDepth;
-			ImgInfoTemp.nChannels = 4;
-			ImgInfoTemp.ClrData = &s_ClearColorData[0];
-			bSuccess = false;
-		}
-		switch (ImgInfoTemp.nChannels) {
-		case 1: TexInfoTemp.texFormat = TXF_RED; TexInfoTemp.texInterFormat = TXF_RED; break;
-		case 3: TexInfoTemp.texFormat = TXF_RGB; TexInfoTemp.texInterFormat = TXF_RGB; break;
-		case 4: TexInfoTemp.texFormat = TXF_RGBA; TexInfoTemp.texInterFormat = TXF_RGBA8; break;
-		default: NWL_ERR("Unsupported format!"); break;
-		}
-		TexInfoTemp.FilterMag = TexInfoTemp.FilterMin = TXF_NEAREST;
-		TexInfoTemp.texFormat = TexInfoTemp.texInterFormat = TXF_RGBA;
-		TexInfoTemp.WrapTypeS = TexInfoTemp.WrapTypeT = TexInfoTemp.WrapTypeR = TXW_REPEAT;
-
-		SetInfo(TexInfoTemp);
-		SetInfo(ImgInfoTemp);
-		Remake();
-
-		return bSuccess;
-	}
-	// --==</ATexture3d>==--
-
-	ATexture1d* ATexture1d::Create(const char* strName) {
-		ATexture1d* pTex = nullptr;
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: pTex = GEngine::Get().NewT<Texture1dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-		return pTex;
-	}
-	void ATexture1d::Create(const char* strName, RefKeeper<ATexture1d>& rTex) {
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: rTex.MakeRef<Texture1dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-	}
-
-	ATexture2d* ATexture2d::Create(const char* strName) {
-		ATexture2d* pTex = nullptr;
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: pTex = GEngine::Get().NewT<Texture2dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-		return pTex;
-	}
-	void ATexture2d::Create(const char* strName, RefKeeper<ATexture2d>& rTex) {
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: rTex.MakeRef<Texture2dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-	}
-	ATexture3d* ATexture3d::Create(const char* strName) {
-		ATexture3d* pTex = nullptr;
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: pTex = GEngine::Get().NewT<Texture3dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-		return pTex;
-	}
-	void ATexture3d::Create(const char* strName, RefKeeper<ATexture3d>& rTex) {
-		switch (GEngine::Get().GetGApiType()) {
-	#if (GLIB_GAPI & GLIB_GAPI_OGL)
-		case GAPI_OPENGL: rTex.MakeRef<Texture3dOgl>(strName); break;
-	#endif	// GLIB_GAPI
-		default: break;
-		}
-	}
-}
 #endif	// GLIB_GAPI
 #if (GLIB_GAPI & GLIB_GAPI_OGL)
 #include <glad/glad.h>
 namespace GLIB
 {
-	// Texture1d
-	Texture1dOgl::Texture1dOgl(const char* strName) :
-		ATexture1d(strName) { }
-	Texture1dOgl::~Texture1dOgl() { }
-
+	Texture::Texture(const char* strName, TextureTypes texType) :
+		ADataRes(strName),
+		m_texType(texType), m_unRId(0), m_unTexSlot(0), m_bIsBound(false),
+		m_texInfo(TextureInfo()), m_imgInfo(ImageInfo())
+	{
+		ADataRes::AddDataRes<Texture>(this);
+	}
+	Texture::~Texture()
+	{
+		m_imgInfo.nWidth = -1;
+		Remake();
+		ADataRes::RmvDataRes<Texture>(GetId());
+	}
+	
 	// --setters
-	void Texture1dOgl::SetInfo(const TextureInfo& rTexInfo) {
+	void Texture::SetInfo(const TextureInfo& rTexInfo) {
 		m_texInfo = rTexInfo;
 	}
-	void Texture1dOgl::SetInfo(const ImageInfo& rImgInfo) {
-		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
+	void Texture::SetInfo(const ImageInfo& rImgInfo) {
+		if ((m_texType == TXT_1D || m_texType == TXT_2D || m_texType == TXT_3D) && (m_imgInfo.nWidth < 1)) { return; }
+		else if ((m_texType == TXT_2D || m_texType == TXT_3D) && (m_imgInfo.nWidth < 1 || m_imgInfo.nHeight < 1)) { return; }
+		else if ((m_texType == TXT_3D) && (m_imgInfo.nWidth < 1 || m_imgInfo.nHeight < 1 || m_imgInfo.nDepth < 1)) { return; }
 		m_imgInfo = rImgInfo;
 	}
-
-	// --==<Interface Methods>==--
-	void Texture1dOgl::Bind(UInt32 unTexSlot) {
+	// --==<core_methods>==--
+	void Texture::Bind(UInt32 unTexSlot) {
 		if (m_bIsBound) { return; }
 		m_unTexSlot = unTexSlot;
 		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_1D, m_unRId);
+		glBindTexture(m_texType, m_unRId);
 		m_bIsBound = true;
 	}
-	void Texture1dOgl::Unbind()
+	void Texture::Unbind()
 	{
 		if (!m_bIsBound) { return; }
 		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_1D, 0);
+		glBindTexture(m_texType, 0);
 		m_unTexSlot = 0;
 		m_bIsBound = false;
 	}
-	void Texture1dOgl::Remake()
+	void Texture::Remake()
 	{
+		Unbind();
 		if (m_unRId != 0) { glDeleteTextures(1, &m_unRId); m_unRId = 0; }
-		glCreateTextures(GL_TEXTURE_1D, 1, &m_unRId);
-
-		glBindTexture(GL_TEXTURE_1D, m_unRId);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-		glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
-			m_imgInfo.nWidth, 0,
-			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-		glTexSubImage1D(GL_TEXTURE_1D, 0,
-			0, m_imgInfo.nWidth,
-			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-		glGenerateMipmap(GL_TEXTURE_1D);
-		glBindTexture(GL_TEXTURE_1D, 0);
-	}
-	// --==</core_methods>==--
-	// Texture2d
-	Texture2dOgl::Texture2dOgl(const char* strName) :
-		ATexture2d(strName) { }
-	Texture2dOgl::~Texture2dOgl() { }
-
-	// --setters
-	void Texture2dOgl::SetInfo(const TextureInfo& rTexInfo) {
-		m_texInfo = rTexInfo;
-	}
-	void Texture2dOgl::SetInfo(const ImageInfo& rImgInfo) {
-		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
-		m_imgInfo = rImgInfo;
-		SetSubTexs(GetSubTexs());
-	}
-
-	// --==<Interface Methods>==--
-	void Texture2dOgl::Bind(UInt32 unTexSlot) {
-		if (m_bIsBound) { return; }
-		m_unTexSlot = unTexSlot;
-		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_2D, m_unRId);
-		m_bIsBound = true;
-	}
-	void Texture2dOgl::Unbind() {
-		if (!m_bIsBound) { return; }
-		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		m_unTexSlot = 0;
-		m_bIsBound = false;
-	}
-	void Texture2dOgl::Remake()
-	{
-		OGL_CALL(
-		if (m_unRId != 0) { Unbind(); glDeleteTextures(1, &m_unRId); m_unRId = 0; }
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_unRId);
+		if (m_imgInfo.nWidth == -1) { return; }
 		
-		glBindTexture(GL_TEXTURE_2D, m_unRId);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
-		glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
-			m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
-			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-		if (m_texInfo.bGenSubImage) {
-			glTexSubImage2D(GL_TEXTURE_2D, 0,
-				0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
-				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+		glCreateTextures(m_texType, 1, &m_unRId);
+		Bind();
+		switch (m_texType) {
+		case TXT_1D:
+			if (m_texInfo.unSamples == 1) {
+				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+				glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, 0,
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				if (m_texInfo.bGenSubImage) {
+					glTexSubImage1D(GL_TEXTURE_1D, 0,
+						0, m_imgInfo.nWidth,
+						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				}
+				break;
+			}
+			else if (m_texInfo.unSamples > 1) {
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_texInfo.unSamples, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, m_imgInfo.nHeight, 0);
+			}
+			else { NWL_ERR("Impossible multisample value!"); }
+		case TXT_2D:
+			if (m_texInfo.unSamples == 1) {
+				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+				glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				if (m_texInfo.bGenSubImage) {
+					glTexSubImage2D(GL_TEXTURE_2D, 0,
+						0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
+						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				}
+				break;
+			}
+			else if (m_texInfo.unSamples > 1) {
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_texInfo.unSamples, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, m_imgInfo.nHeight, 0);
+			}
+			else { NWL_ERR("Impossible multisample value!"); }
+		case TXT_3D:
+			if (m_texInfo.unSamples == 1) {
+				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
+				glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				if (m_texInfo.bGenSubImage) {
+					glTexSubImage3D(GL_TEXTURE_3D, 0,
+						0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
+						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				}
+				break;
+			}
+			else if (m_texInfo.unSamples > 1) {
+				glTexImage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, m_texInfo.unSamples, m_texInfo.texInterFormat,
+					m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0);
+			}
+			else { NWL_ERR("Impossible multisample value!"); }
+		default: NWL_ERR("Undefined texture type"); break;
 		}
-		if (m_texInfo.bGenMipmap) { glGenerateMipmap(GL_TEXTURE_2D); }
-		glBindTexture(GL_TEXTURE_2D, 0);
-		)
+
+		if (m_texInfo.bGenMipmap) { glGenerateMipmap(m_texType); }
+
+		Unbind();
 	}
+	Texture* Texture::Create(const char* strName, TextureTypes texType) { return GEngine::Get().NewT<Texture>(strName, texType); }
+	void Texture::Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex) { rTex.MakeRef<Texture>(strName, texType); }
 	// --==</core_methods>==--
 	
-	// Texture3d
-	Texture3dOgl::Texture3dOgl(const char* strName) :
-		ATexture3d(strName) { }
-	Texture3dOgl::~Texture3dOgl() { }
+	// --==<data_methods>==--
+	bool Texture::SaveF(const char* strFPath) { return true; }
+	bool Texture::LoadF(const char* strFPath)
+	{
+		String strFile("");
+		Size szBytes = 0;
+		bool bSuccess = true;
+		UByte s_texErr[4 * 4] = {
+			0,	255,	0,		255,
+			0,	0,		255,	255,
+			0,	0,		255,	255,
+			0,	255,	0,		255
+		};
 
-	// --setters
-	void Texture3dOgl::SetInfo(const TextureInfo& rTexInfo) {
-		m_texInfo = rTexInfo;
-	}
-	void Texture3dOgl::SetInfo(const ImageInfo& rImgInfo) {
-		if (rImgInfo.nWidth < 1 || rImgInfo.nHeight < 1 || rImgInfo.nChannels < 1) { return; }
-		m_imgInfo = rImgInfo;
-	}
+		ImageInfo imgInfo;
+		TextureInfo texInfo;
 
-	// --==<Interface Methods>==--
-	void Texture3dOgl::Bind(UInt32 unTexSlot)
-	{
-		if (m_bIsBound) { return; }
-		m_unTexSlot = unTexSlot;
-		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_3D, m_unRId);
-		m_bIsBound = true;
+		imgInfo.ClrData = stbi_load(strFPath, &imgInfo.nWidth, &imgInfo.nHeight, &imgInfo.nChannels, 0);
+		if (imgInfo.ClrData == nullptr) { bSuccess = false; }
+		switch (imgInfo.nChannels) {
+		case 1: texInfo.texFormat = TXF_RED; texInfo.texInterFormat = TXFI_RED_UINT32; break;
+		case 3: texInfo.texFormat = TXF_RGB; texInfo.texInterFormat = TXFI_RGB; break;
+		case 4: texInfo.texFormat = TXF_RGBA; texInfo.texInterFormat = TXFI_RGBA8; break;
+		default: NWL_ERR("Unsupported format!"); bSuccess = false; break;
+		}
+		if (!bSuccess) {
+			imgInfo.nWidth = imgInfo.nHeight = imgInfo.nDepth = 1;
+			imgInfo.nChannels = 4;
+			imgInfo.ClrData = s_texErr;
+			texInfo.texFormat = TXF_RGBA; texInfo.texInterFormat = TXFI_RGBA8;
+			texInfo.FilterMag = texInfo.FilterMin = TXF_NEAREST;
+			texInfo.WrapTypeS = texInfo.WrapTypeT = texInfo.WrapTypeR = TXW_REPEAT;
+		}
+
+		SetInfo(texInfo);
+		SetInfo(imgInfo);
+		Remake();
+		if (bSuccess) { stbi_image_free(imgInfo.ClrData); }
+
+		return bSuccess;
 	}
-	void Texture3dOgl::Unbind()
-	{
-		if (!m_bIsBound) { return; }
-		glActiveTexture(GL_TEXTURE0 + m_unTexSlot);
-		glBindTexture(GL_TEXTURE_3D, 0);
-		m_unTexSlot = 0;
-		m_bIsBound = false;
-	}
-	void Texture3dOgl::Remake()
-	{
-		if (m_unRId != 0) { glDeleteTextures(1, &m_unRId); m_unRId = 0; }
-		glCreateTextures(GL_TEXTURE_3D, 1, &m_unRId);
-		
-		glBindTexture(GL_TEXTURE_2D, m_unRId);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-		glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
-		glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
-		glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
-			m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
-			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-		glTexSubImage3D(GL_TEXTURE_3D, 0,
-			0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
-			m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-		glGenerateMipmap(GL_TEXTURE_3D);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	// --==</core_methods>==--
+	// --==</data_methods>==--
+	// --==</Texture>==--
 }
 #endif // GLIB_GAPI

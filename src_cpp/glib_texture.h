@@ -10,11 +10,10 @@ namespace GLIB
 	/// SubTexture1d struct
 	struct GLIB_API SubTexture1d
 	{
-		friend class ATexture1d;
 	public:
 		Int32 nTexCrd = 0;
 		Int32 nTexSize = 1;
-		ATexture1d* pOverTex = nullptr;
+		Texture* pOverTex = nullptr;
 	public:
 		// --getters
 		inline float GetTexCoord_0_1() const {
@@ -29,11 +28,10 @@ namespace GLIB
 	/// SubTexture2d struct
 	struct GLIB_API SubTexture2d
 	{
-		friend class ATexture2d;
 	public:
 		V2i xyTexCrd = { 0, 0 };
 		V2i whTexSize = { 1, 1 };
-		ATexture2d* pOverTex = nullptr;
+		Texture* pOverTex = nullptr;
 		V2i whOverTexSize = { 0, 0 };
 	public:
 		// --getters
@@ -50,11 +48,10 @@ namespace GLIB
 	/// SubTexture3d struct
 	struct GLIB_API SubTexture3d
 	{
-		friend class ATexture3d;
 	public:
 		V3i xyzTexCrd = { 0, 0, 0 };
 		V3i whdTexSize = { 1, 1, 1 };
-		ATexture3d* pOverTex = nullptr;
+		Texture* pOverTex = nullptr;
 	public:
 		// --getters
 		inline V3f GetTexCoord_0_1() const {
@@ -89,21 +86,26 @@ namespace GLIB
 	public:
 		TextureWraps WrapTypeS = TXW_REPEAT, WrapTypeT = TXW_REPEAT, WrapTypeR = TXW_REPEAT;
 		TextureFilters FilterMin = TXF_NEAREST, FilterMag = TXF_NEAREST;
-		TextureFormats texFormat = TXF_RGBA, texInterFormat = TXF_RGBA;
+		TextureFormats texFormat = TXF_RGBA;
+		TextureInterFormats texInterFormat = TXFI_RGBA8;
 		PixelFormats pxFormat = PXF_UINT8;
 		Bit bGenMipmap = true;
 		Bit bGenSubImage = true;
+		UInt32 unSamples = 1;
 	};
-	/// Abstract Texture class
+}
+namespace GLIB
+{
+	/// Texture class
 	/// Description:
 	/// -> Set props and data -> LoadData -> MakeTexture -> Bind drawing stuff
 	/// -> Enable -> Draw -> Disable
 	/// --It's a wrapping image which has to wrap a mesh
-	class GLIB_API ATexture : public ADataRes
+	class GLIB_API Texture : public ADataRes
 	{
 	public:
-		ATexture(const char* strName);
-		virtual ~ATexture();
+		Texture(const char* strName, TextureTypes texTypes);
+		~Texture();
 
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
@@ -111,157 +113,28 @@ namespace GLIB
 		inline const TextureInfo& GetTexInfo() const { return m_texInfo; }
 		inline const ImageInfo& GetImgInfo() const { return m_imgInfo; }
 		// --setters
-		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
-		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
+		void SetInfo(const TextureInfo& rTexInfo);
+		void SetInfo(const ImageInfo& rImgInfo);
 		// --predicates
 		inline Bit IsBound() const { return m_bIsBound; }
 
 		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) = 0;
-		virtual void Unbind() = 0;
-		virtual void Remake() = 0;
+		void Bind(UInt32 unTexSlot = 0);
+		void Unbind();
+		void Remake();
+		static Texture* Create(const char* strName, TextureTypes texType);
+		static void Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex);
 		// --data_methods
-		virtual bool SaveF(const char* strFPath) override { return true; }
-		virtual bool LoadF(const char* strFPath) override { return true; }
-	protected:
-		mutable Bit m_bIsBound;
+		virtual bool SaveF(const char* strFPath) override;
+		virtual bool LoadF(const char* strFPath) override;
+	private:
+		TextureTypes m_texType;
 		UInt32 m_unRId;
+		mutable Bit m_bIsBound;
 		UInt32 m_unTexSlot;
 		TextureInfo m_texInfo;
 		ImageInfo m_imgInfo;
-	protected:
-		static UByte s_ClearColorData[4];
-	};
-	/// Abstract Texture1d class
-	class GLIB_API ATexture1d : public ATexture
-	{
-	public:
-		ATexture1d(const char* strName);
-		virtual ~ATexture1d();
-
-		// --getters
-		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
-		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
-
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) = 0;
-		virtual void Unbind() = 0;
-		virtual void Remake() = 0;
-		// --data_methods
-		virtual bool SaveF(const char* strFPath) override;
-		virtual bool LoadF(const char* strFPath) override;
-
-		static ATexture1d* Create(const char* strName);
-		static void Create(const char* strName, RefKeeper<ATexture1d>& rTex);
-	};
-	/// Abstract Texture2d class
-	class GLIB_API ATexture2d : public ATexture
-	{
-	public:
-		ATexture2d(const char* strName);
-		virtual ~ATexture2d();
-
-		// --getters
-		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
-		inline UInt32 GetHeight() const { return m_imgInfo.nHeight; }
-		inline const DArray<SubTexture2d>& GetSubTexs() const { return m_SubTexs; }
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
-		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
-		void SetSubTexs(const DArray<SubTexture2d>& rSubTexs);
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) = 0;
-		virtual void Unbind() = 0;
-		virtual void Remake() = 0;
-		// --data_methods
-		virtual bool SaveF(const char* strFPath) override;
-		virtual bool LoadF(const char* strFPath) override;
-		static ATexture2d* Create(const char* strName);
-		static void Create(const char* strName, RefKeeper<ATexture2d>& rTex);
-	private:
-		DArray<SubTexture2d> m_SubTexs;
-	};
-	/// Abstract Texture3d class
-	class GLIB_API ATexture3d : public ATexture
-	{
-	public:
-		ATexture3d(const char* strName);
-		virtual ~ATexture3d();
-
-		// --getters
-		inline UInt32 GetWidth() const { return m_imgInfo.nWidth; }
-		inline UInt32 GetHeight() const { return m_imgInfo.nHeight; }
-		inline UInt32 GetDepth() const { return m_imgInfo.nDepth; }
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexInfo) = 0;
-		virtual void SetInfo(const ImageInfo& rImgInfo) = 0;
-
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot) = 0;
-		virtual void Unbind() = 0;
-		virtual void Remake() = 0;
-		// --data_methods
-		virtual bool SaveF(const char* strFPath) override;
-		virtual bool LoadF(const char* strFPath) override;
-
-		static ATexture3d* Create(const char* strName);
-		static void Create(const char* strName, RefKeeper<ATexture3d>& rTex);
 	};
 }
 #endif	// GLIB_GAPI
-#if (GLIB_GAPI & GLIB_GAPI_OGL)
-namespace GLIB
-{
-	/// Texture1dOgl Class
-	class GLIB_API Texture1dOgl : public ATexture1d
-	{
-	public:
-		Texture1dOgl(const char* strName);
-		~Texture1dOgl();
-
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexImfo) override;
-		virtual void SetInfo(const ImageInfo& rImgInfo) override;
-
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) override;
-		virtual void Unbind() override;
-		virtual void Remake() override;
-	};
-	/// Texture2dOgl Class
-	class GLIB_API Texture2dOgl : public ATexture2d
-	{
-	public:
-		Texture2dOgl(const char* strName);
-		~Texture2dOgl();
-
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexImfo) override;
-		virtual void SetInfo(const ImageInfo& rImgInfo) override;
-
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) override;
-		virtual void Unbind() override;
-		virtual void Remake() override;
-	};
-	/// Texture3dOgl Class
-	class GLIB_API Texture3dOgl : public ATexture3d
-	{
-	public:
-		Texture3dOgl(const char* strName);
-		~Texture3dOgl();
-
-		// --setters
-		virtual void SetInfo(const TextureInfo& rTexImfo) override;
-		virtual void SetInfo(const ImageInfo& rImgInfo) override;
-
-		// --core_methods
-		virtual void Bind(UInt32 unTexSlot = 0) override;
-		virtual void Unbind() override;
-		virtual void Remake() override;
-	};
-}
-#endif // GLIB_GAPI
 #endif // GLIB_ATEXTURE_H

@@ -10,18 +10,18 @@ namespace GLIB
 	class GLIB_API GMaterial : public ADataRes
 	{
 	public:
-		using Textures = HashMap<String, ATexture*>;
+		using Textures = HashMap<String, Texture*>;
 		using Colors = HashMap<String, V4f>;
 	public:
 		GMaterial(const char* strName);
 		virtual ~GMaterial();
 
 		// --getters
-		inline AShader* GetShader() { return m_pShader; }
+		inline Shader* GetShader() { return m_pShader; }
 		inline UInt8 GetTexCount() { return m_Textures.size(); }
 		inline Textures& GetTextures() { return m_Textures; }
 		inline Colors& GetColors() { return m_Colors; }
-		inline ATexture* GetTexture(const char* strType = "") {
+		inline Texture* GetTexture(const char* strType = "") {
 			if (strcmp(strType, "") == 0) { return m_Textures.begin()->second; }
 			auto itTex = m_Textures.find(&strType[0]);
 			return itTex == m_Textures.end() ? nullptr : itTex->second;
@@ -32,8 +32,8 @@ namespace GLIB
 			return itClr == m_Colors.end() ? nullptr : &itClr->second;
 		}
 		// --setters
-		void SetShader(AShader* pShader);
-		void SetTexture(ATexture* pTex, const char* strType = "");
+		void SetShader(Shader* pShader);
+		void SetTexture(Texture* pTex, const char* strType = "");
 		void SetColor(const V4f& rgbaClr, const char* strType = "");
 		// --core_methods
 		void Enable();
@@ -43,7 +43,7 @@ namespace GLIB
 		virtual bool LoadF(const char* strFPath) override;
 	private:
 		String m_strName;
-		AShader* m_pShader;
+		Shader* m_pShader;
 		Textures m_Textures;
 		Colors m_Colors;
 	};

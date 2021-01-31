@@ -6,25 +6,107 @@
 
 namespace GLIB
 {
-	/// GEngine singleton class
+	struct GLIB_API GEngineConfig {
+		struct {
+			struct {
+				DrawModes dMode = DM_FILL;
+				FacePlanes facePlane = FP_FRONT_AND_BACK;
+			} PolyMode;
+			Float32 nLineWidth = 0.5f;
+			Float32 nPixelSize = 0.5f;
+		} General;
+		struct {
+			Bit bEnable = false;
+			BlendConfigs FactorSrc = BC_SRC_ALPHA;
+			BlendConfigs FactorDest = BC_ONE_MINUS_SRC_ALPHA;
+		} Blending;
+		struct {
+			Bit bEnable = false;
+			DepthConfigs Func = DC_GREATER;
+		} DepthTest;
+	public:
+		inline void Reset() {
+			General.PolyMode.dMode = DM_FILL;
+			General.PolyMode.facePlane = FP_FRONT_AND_BACK;
+
+			General.nLineWidth = 0.5f;
+			General.nPixelSize = 0.5f;
+
+			Blending.bEnable = false;
+			Blending.FactorSrc = BC_SRC_ALPHA;
+			Blending.FactorDest = BC_ONE_MINUS_SRC_ALPHA;
+
+			DepthTest.bEnable = false;
+			DepthTest.Func = DC_GREATER;
+		}
+	};
+	/// GraphicsEngineInfo struct
+	struct GLIB_API GEngineInfo
+	{
+	public:
+		Char strRenderer[256], strVersion[256], strVendor[256], strShdLang[256];
+		Int32 nMaxVertexAttribs = 0;
+		Int32 nActiveTextureId = 0;
+		Int32 nMaxTextures = 0;
+		// --counters
+		Size szVtx = 0;
+		Size unVtx = 0;
+		Size szIdx = 0;
+		Size unIdx = 0;
+		Size szShd = 0;
+		UInt32 unTex = 0;
+		// --drawing
+		UInt16 unDrawCalls = 0;
+	public:
+		GEngineInfo() : strRenderer("none"), strVersion("none"), strVendor("none"), strShdLang("none") {}
+		// --setters
+		inline void Reset() {
+			szVtx = szIdx = szShd = 0;
+			unVtx = unIdx = unTex = 0;
+			unDrawCalls = 0;
+		}
+		// --operators
+		inline OutStream& operator<<(OutStream& rStream);
+	};
+	inline OutStream& GEngineInfo::operator<<(OutStream& rStream) {
+		rStream << "GRAPHICS_ENGINE_INFO:" << std::endl <<
+			"========" << std::endl <<
+			"graphics context: " << &strVersion[0] << std::endl <<
+			"renderer: " << &strRenderer[0] << std::endl <<
+			"version: " << &strVersion[0] << std::endl <<
+			"vendor: " << &strVendor[0] << std::endl <<
+			"shading language: " << &strShdLang[0] << std::endl <<
+			"========" << std::endl;
+		return rStream;
+	}
+	inline OutStream& operator<<(OutStream& rStream, GEngineInfo& rgInfo) { return rgInfo.operator<<(rStream); }
+}
+namespace GLIB
+{
+	/// GraphicsEngine class
+	/// -- Depending on the specification during the build
 	class GLIB_API GEngine : public ASingleton<GEngine>
 	{
 	public:
-		friend class ASingleton<GEngine>;
-	private:
 		GEngine();
-	public:
 		~GEngine();
 		
 		// --getters
 		inline AMemAllocator& GetMemory() { return m_Memory; }
 		inline Thread& GetRunThread() { return m_thrRun; }
 		
-		inline AGApi* GetGApi() { return m_pGApi.GetRef(); }
-		inline GApiTypes GetGApiType() { return m_gapiType; }
-		const DrawerInfo& GetInfo() { return m_DInfo; }
+		const GEngineInfo& GetInfo() const { return m_Info; }
+		const GEngineConfig& GetConfigs() { return m_Config; }
 
 		// --setters
+		void SetModes(Bit bEnable, ProcessingModes pm);
+		void SetViewport(Int32 nX, Int32 nY, Int32 nWidth, Int32 nHeight);
+		void SetDrawMode(DrawModes dMode, FacePlanes facePlane);
+		void SetLineWidth(Float32 nLineWidth);
+		void SetPixelSize(Float32 nPxSize);
+		void SetBlendFunc(BlendConfigs factorSrc, BlendConfigs factorDest);
+		void SetDepthFunc(DepthConfigs funcId);
+		void SetStencilFunc(StencilConfigs funcId, UInt32 unRefValue, UInt8 unBitMask);
 		// --predicates
 		Bit IsRunning() { return m_bIsRunning; }
 
@@ -33,11 +115,6 @@ namespace GLIB
 		bool Init();
 		void Quit();
 		void Update();
-		// --data_methods
-		bool SaveFImage(const char* strFPath, ImageInfo* pImgInfo);
-		bool LoadFImage(const char* strFPath, ImageInfo* pImgInfo);
-		bool SaveFShaderCode(const char* strFPath, AShader* pShader);
-		bool LoadFShaderCode(const char* strFPath, AShader* pShader);
 		// --memory_methods
 		template <typename MType, typename...Args>
 		inline MType* NewT(Args...Arguments) { return NWL::NewT<MType>(GetMemory(), Arguments...); }
@@ -47,16 +124,15 @@ namespace GLIB
 		inline void DelT(MType* pBlock) { NWL::DelT<MType>(GetMemory(), pBlock); }
 		template <typename MType>
 		inline void DelTArr(MType* pBlock, UInt64 unDealloc) { NWL::DelTArr<MType>(GetMemory(), pBlock, unDealloc); }
+		// --drawing_methods
+		void OnDraw(VertexArr& rVtxArray, GMaterial& rGMtl);
 	private:
 		Bit m_bIsRunning;
 		Thread m_thrRun;
 		MemArena m_Memory;
 
-		RefOwner<AGApi> m_pGApi;
-		GMaterial* m_pGMtlScreen;
-
-		DrawerInfo m_DInfo;
-		GApiTypes m_gapiType;
+		GEngineInfo m_Info;
+		GEngineConfig m_Config;
 	};
 }
 

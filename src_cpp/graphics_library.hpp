@@ -3,7 +3,6 @@
 
 #include <glib_core.hpp>
 
-#include <glib_api.h>
 #include <glib_engine.h>
 #include <glib_state.h>
 

@@ -32,19 +32,19 @@ void main()
 #shader_type pixel
 #version 400 core
 
-out vec4 ps_pxClr;
+layout (location = 0) out vec4 ps_pxClr0;
 
 in VS_OUT{
 	vec4 vtxClr;
 	vec2 texCrd;
 	float texSlot;
-}vs_in;
+} vs_in;
 
 uniform vec4 unf_albedoClr;
 uniform sampler2D unf_tex[7];
 
 void main()
 {
-	ps_pxClr = vec4(texture(unf_tex[int(vs_in.texSlot)], vs_in.texCrd).rgba *
+	ps_pxClr0 = vec4(texture(unf_tex[int(vs_in.texSlot)], vs_in.texCrd).rgba *
 	vs_in.vtxClr * unf_albedoClr);
 }

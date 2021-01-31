@@ -19,7 +19,7 @@
 #define GLIB_WAPI GLIB_WAPI_GLFW
 // --graphics_api_choice
 #define GLIB_GAPI_OGL		1 << 1
-#define GLIB_GAPI GLIB_GAPI_OGL
+#define GLIB_GAPI			GLIB_GAPI_OGL
 // --==</configurations>==--
 
 // --debug_macro
@@ -57,28 +57,6 @@ namespace GLIB
 
 #ifndef GLIB_DECL_HPP
 #define GLIB_DECL_HPP
-// --==<alias>==--
-#if (GLIB_GAPI & GLIB_GAPI_OGL)
-typedef void GLvoid;
-typedef char GLchar;
-typedef signed char GLbyte;
-typedef unsigned char GLubyte;
-typedef unsigned char GLboolean;
-typedef short GLshort;
-typedef int GLint;
-typedef int GLsizei;
-typedef unsigned int GLuint;
-typedef unsigned int GLbitfield;
-typedef unsigned short GLushort;
-typedef unsigned long GLulong;
-typedef unsigned int GLenum;
-typedef float GLfloat;
-typedef float GLclampf;
-typedef double GLdouble;
-typedef double GLclampd;
-#endif // GLIB_GAPI
-// --==</alias>==--
-
 #if (GLIB_GAPI & GLIB_GAPI_OGL)
 // --==<data_types_ogl>==--
 #define GL_BOOL								0x8B56
@@ -181,12 +159,12 @@ typedef double GLclampd;
 // --==<shaders_ogl>==--
 
 // --==<shaders_glib>==--
-#define GLIB_SHADER				GL_PROGRAM
-#define GLIB_SHADER_VERTEX		GL_VERTEX_SHADER
+#define GLIB_SHADER					GL_PROGRAM
+#define GLIB_SHADER_VERTEX			GL_VERTEX_SHADER
 #define GLIB_SHADER_GEOMETRY		GL_GEOMETRY_SHADER
 #define GLIB_SHADER_PIXEL			GL_FRAGMENT_SHADER
 
-#define GLIB_COMPILE_STATUS		GL_COMPILE_STATUS
+#define GLIB_COMPILE_STATUS			GL_COMPILE_STATUS
 #define GLIB_LINK_STATUS			GL_LINK_STATUS
 // --==</shaders_glib>==--
 
@@ -227,7 +205,7 @@ typedef double GLclampd;
 // --==</configurations_ogl>==--
 
 // --==<configurations_glib>==--
-#define GLIB_SRC_COLOR GL_SRC_COLOR
+#define GLIB_SRC_COLOR				GL_SRC_COLOR
 #define GLIB_ONE_MINUS_SRC_COLOR	GL_ONE_MINUS_SRC_COLOR
 #define GLIB_SRC_ALPHA				GL_SRC_ALPHA
 #define GLIB_ONE_MINUS_SRC_ALPHA	GL_ONE_MINUS_SRC_ALPHA
@@ -240,21 +218,21 @@ typedef double GLclampd;
 #define GLIB_LINE_SMOOTH			GL_LINE_SMOOTH
 #define GLIB_LINE_WIDTH				GL_LINE_WIDTH
 
-#define GLIB_CULL_FACE		GL_CULL_FACE
-#define GLIB_CULL_FACE_MODE	GL_CULL_FACE_MODE
-#define GLIB_FRONT_FACE		GL_FRONT_FACE
-#define GLIB_CW				GL_CW
+#define GLIB_CULL_FACE			GL_CULL_FACE
+#define GLIB_CULL_FACE_MODE		GL_CULL_FACE_MODE
+#define GLIB_FRONT_FACE			GL_FRONT_FACE
+#define GLIB_CW					GL_CW
 #define GLIB_CCW				GL_CCW
 
-#define GLIB_DEPTH_TEST		GL_DEPTH_TEST
-#define GLIB_DEPTH_FUNC		GL_DEPTH_FUNC
+#define GLIB_DEPTH_TEST			GL_DEPTH_TEST
+#define GLIB_DEPTH_FUNC			GL_DEPTH_FUNC
 
 #define GLIB_STENCIL_TEST		GL_STENCIL_TEST
 #define GLIB_STENCIL_FUNC		GL_STENCIL_FUNC
 
-#define GLIB_BLEND_DST		GL_BLEND_DST
-#define GLIB_BLEND_SRC		GL_BLEND_SRC
-#define GLIB_BLEND			GL_BLEND
+#define GLIB_BLEND_DST			GL_BLEND_DST
+#define GLIB_BLEND_SRC			GL_BLEND_SRC
+#define GLIB_BLEND				GL_BLEND
 
 #define GLIB_KEEP				 GL_KEEP		
 #define GLIB_REPLACE			 GL_REPLACE	
@@ -327,41 +305,61 @@ typedef double GLclampd;
 // --==</expressions_glib>==--
 
 // --==<pixel_formats_ogl>==--
-#define GL_COLOR 0x1800
 #define GL_RED 0x1903
 #define GL_GREEN 0x1904
 #define GL_BLUE 0x1905
 #define GL_ALPHA 0x1906
 #define GL_RGB 0x1907
 #define GL_RGBA 0x1908
+#define GL_RED_INTEGER 0x8D94
+#define GL_GREEN_INTEGER 0x8D95
+#define GL_BLUE_INTEGER 0x8D96
+#define GL_RGB_INTEGER 0x8D98
+#define GL_RGBA_INTEGER 0x8D99
+#define GL_R8UI 0x8232
+#define GL_R16I 0x8233
+#define GL_R16UI 0x8234
+#define GL_R32I 0x8235
+#define GL_R32UI 0x8236
+#define GL_RG8I 0x8237
 #define GL_RGBA8 0x8058
+#define GL_DEPTH 0x1801
+#define GL_STENCIL 0x1802
+#define GL_DEPTH24_STENCIL8 0x88F0
 // --==</pixel_formats_ogl>==--
 
 // --==<pixel_formats_glib>==--
-#define GLIB_COLOR		GL_COLOR
-#define GLIB_RED		GL_RED
-#define GLIB_GREEN		GL_GREEN
-#define GLIB_BLUE		GL_BLUE
-#define GLIB_ALPHA		GL_ALPHA
-#define GLIB_RGB		GL_RGB
-#define GLIB_RGBA		GL_RGBA
-#define GLIB_RGBA8		GL_RGBA8
+#define GLIB_RED				GL_RED
+#define GLIB_GREEN				GL_GREEN
+#define GLIB_BLUE				GL_BLUE
+#define GLIB_ALPHA				GL_ALPHA
+#define GLIB_RGB				GL_RGB
+#define GLIB_RGBA				GL_RGBA
+#define GLIB_RED_INT			GL_RED_INTEGER
+#define GLIB_GREEN_INT			GL_GREEN_INTEGER
+#define GLIB_BLUE_INT			GL_BLUE_INTEGER
+#define GLIB_RGB_INT			GL_RGB_INTEGER
+#define GLIB_RGBA_INT			GL_RGBA_INTEGER
+#define GLIB_DEPTH				GL_DEPTH
+#define GLIB_STENCIL			GL_STENCIL
+#define GLIB_RED_INT32			GL_R32I
+#define GLIB_RED_UINT32			GL_R32UI
+#define GLIB_RGBA8				GL_RGBA8
+#define GLIB_DEPTH24			GL_DEPTH
+#define GLIB_STENCIL8			GL_STENCIL
+#define GLIB_DEPTH24_STENCIL8	GL_DEPTH24_STENCIL8
 // --==</pixel_formats_glib>==--
 
 // --==<textures_ogl>==--
-// --types
 #define GL_TEXTURE_1D 0x0DE0
 #define GL_TEXTURE_2D 0x0DE1
 #define GL_TEXTURE_3D 0x0DE2
 #define GL_DEPTH_STENCIL 0x84F9
-#define GL_DEPTH24_STENCIL8 0x88F0
 #define GL_DEPTH_STENCIL_ATTACHMENT 0x821A
-// --filters
 #define GL_TEXTURE_MAG_FILTER 0x2800
 #define GL_TEXTURE_MIN_FILTER 0x2801
 #define GL_NEAREST 0x2600
 #define GL_LINEAR 0x2601
-// --wrappers
 #define GL_TEXTURE_WRAP_S 0x2802
 #define GL_TEXTURE_WRAP_T 0x2803
 #define GL_TEXTURE_WRAP_R 0x8072
@@ -375,7 +373,6 @@ typedef double GLclampd;
 #define GLIB_TEXTURE_2D					GL_TEXTURE_2D
 #define GLIB_TEXTURE_3D					GL_TEXTURE_3D
 #define GLIB_DEPTH_STENCIL				GL_DEPTH_STENCIL
-#define GLIB_DEPTH24_STENCIL8			GL_DEPTH24_STENCIL8
 #define GLIB_DEPTH_STENCIL_ATTACHMENT	GL_DEPTH_STENCIL_ATTACHMENT
 // --filters
 #define GLIB_TEXTURE_MAG_FILTER			GL_TEXTURE_MAG_FILTER
@@ -397,23 +394,22 @@ typedef double GLclampd;
 // --==</gbuffers_ogl>==--
 
 // --==<buffers_ogl>==--
-#define GL_COLOR_BUFFER_BIT					0x00004000
-#define GL_DEPTH_BUFFER_BIT					0x00000100
-#define GL_ACCUM_BUFFER_BIT					0x00000200
-#define GL_STENCIL_BUFFER_BIT				0x00000400
+#define GL_COLOR_BUFFER_BIT		0x00004000
+#define GL_DEPTH_BUFFER_BIT		0x00000100
+#define GL_ACCUM_BUFFER_BIT		0x00000200
+#define GL_STENCIL_BUFFER_BIT	0x00000400
 // --==</buffers_ogl>==--
 
-
 // --==<gbuffers_glib>==--
-#define GLIB_GBUFFER_VERTEX GL_ARRAY_BUFFER
-#define GLIB_GBUFFER_INDEX GL_ELEMENT_ARRAY_BUFFER
-#define GLIB_GBUFFER_SHADER GL_UNIFORM_BUFFER
+#define GLIB_GBUFFER_VERTEX		GL_ARRAY_BUFFER
+#define GLIB_GBUFFER_INDEX		GL_ELEMENT_ARRAY_BUFFER
+#define GLIB_GBUFFER_SHADER		GL_UNIFORM_BUFFER
 // --==</gbuffers_glib>==--
 
 // --==<framebuffers_glib>==--
 #define GLIB_BUFFER_COLOR_BIT					GL_COLOR_BUFFER_BIT
 #define GLIB_BUFFER_DEPTH_BIT					GL_DEPTH_BUFFER_BIT
-#define GLIB_BUFFER_STENCIL_BIT				GL_STENCIL_BUFFER_BIT
+#define GLIB_BUFFER_STENCIL_BIT					GL_STENCIL_BUFFER_BIT
 // --==</framebuffers_glib>==--
 
 // --==<data_load_types_ogl>==--
@@ -439,29 +435,13 @@ typedef double GLclampd;
 // --==</error_codes_ogl>==--
 
 // --==<error_codes_glib>==--
-#define GLIB_OK							GL_NO_ERROR         
-#define GLIB_INVALID_ENUM					GL_INVALID_ENUM     
-#define GLIB_INVALID_VALUE				GL_INVALID_VALUE    
-#define GLIB_INVALID_OPERATION			GL_INVALID_OPERATION
-#define GLIB_STACK_OVERFLOW				GL_STACK_OVERFLOW   
-#define GLIB_STACK_UNDERFLOW				GL_STACK_UNDERFLOW  
-#define GLIB_OUT_OF_MEMORY				GL_OUT_OF_MEMORY  
-
-#define GLIB_ERR_DATA_LOSS				0b1110'0000'0000
-
-#define GLIB_ERR_NO_SUPPORT				0b1110'0000'0001
-#define GLIB_ERR_NO_DATA					0b1110'0000'0001
-#define GLIB_ERR_NO_INIT					0b1110'0000'0010
-#define GLIB_ERR_NO_QUIT					0b1110'0000'0011
-#define GLIB_ERR_NO_STATE					0b1110'0000'0100
-
-#define GLIB_ERR_UNKNOWN_ID				0b1111'0000'0000
-
-#define GLIB_ERR_SHADER_INVALID_FORMAT	0b0011'0000'0000
-#define GLIB_ERR_SHADER_LOAD_PATH			0b1000'0000'0000
-#define GLIB_ERR_SHADER_LOAD_FAIL			0b1001'0000'0000
-#define GLIB_ERR_SHADER_LINK				0b1011'0000'0000
-#define GLIB_ERR_SHADER_COMPILE			0b1100'0000'0000
+#define GLIB_OK					GL_NO_ERROR         
+#define GLIB_INVALID_ENUM		GL_INVALID_ENUM     
+#define GLIB_INVALID_VALUE		GL_INVALID_VALUE    
+#define GLIB_INVALID_OPERATION	GL_INVALID_OPERATION
+#define GLIB_STACK_OVERFLOW		GL_STACK_OVERFLOW   
+#define GLIB_STACK_UNDERFLOW	GL_STACK_UNDERFLOW  
+#define GLIB_OUT_OF_MEMORY		GL_OUT_OF_MEMORY  
 // --==</error_codes_glib>==--
 
 // --==<info_ogl>==--
@@ -474,35 +454,24 @@ typedef double GLclampd;
 
 namespace GLIB
 {
-	class GLIB_API AGApi;
 	class GLIB_API GEngine;
-	class GLIB_API AGLayer;
+	class GLIB_API GLayer;
 	class GLIB_API GCameraLad;
 
-	class GLIB_API AShader;
+	class GLIB_API Shader;
 	class GLIB_API GMaterial;
 
-	class GLIB_API ATexture;
-	class GLIB_API ATexture1d;
-	class GLIB_API ATexture2d;
-	class GLIB_API ATexture3d;
+	class GLIB_API Texture;
 
-	class GLIB_API ADrawable;
-	class GLIB_API Particles;
-	class GLIB_API PolyLine;
-	class GLIB_API Polygons;
-	class GLIB_API Triangle;
-	class GLIB_API Rectangle;
-	class GLIB_API Mesh3d;
-
-	class GLIB_API AFrameBuf;
+	class GLIB_API FrameBuf;
 
 	class GLIB_API VertexBufLayout;
 	class GLIB_API ShaderBufLayout;
 
-	class GLIB_API AVertexBuf;
-	class GLIB_API AIndexBuf;
-	class GLIB_API AShaderBuf;
+	class GLIB_API VertexBuf;
+	class GLIB_API IndexBuf;
+	class GLIB_API ShaderBuf;
+	class GLIB_API VertexArr;
 }
 namespace GLIB
 {
@@ -522,9 +491,6 @@ namespace GLIB
 	struct GLIB_API SubTexture1d;
 	struct GLIB_API SubTexture2d;
 	struct GLIB_API SubTexture3d;
-
-	struct GLIB_API RenderAttribs;
-	struct GLIB_API RenderLayer;
 }
 namespace GLIB
 {
@@ -537,7 +503,7 @@ namespace GLIB
 		GAPI_NONE = 0,
 		GAPI_OPENGL = GLIB_GAPI_OGL
 	};
-	enum GraphicsBufTypes : UInt32 {
+	enum GBufferTypes : UInt32 {
 		GBT_VERTEX = GLIB_GBUFFER_VERTEX,
 		GBT_INDEX = GLIB_GBUFFER_INDEX,
 		GBT_SHADER = GLIB_GBUFFER_SHADER
@@ -545,14 +511,11 @@ namespace GLIB
 	/// Data that can be loaded in a shader
 	enum ShaderDataTypes : UInt32
 	{
-		SDT_NONE = GLIB_ERR_NO_DATA,
+		SDT_DEFAULT = 0,
 		SDT_BOOL = GLIB_BOOL, SDT_INT8 = GLIB_INT8, SDT_UINT8 = GLIB_UINT8,
 		SDT_INT16 = GLIB_INT16, SDT_UINT16 = GLIB_UINT16,
 		SDT_INT32 = GLIB_INT32, SDT_UINT32 = GLIB_UINT32,
 		SDT_FLOAT32 = GLIB_FLOAT32, SDT_FLOAT64 = GLIB_FLOAT64,
-
-		//SDT_FLOAT32_VEC2 = GLIB_FLOAT32_VEC2, SDT_FLOAT32_VEC3 = GLIB_FLOAT32_VEC3, SDT_FLOAT32_VEC4 = GLIB_FLOAT32_VEC4,
-		//SDT_FLOAT32_MAT2 = GLIB_FLOAT32_MAT2, SDT_FLOAT32_MAT3 = GLIB_FLOAT32_MAT3, SDT_FLOAT32_MAT4 = GLIB_FLOAT32_MAT4
 
 		SDT_SAMPLER = GLIB_SAMPLER_1D
 	};
@@ -582,33 +545,25 @@ namespace GLIB
 		PT_QUADS = GLIB_QUADS,
 		PT_QUADS_STRIP = GLIB_QUAD_STRIP
 	};
-	enum DrawModes : UInt32
-	{
+	enum DrawModes : UInt32 {
 		DM_LINE = GLIB_LINE,
 		DM_FILL = GLIB_FILL
 	};
-	enum FacePlanes : UInt32
-	{
+	enum FacePlanes : UInt32 {
 		FP_FRONT_AND_BACK = GLIB_FRONT_AND_BACK,
-		FP_FRONT = GLIB_FRONT,
-		FP_BACK = GLIB_BACK,
-		FP_RIGTH = GLIB_RIGHT,
-		FP_LEFT = GLIB_LEFT,
+		FP_BACK = GLIB_BACK, FP_FRONT = GLIB_FRONT,
+		FP_LEFT = GLIB_LEFT, FP_RIGTH = GLIB_RIGHT,
 	};
-	enum ProcModes : UInt32
-	{
+	enum ProcessingModes : UInt32 {
 		PM_BLEND = GLIB_BLEND,
 		PM_DEPTH_TEST = GLIB_DEPTH_TEST,
 		PM_STENCIL_TEST = GLIB_STENCIL_TEST
 	};
-	enum BlendConfigs : UInt32
-	{
-		BC_SRC_ALPHA = GLIB_SRC_ALPHA,
-		BC_SRC_COLOR = GLIB_SRC_COLOR,
+	enum BlendConfigs : UInt32 {
+		BC_SRC_ALPHA = GLIB_SRC_ALPHA, BC_SRC_COLOR = GLIB_SRC_COLOR,
 		BC_ONE_MINUS_SRC_ALPHA = GLIB_ONE_MINUS_SRC_ALPHA,
 		BC_ONE_MINUS_SRC_COLOR = GLIB_ONE_MINUS_SRC_COLOR,
-		BC_DST_ALPHA = GLIB_DST_ALPHA,
-		BC_DST_COLOR = GLIB_DST_COLOR,
+		BC_DST_ALPHA = GLIB_DST_ALPHA, BC_DST_COLOR = GLIB_DST_COLOR,
 		BC_ONE_MUNUS_DST_ALPHA = GLIB_ONE_MINUS_DST_ALPHA,
 		BC_ONE_MINUS_DST_COLOR = GLIB_ONE_MINUS_DST_COLOR,
 	};
@@ -635,47 +590,29 @@ namespace GLIB
 	enum TextureFormats : UInt32 {
 		TXF_NONE = 0,
 		TXF_RED = GLIB_RED, TXF_GREEN = GLIB_GREEN, TXF_BLUE = GLIB_BLUE,
-		TXF_RGB = GLIB_RGB, TXF_RGBA = GLIB_RGBA, TXF_RGBA8 = GLIB_RGBA8,
+		TXF_RGB = GLIB_RGB, TXF_RGBA = GLIB_RGBA,
+		TXF_RED_INT = GLIB_RED_INT, TXF_GREEN_INT = GLIB_GREEN_INT, TXF_BLUE_INT = GLIB_BLUE_INT,
+		TXF_RGB_INT = GLIB_RGB_INT, TXF_RGBA_INT = GLIB_RGBA_INT,
+		TXF_DEPTH = GLIB_DEPTH, TXF_STENCIL = GLIB_STENCIL,
 		TXF_DEPTH_STENCIL = GLIB_DEPTH_STENCIL,
-		TXF_DEPTH24_STENCIL8 = GLIB_DEPTH24_STENCIL8,
+	};
+	enum TextureInterFormats : UInt32 {
+		TXFI_RED_UINT32 = GLIB_RED_UINT32, TXFI_RED_INT32 = GLIB_RED_INT32,
+		TXFI_RGB = GLIB_RGB, TXFI_RGBA8 = GLIB_RGBA8,
+		TXFI_DEPTH24 = GLIB_DEPTH24, TXFI_STENCIL8 = GLIB_STENCIL8,
+		TXFI_DEPTH24_STENCIL8 = GLIB_DEPTH24_STENCIL8,
 	};
 	enum PixelFormats : UInt32 {
-		PXF_NONE = 0,
+		FBAT_DEFAULT = 0,
 		PXF_INT8 = GLIB_INT8, PXF_UINT8 = GLIB_UINT8,
 		PXF_INT32 = GLIB_INT32, PXF_UINT32 = GLIB_UINT32,
 		PXF_UINT24_8 = GLIB_UINT24_8
 	};
-	enum FBAttachTypes : UInt32 {
-		FBAT_NONE = 0,
-		FBAT_COLOR_RGB, FBAT_COLOR_RGBA,
-		FBAT_INT,
-		FBAT_DEPTH, FBAT_STENCIL, FBAT_DEPTH_STENCIL
-	};
 	//	--==</structs_enums>==--
-
-#if (GLIB_GAPI & GLIB_GAPI_OGL)
-	class GLIB_API FrameBufOgl;
-
-	class GLIB_API VertexArrOgl;
-	class GLIB_API VertexBufOgl;
-	class GLIB_API IndexBufOgl;
-
-	class GLIB_API ShaderOgl;
-	class GLIB_API ShaderProg;
-	class GLIB_API AGMaterialOgl;
-	class GLIB_API Texture2dOgl;
-#endif	// GLIB_GAPI
 }
-#if (GLIB_WAPI & GLIB_WAPI_GLFW)
-struct GLFWwindow;
-struct GLFWimage;
-#endif	// GLIB_WAPI
 
 #define GLIB_MAX_TEXTURES 8
 #define GLIB_MIN_TEXTURES 1
-
-#define GLIB_MAX_DRAW_LAYERS 10
-#define GLIB_MAX_DRAW_ORDERS 10
 
 #endif	// GLIB_DECL_HPP
 

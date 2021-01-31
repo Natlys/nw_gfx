@@ -9,71 +9,51 @@
 namespace GLIB
 {
 	/// Abstract SubShader Class
-	class GLIB_API ASubShader : public ADataRes
+	class GLIB_API SubShader : public ADataRes
 	{
+		friend class Shader;
 	public:
-		friend class AShader;
-		friend class ShaderOgl;
-	protected:
-		ASubShader(const char* strName, ShaderTypes sdType);
-		ASubShader(const ASubShader& rCpy) = delete;
-	public:
-		virtual ~ASubShader();
+		SubShader(const char* strName, ShaderTypes sdType);
+		virtual ~SubShader();
 
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
 		inline const char* GetCode() const { return &m_strCode[0]; }
 		inline ShaderTypes GetType() const { return m_shdType; }
-		inline const AShader* GetOverShader() const { return m_pOverShader; }
+		inline const Shader* GetOverShader() const { return m_pOverShader; }
 		// --setters
 		inline void SetCode(const char* strCode) { m_strCode = strCode; }
 
 		// --core_methods
-		virtual void Attach(AShader* pOverShader) = 0;
-		virtual void Detach() = 0;
-		virtual bool Compile() = 0;
-		virtual void Reset() = 0;
+		void Attach(Shader* pOverShader);
+		void Detach();
+		bool Compile();
+		void Remake();
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;
 		
-		static ASubShader* Create(const char* strName, ShaderTypes sdType);
-		static void Create(const char* strName, ShaderTypes sdType, RefOwner<ASubShader>& rSubShader);
-		static void Create(const char* strName, ShaderTypes sdType, RefKeeper<ASubShader>& rSubShader);
-	protected:
+		static SubShader* Create(const char* strName, ShaderTypes sdType);
+		static void Create(const char* strName, ShaderTypes sdType, RefKeeper<SubShader>& rSubShader);
+	private:
+		inline bool CodeProc();
+	private:
 		String m_strName;
 		String m_strCode;
 		UInt32 m_unRId;
 		ShaderTypes m_shdType;
-		AShader* m_pOverShader;
+		Shader* m_pOverShader;
 	};
-	/// Abstract Shader Class
-	/// --Interface:
-	/// -> Create -> AddSource Code with defined type -> Compile/Link
-	/// -> Enable -> {Render} -> Disable
-	/// --It is abstraction of current graphical API for GPU programms
-	/// --So GPU can do any work without implicit API specification in the engine
-	///	Shader Source Code loading rules:
-	/// --> Load string as a source code(can be loaded a from file throught loadMaster)
-	/// --> Load the source code with the beginning "#shader type" on the top of the particular shader
-	/// --> SetSource of entire file with the appropriate type which is written there
-	/// --> It is allowed to write shader code in separate and in the whole file.
-	/// --> The code string has to be finished as "#shader type" or just "\0"(end of string)
-	/// Future:
-	/// -> Shader code preprocessing detects specific uniforms (lights/transform_matricies/...)
-	/// And uses them for setting without giving a particular sstrName
-	class GLIB_API AShader : public ADataRes
+	/// Shader Class
+	class GLIB_API Shader : public ADataRes
 	{
 	public:
 		using Globals = HashMap<String, Int32>;
 		using Blocks = HashMap<String, Int32>;
-		friend class ASubShader;
-		friend class SubShaderOgl;
-	protected:
-		AShader(const char* strName);
-		AShader(const AShader& rCpy) = delete;
+		friend class SubShader;
 	public:
-		virtual ~AShader();
+		Shader(const char* strName);
+		~Shader();
 
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
@@ -82,36 +62,39 @@ namespace GLIB
 		inline const ShaderBufLayout& GetShdLayout() const { return m_shdLayout; }
 		inline const Globals& GetGlobals() const { return m_Globals; }
 		inline const Blocks& GetBlocks() const { return m_Blocks; }
-		inline const ASubShader* GetSubShader(ShaderTypes sdType);
+		inline const SubShader* GetSubShader(ShaderTypes sdType);
 		// --setters
 		inline void SetCode(const char* strCode) { m_strCode = strCode; }
 		// --predicates
 		inline Bit IsEnabled() const { return m_bIsEnabled; }
 		// --core_methods
-		virtual void Enable() = 0;
-		virtual void Disable() = 0;
-		virtual bool Compile() = 0;
-		virtual void Reset() = 0;
+		void Enable();
+		void Disable();
+		bool Compile();
+		void Remake();
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;
 
-		static AShader* Create(const char* strName);
-		static void Create(const char* strName, RefOwner<AShader>& rShader);
-		static void Create(const char* strName, RefKeeper<AShader>& rShader);
+		static Shader* Create(const char* strName);
+		static void Create(const char* strName, RefKeeper<Shader>& rShader);
 
 		// --code_setters
-		virtual void SetBool(const char* strName, bool value) const = 0;
-		virtual void SetInt(const char* strName, int value) const = 0;
-		virtual void SetIntArray(const char *strName, Int32 *pIntArr, UInt32 unCount) const = 0;
-		virtual void SetUIntArray(const char *strName, UInt32 *pUIntArr, UInt32 unCount) const = 0;
-		virtual void SetFloat(const char* strName, float value) const = 0;
-		virtual void SetFloatArray(const char *strName, float *pFloatArr, UInt32 unCount) const = 0;
-		virtual void SetV2f(const char* strName, const V2f& value) const = 0;
-		virtual void SetV3f(const char* strName, const V3f& value) const = 0;
-		virtual void SetV4f(const char* strName, const V4f& value) const = 0;
-		virtual void SetM4f(const char* strName, const Mat4f& value) const = 0;
-	protected:
+		void SetBool(const char* strName, bool value) const;
+		void SetInt(const char* strName, int value) const;
+		void SetIntArray(const char *strName, Int32 *pIntArr, UInt32 unCount) const;
+		void SetUIntArray(const char *strName, UInt32 *pUIntArr, UInt32 unCount) const;
+		void SetFloat(const char* strName, float value) const;
+		void SetFloatArray(const char *strName, float *pFloatArr, UInt32 unCount) const;
+		void SetV2f(const char* strName, const V2f& value) const;
+		void SetV3f(const char* strName, const V3f& value) const;
+		void SetV4f(const char* strName, const V4f& value) const;
+		void SetM4f(const char* strName, const Mat4f& value) const;
+	private:
+		inline bool CodeProc();
+		inline Int32 GetUniformLoc(const char* strName) const;
+		inline Int32 GetBlockIdx(const char* strName) const;
+	private:
 		mutable Bit m_bIsEnabled;
 		UInt32 m_unRId;
 		String m_strCode;
@@ -119,82 +102,12 @@ namespace GLIB
 		ShaderBufLayout m_shdLayout;
 		mutable Globals m_Globals;
 		mutable Blocks m_Blocks;
-		DArray<RefKeeper<ASubShader>> m_SubShaders;
+		DArray<RefKeeper<SubShader>> m_SubShaders;
 	};
-	inline const ASubShader* AShader::GetSubShader(ShaderTypes sdType) {
-		auto itSub = NWL_FIND_BY_FUNC(m_SubShaders, RefKeeper<ASubShader>&, sdType, ->GetType);
+	inline const SubShader* Shader::GetSubShader(ShaderTypes sdType) {
+		auto itSub = NWL_FIND_BY_FUNC(m_SubShaders, RefKeeper<SubShader>&, sdType, ->GetType);
 		return itSub == m_SubShaders.end() ? nullptr : itSub->GetRef();
 	}
 }
 #endif	// GLIB_GAPI
-#if (GLIB_GAPI & GLIB_GAPI_OGL)
-// SubShader
-namespace GLIB
-{
-	/// SubShader class OpenGL abstraction
-	/// Interface:
-	/// -> Create the shader
-	/// -> Set the entire shader source code with written comment "#shader type" on the top
-	/// -> Compile(Load) -> Set the ShaderOglram -> link that ShaderOglram
-	class GLIB_API SubShaderOgl : public ASubShader
-	{
-	public:
-		SubShaderOgl(const char* strName, ShaderTypes sType);
-		~SubShaderOgl();
-
-		// --core_methods
-		virtual void Attach(AShader* pOverShader) override;
-		virtual void Detach() override;
-		virtual bool Compile() override;
-		virtual void Reset() override;
-	private:
-		inline bool CodeProc();
-	};
-}
-// Shader
-namespace GLIB
-{
-	/// Shader class - handler for shader program OpenGL
-	/// Interface:
-	/// -> Create ->
-	/// -> Set the source code for both shader types: vertex and fragment shader
-	/// -> Load the program
-	/// Description
-	/// -- Instead of own source code, shader programm has shader objects with that code
-	class GLIB_API ShaderOgl : public AShader
-	{
-	public: // Interface Methods
-		ShaderOgl(const char* strName);
-		~ShaderOgl();
-
-		// --core_methods
-		virtual void Enable() override;
-		virtual void Disable() override;
-		virtual bool Compile() override;
-		virtual void Reset() override;
-		// --code_setters
-		virtual void SetBool(const char* strName, bool value) const override;
-		virtual void SetInt(const char* strName, int value) const override;
-		virtual void SetIntArray(const char* strName, Int32* pIntArr, UInt32 unCount) const override;
-		virtual void SetUIntArray(const char* strName, UInt32* pIntArr, UInt32 unCount) const override;
-		virtual void SetFloat(const char* strName, float value) const override;
-		virtual void SetFloatArray(const char* strName, float* pFloatArr, UInt32 unCount) const override;
-		virtual void SetV2f(const char* strName, const V2f& value) const override;
-		virtual void SetV3f(const char* strName, const V3f& value) const override;
-		virtual void SetV4f(const char* strName, const V4f& value) const override;
-		virtual void SetM4f(const char* strName, const Mat4f& value) const override;
-	private:
-	private:
-		/// We have gotten a whole source code file
-		/// Iterate throught all the lines in that code
-		/// If it suits the format:
-		/// Create new SubShaderOgl of appropriate type in the own vector, set it's source
-		inline bool CodeProc();
-		// Optimization
-		/// Gets uniforms from the program, or from the uniforms cashe if they are there
-		inline Int32 GetUniformLoc(const char* strName) const;
-		inline Int32 GetBlockIdx(const char* strName) const;
-	};
-}
-#endif // GLIB_GAPI
 #endif // GLIB_ASHADER_H

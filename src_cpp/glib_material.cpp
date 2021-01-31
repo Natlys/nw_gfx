@@ -12,7 +12,7 @@ namespace GLIB
 	GMaterial::~GMaterial() { ADataRes::RmvDataRes<GMaterial>(GetId()); }
 
 	// --setters
-	void GMaterial::SetShader(AShader* pShader) {
+	void GMaterial::SetShader(Shader* pShader) {
 		m_pShader = pShader;
 		m_Textures.clear();
 		m_Colors.clear();
@@ -21,14 +21,14 @@ namespace GLIB
 			for (auto& itGlob : pShader->GetShdLayout().GetGlobals()) {
 				switch (itGlob.sdType) {
 				case SDT_FLOAT32: if (itGlob.unCount == 4) { m_Colors[itGlob.strName] = V4f{ 1.0f, 1.0f, 1.0f, 1.0f }; } break;
-				case SDT_SAMPLER: m_Textures[itGlob.strName] = ADataRes::GetDataRes<ATexture>("tex_white"); break;
+				case SDT_SAMPLER: m_Textures[itGlob.strName] = ADataRes::GetDataRes<Texture>("tex_white_solid"); break;
 				}
 			}
 		}
 		if (m_Colors.empty()) { m_Colors[""] = V4f{ 1.0f, 1.0f, 1.0f, 1.0f }; }
 		if (m_Textures.empty()) { m_Textures[""] = nullptr; }
 	}
-	void GMaterial::SetTexture(ATexture* pTex, const char* strType) {
+	void GMaterial::SetTexture(Texture* pTex, const char* strType) {
 		if (pTex == nullptr) { return; }
 		if (strcmp(strType, "") == 0) { m_Textures.begin()->second = pTex; }
 		if (m_Textures.find(strType) != m_Textures.end()) { m_Textures[strType] = pTex; }
