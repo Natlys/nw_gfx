@@ -97,7 +97,7 @@ namespace GLIB
 				m_Info.bHasDepth = m_Info.bHasStencil = true;
 				unAttachType = GL_DEPTH_STENCIL_ATTACHMENT;
 			}
-			glFramebufferTexture2D(GL_FRAMEBUFFER, unAttachType, GL_TEXTURE_2D, rTex.GetRenderId(), 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, unAttachType, rTex.GetType(), rTex.GetRenderId(), 0);
 			rTex.Unbind();
 		}
 		if (m_Info.unColorCount > 0) { glDrawBuffers(m_Info.unColorCount, &ColorIds[0]); }
@@ -127,7 +127,13 @@ namespace GLIB
 		glDrawPixels(nW, nH, GL_RGBA, GL_UNSIGNED_BYTE, pData);
 		Unbind();
 	}
-	void FrameBuf::Create(const char* strName, const FrameBufInfo& rfbInfo, RefKeeper<FrameBuf>& rfBuf) { rfBuf.MakeRef<FrameBuf>(strName, rfbInfo); }
+
+	FrameBuf* FrameBuf::Create(const char* strName, const FrameBufInfo& rfbInfo) {
+		return GraphEngine::Get().NewT<FrameBuf>(strName, rfbInfo);
+	}
+	static void Create(const char* strName, const FrameBufInfo& rfbInfo, RefKeeper<FrameBuf>& rfmBuf) {
+		rfmBuf.MakeRef<FrameBuf>(GraphEngine::Get().GetMemory(), strName, rfbInfo);
+	}
 	// --==</core_methods>==--
 }
 #endif // GLIB_GAPI

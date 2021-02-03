@@ -10,8 +10,8 @@
 namespace GLIB
 {
 	SubShader::SubShader(const char* strName, ShaderTypes sdType) :
-		ADataRes(strName),
-		m_shdType(sdType), m_unRId(0), m_strCode(""), m_pOverShader(nullptr)
+		ACodeRes(strName),
+		m_shdType(sdType), m_unRId(0), m_pOverShader(nullptr)
 	{
 		Remake();
 		ADataRes::AddDataRes<SubShader>(this);
@@ -51,9 +51,12 @@ namespace GLIB
 		m_strCode = "";
 	}
 
-	SubShader* SubShader::Create(const char* strName, ShaderTypes sdType) { return GEngine::Get().NewT<SubShader>(strName, sdType); }
-	void SubShader::Create(const char* strName, ShaderTypes sdType, RefKeeper<SubShader>& rSubShader) { rSubShader.MakeRef<SubShader>(strName, sdType); }
+	SubShader* SubShader::Create(const char* strName, ShaderTypes sdType) { return GraphEngine::Get().NewT<SubShader>(strName, sdType); }
+	void SubShader::Create(const char* strName, ShaderTypes sdType, RefKeeper<SubShader>& rsubShader) {
+		rsubShader.MakeRef<SubShader>(GraphEngine::Get().GetMemory(), strName, sdType);
+	}
 	// --==</core_methods>==--
+
 	// --==<implementation_methods>==--
 	bool SubShader::CodeProc() {
 		StrStream strCodeStream(m_strCode);
@@ -167,8 +170,8 @@ namespace GLIB
 namespace GLIB
 {
 	Shader::Shader(const char* strName) :
-		ADataRes(strName),
-		m_unRId(0), m_strCode(""), m_bIsEnabled(false)
+		ACodeRes(strName),
+		m_unRId(0), m_bIsEnabled(false)
 	{
 		Remake();
 		ADataRes::AddDataRes<Shader>(this);
@@ -228,8 +231,8 @@ namespace GLIB
 		m_vtxLayout.Reset();
 		m_shdLayout.Reset();
 	}
-	Shader* Shader::Create(const char* strName) { return GEngine::Get().NewT<Shader>(strName); }
-	void Shader::Create(const char* strName, RefKeeper<Shader>& rShader) { rShader.MakeRef<Shader>(strName); }
+	Shader* Shader::Create(const char* strName) { return GraphEngine::Get().NewT<Shader>(strName); }
+	void Shader::Create(const char* strName, RefKeeper<Shader>& rShader) { rShader.MakeRef<Shader>(GraphEngine::Get().GetMemory(), strName); }
 	// --==</core_methods>==--
 
 	// --==<data_methods>==--
@@ -280,10 +283,10 @@ namespace GLIB
 				}
 			}
 
-			RefKeeper<SubShader> pSubShader(GEngine::Get().GetMemory());
-			if (strToken == "vertex") { pSubShader.MakeRef<SubShader>(&(m_strName + "_" + strToken)[0], ST_VERTEX); }
-			else if (strToken == "geometry") { pSubShader.MakeRef<SubShader>(&(m_strName + "_" + strToken)[0], ST_GEOMETRY); }
-			else if (strToken == "pixel") { pSubShader.MakeRef<SubShader>(&(m_strName + "_" + strToken)[0], ST_PIXEL); }
+			RefKeeper<SubShader> pSubShader;
+			if (strToken == "vertex") { SubShader::Create(&(m_strName + "_" + strToken)[0], ST_VERTEX, pSubShader); }
+			else if (strToken == "geometry") { SubShader::Create(&(m_strName + "_" + strToken)[0], ST_GEOMETRY, pSubShader); }
+			else if (strToken == "pixel") { SubShader::Create(&(m_strName + "_" + strToken)[0], ST_PIXEL, pSubShader); }
 			else { continue; }
 			m_SubShaders.push_back(pSubShader);
 

@@ -1,12 +1,14 @@
 #ifndef GLIB_ENGINE_H
 #define GLIB_ENGINE_H
 
+#include <nwlib/nwl_engine.h>
+
 #include <glib_tools.h>
 #include <glib_core.hpp>
 
 namespace GLIB
 {
-	struct GLIB_API GEngineConfig {
+	struct GLIB_API GraphConfig {
 		struct {
 			struct {
 				DrawModes dMode = DM_FILL;
@@ -41,7 +43,7 @@ namespace GLIB
 		}
 	};
 	/// GraphicsEngineInfo struct
-	struct GLIB_API GEngineInfo
+	struct GLIB_API GraphInfo
 	{
 	public:
 		Char strRenderer[256], strVersion[256], strVendor[256], strShdLang[256];
@@ -58,7 +60,7 @@ namespace GLIB
 		// --drawing
 		UInt16 unDrawCalls = 0;
 	public:
-		GEngineInfo() : strRenderer("none"), strVersion("none"), strVendor("none"), strShdLang("none") {}
+		GraphInfo() : strRenderer("none"), strVersion("none"), strVendor("none"), strShdLang("none") {}
 		// --setters
 		inline void Reset() {
 			szVtx = szIdx = szShd = 0;
@@ -68,36 +70,33 @@ namespace GLIB
 		// --operators
 		inline OutStream& operator<<(OutStream& rStream);
 	};
-	inline OutStream& GEngineInfo::operator<<(OutStream& rStream) {
-		rStream << "GRAPHICS_ENGINE_INFO:" << std::endl <<
-			"========" << std::endl <<
+	inline OutStream& GraphInfo::operator<<(OutStream& rStream) {
+		rStream <<
+			"====<graphics_info>====" << std::endl <<
 			"graphics context: " << &strVersion[0] << std::endl <<
 			"renderer: " << &strRenderer[0] << std::endl <<
 			"version: " << &strVersion[0] << std::endl <<
 			"vendor: " << &strVendor[0] << std::endl <<
 			"shading language: " << &strShdLang[0] << std::endl <<
-			"========" << std::endl;
+			"====<graphics_info>====" << std::endl;
 		return rStream;
 	}
-	inline OutStream& operator<<(OutStream& rStream, GEngineInfo& rgInfo) { return rgInfo.operator<<(rStream); }
+	inline OutStream& operator<<(OutStream& rStream, GraphInfo& rgInfo) { return rgInfo.operator<<(rStream); }
 }
 namespace GLIB
 {
 	/// GraphicsEngine class
 	/// -- Depending on the specification during the build
-	class GLIB_API GEngine : public ASingleton<GEngine>
+	class GLIB_API GraphEngine : public AEngine<GraphEngine>
 	{
 	public:
-		GEngine();
-		~GEngine();
+		GraphEngine();
+		~GraphEngine();
 		
 		// --getters
-		inline AMemAllocator& GetMemory() { return m_Memory; }
-		inline Thread& GetRunThread() { return m_thrRun; }
-		
-		const GEngineInfo& GetInfo() const { return m_Info; }
-		const GEngineConfig& GetConfigs() { return m_Config; }
-
+		inline const GraphInfo& GetInfo() const { return m_Info; }
+		inline const GraphConfig& GetConfigs() { return m_Config; }
+		inline FrameBuf* GetFrameBuf() { return m_pfmBuf; }
 		// --setters
 		void SetModes(Bit bEnable, ProcessingModes pm);
 		void SetViewport(Int32 nX, Int32 nY, Int32 nWidth, Int32 nHeight);
@@ -107,32 +106,21 @@ namespace GLIB
 		void SetBlendFunc(BlendConfigs factorSrc, BlendConfigs factorDest);
 		void SetDepthFunc(DepthConfigs funcId);
 		void SetStencilFunc(StencilConfigs funcId, UInt32 unRefValue, UInt8 unBitMask);
-		// --predicates
-		Bit IsRunning() { return m_bIsRunning; }
-
+		void SetFrameBuf(FrameBuf* pfmBuf) { m_pfmBuf = pfmBuf; }
 		// --core_methods
-		void Run();
-		bool Init();
-		void Quit();
-		void Update();
-		// --memory_methods
-		template <typename MType, typename...Args>
-		inline MType* NewT(Args...Arguments) { return NWL::NewT<MType>(GetMemory(), Arguments...); }
-		template <typename MType>
-		inline MType* NewTArr(UInt64 unAlloc) { return NWL::NewTArr<MType>(GetMemory(), unAlloc); }
-		template <typename MType>
-		inline void DelT(MType* pBlock) { NWL::DelT<MType>(GetMemory(), pBlock); }
-		template <typename MType>
-		inline void DelTArr(MType* pBlock, UInt64 unDealloc) { NWL::DelTArr<MType>(GetMemory(), pBlock, unDealloc); }
+		virtual void Run() override;
+		virtual bool Init() override;
+		virtual void Quit() override;
+		virtual void Update() override;
+		virtual void OnEvent(AEvent& rEvt) override;
 		// --drawing_methods
 		void OnDraw(VertexArr& rVtxArray, GMaterial& rGMtl);
+		void OnDraw(Drawable& rDrb);
 	private:
-		Bit m_bIsRunning;
-		Thread m_thrRun;
-		MemArena m_Memory;
-
-		GEngineInfo m_Info;
-		GEngineConfig m_Config;
+		GraphInfo m_Info;
+		GraphConfig m_Config;
+		
+		FrameBuf* m_pfmBuf;
 	};
 }
 

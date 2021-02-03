@@ -59,68 +59,54 @@ namespace GLIB
 		Bind();
 		switch (m_texType) {
 		case TXT_1D:
-			if (m_texInfo.unSamples == 1) {
-				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-				glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, 0,
+			glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+			glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+			glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
+				m_imgInfo.nWidth, 0,
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+			if (m_texInfo.bGenSubImage) {
+				glTexSubImage1D(GL_TEXTURE_1D, 0,
+					0, m_imgInfo.nWidth,
 					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				if (m_texInfo.bGenSubImage) {
-					glTexSubImage1D(GL_TEXTURE_1D, 0,
-						0, m_imgInfo.nWidth,
-						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				}
-				break;
 			}
-			else if (m_texInfo.unSamples > 1) {
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_texInfo.unSamples, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, m_imgInfo.nHeight, 0);
-			}
-			else { NWL_ERR("Impossible multisample value!"); }
+			break;
 		case TXT_2D:
-			if (m_texInfo.unSamples == 1) {
-				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
-				glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
+			glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+			glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+			glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
+				m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+			if (m_texInfo.bGenSubImage) {
+				glTexSubImage2D(GL_TEXTURE_2D, 0,
+					0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
 					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				if (m_texInfo.bGenSubImage) {
-					glTexSubImage2D(GL_TEXTURE_2D, 0,
-						0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
-						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				}
-				break;
 			}
-			else if (m_texInfo.unSamples > 1) {
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_texInfo.unSamples, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, m_imgInfo.nHeight, 0);
-			}
-			else { NWL_ERR("Impossible multisample value!"); }
+			break;
 		case TXT_3D:
-			if (m_texInfo.unSamples == 1) {
-				glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
-				glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
-				glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
-				glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
+			glTextureParameteri(m_unRId, GL_TEXTURE_MIN_FILTER, m_texInfo.FilterMin);
+			glTextureParameteri(m_unRId, GL_TEXTURE_MAG_FILTER, m_texInfo.FilterMag);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
+			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
+			glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
+				m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+			if (m_texInfo.bGenSubImage) {
+				glTexSubImage3D(GL_TEXTURE_3D, 0,
+					0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
 					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				if (m_texInfo.bGenSubImage) {
-					glTexSubImage3D(GL_TEXTURE_3D, 0,
-						0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
-						m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
-				}
-				break;
 			}
-			else if (m_texInfo.unSamples > 1) {
-				glTexImage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, m_texInfo.unSamples, m_texInfo.texInterFormat,
-					m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0);
-			}
-			else { NWL_ERR("Impossible multisample value!"); }
+		case TXT_2D_MULTISAMPLE:
+			glTexImage2DMultisample(m_texType, m_texInfo.unSamples, m_texInfo.texInterFormat,
+				m_imgInfo.nWidth, m_imgInfo.nHeight, false);
+			break;
+		case TXT_3D_MULTISAMPLE:
+			glTexImage3DMultisample(m_texType, m_texInfo.unSamples, m_texInfo.texInterFormat,
+				m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, false);
+			break;
 		default: NWL_ERR("Undefined texture type"); break;
 		}
 
@@ -128,8 +114,10 @@ namespace GLIB
 
 		Unbind();
 	}
-	Texture* Texture::Create(const char* strName, TextureTypes texType) { return GEngine::Get().NewT<Texture>(strName, texType); }
-	void Texture::Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex) { rTex.MakeRef<Texture>(strName, texType); }
+	Texture* Texture::Create(const char* strName, TextureTypes texType) { return GraphEngine::Get().NewT<Texture>(strName, texType); }
+	void Texture::Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex) {
+		rTex.MakeRef<Texture>(GraphEngine::Get().GetMemory(), strName, texType);
+	}
 	// --==</core_methods>==--
 	
 	// --==<data_methods>==--

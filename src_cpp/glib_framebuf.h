@@ -11,7 +11,6 @@ namespace GLIB
 	{
 	public:
 		V4i xywhViewport = { 0, 0, 1, 1 };
-		UInt32 unSamples = 1;
 		Bit bSwapChain = false;
 		Bit bResizable = true;
 		UInt32 unColorCount = 0;
@@ -34,6 +33,7 @@ namespace GLIB
 		inline Int32 GetWidth() const { return m_Info.GetWidth(); }
 		inline Int32 GetHeight() const { return m_Info.GetHeight(); }
 		inline Texture* GetAttachment(UInt32 unIdx = 0);
+		inline const V4i& GetViewport() const { return m_Info.xywhViewport; }
 		inline const FrameBufInfo& GetInfo() const { return m_Info; }
 		inline V4f GetClearColor() const { return m_rgbaClear; }
 		// --setters
@@ -48,7 +48,9 @@ namespace GLIB
 		void Clear(UInt32 bitMask = FB_COLOR | FB_DEPTH | FB_STENCIL);
 		void ReadPixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nWidth = 1, Int32 nHeight = 1);
 		void WritePixels(Ptr pData, UInt32 unAttachIdx, Int32 nWidth, Int32 nHeight);
-		static void Create(const char* strName, const FrameBufInfo& rFbInfo, RefKeeper<FrameBuf>& rFrameBuf);
+
+		static FrameBuf* Create(const char* strName, const FrameBufInfo& rfbInfo);
+		static void Create(const char* strName, const FrameBufInfo& rfbInfo, RefKeeper<FrameBuf>& rfmBuf);
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override { return true; }
 		virtual bool LoadF(const char* strFPath) override { return true; }

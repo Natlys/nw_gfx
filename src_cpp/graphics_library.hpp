@@ -7,6 +7,7 @@
 #include <glib_state.h>
 
 #include <glib_buffer.h>
+#include <glib_drawable.h>
 #include <glib_camera.h>
 #include <glib_framebuf.h>
 

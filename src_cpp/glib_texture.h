@@ -110,6 +110,7 @@ namespace GLIB
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
 		inline UInt32 GetTexSlot() const { return m_unTexSlot; }
+		inline TextureTypes GetType() const { return m_texType; }
 		inline const TextureInfo& GetTexInfo() const { return m_texInfo; }
 		inline const ImageInfo& GetImgInfo() const { return m_imgInfo; }
 		// --setters

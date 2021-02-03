@@ -9,7 +9,7 @@
 namespace GLIB
 {
 	/// Abstract SubShader Class
-	class GLIB_API SubShader : public ADataRes
+	class GLIB_API SubShader : public ACodeRes
 	{
 		friend class Shader;
 	public:
@@ -18,34 +18,28 @@ namespace GLIB
 
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
-		inline const char* GetCode() const { return &m_strCode[0]; }
 		inline ShaderTypes GetType() const { return m_shdType; }
 		inline const Shader* GetOverShader() const { return m_pOverShader; }
-		// --setters
-		inline void SetCode(const char* strCode) { m_strCode = strCode; }
-
 		// --core_methods
 		void Attach(Shader* pOverShader);
 		void Detach();
-		bool Compile();
 		void Remake();
+		virtual bool Compile() override;
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;
 		
 		static SubShader* Create(const char* strName, ShaderTypes sdType);
-		static void Create(const char* strName, ShaderTypes sdType, RefKeeper<SubShader>& rSubShader);
+		static void Create(const char* strName, ShaderTypes sdType, RefKeeper<SubShader>& rsubShader);
 	private:
 		inline bool CodeProc();
 	private:
-		String m_strName;
-		String m_strCode;
 		UInt32 m_unRId;
 		ShaderTypes m_shdType;
 		Shader* m_pOverShader;
 	};
 	/// Shader Class
-	class GLIB_API Shader : public ADataRes
+	class GLIB_API Shader : public ACodeRes
 	{
 	public:
 		using Globals = HashMap<String, Int32>;
@@ -57,28 +51,25 @@ namespace GLIB
 
 		// --getters
 		inline UInt32 GetRenderId() const { return m_unRId; }
-		inline const char* GetCode() const { return &m_strCode[0]; }
 		inline const VertexBufLayout& GetVtxLayout() const { return m_vtxLayout; }
 		inline const ShaderBufLayout& GetShdLayout() const { return m_shdLayout; }
 		inline const Globals& GetGlobals() const { return m_Globals; }
 		inline const Blocks& GetBlocks() const { return m_Blocks; }
 		inline const SubShader* GetSubShader(ShaderTypes sdType);
 		// --setters
-		inline void SetCode(const char* strCode) { m_strCode = strCode; }
 		// --predicates
 		inline Bit IsEnabled() const { return m_bIsEnabled; }
 		// --core_methods
 		void Enable();
 		void Disable();
-		bool Compile();
 		void Remake();
+		virtual bool Compile() override;
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;
 
 		static Shader* Create(const char* strName);
 		static void Create(const char* strName, RefKeeper<Shader>& rShader);
-
 		// --code_setters
 		void SetBool(const char* strName, bool value) const;
 		void SetInt(const char* strName, int value) const;
@@ -97,7 +88,6 @@ namespace GLIB
 	private:
 		mutable Bit m_bIsEnabled;
 		UInt32 m_unRId;
-		String m_strCode;
 		VertexBufLayout m_vtxLayout;
 		ShaderBufLayout m_shdLayout;
 		mutable Globals m_Globals;

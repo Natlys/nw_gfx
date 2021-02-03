@@ -3,6 +3,7 @@
 
 #include <glib_tools.h>
 #include <glib_framebuf.h>
+#include <glib_drawable.h>
 
 #include <glib_camera.h>
 #include <glib_shader.h>
@@ -26,22 +27,23 @@
 
 namespace GLIB
 {
-	GEngine::GEngine() :
-		m_Memory(MemArena(nullptr, 0)), m_thrRun(Thread()), m_bIsRunning(false),
-		m_Info(GEngineInfo()), m_Config(GEngineConfig()) { }
-	GEngine::~GEngine() { }
+	GraphEngine::GraphEngine() :
+		AEngine(),
+		m_Info(GraphInfo()), m_Config(GraphConfig()),
+		m_pfmBuf(nullptr) { }
+	GraphEngine::~GraphEngine() { }
 
 	// --setters
-	void GEngine::SetModes(Bit bEnable, ProcessingModes pm) { if (bEnable) { glEnable(static_cast<UInt32>(pm)); } else { glDisable(static_cast<UInt32>(pm)); } }
-	void GEngine::SetViewport(Int32 nX, Int32 nY, Int32 nW, Int32 nH) { glViewport(nX, nY, nW, nH); }
-	void GEngine::SetDrawMode(DrawModes dMode, FacePlanes facePlane) { m_Config.General.PolyMode.dMode = dMode; glPolygonMode(facePlane, dMode); }
-	void GEngine::SetLineWidth(Float32 nLineWidth) { glLineWidth(nLineWidth); }
-	void GEngine::SetPixelSize(Float32 nPxSize) { glPointSize(nPxSize); }
-	void GEngine::SetBlendFunc(BlendConfigs unSrcFactorId, BlendConfigs unDestFactorId) { glBlendFunc(unSrcFactorId, unDestFactorId); }
-	void GEngine::SetDepthFunc(DepthConfigs unDepthFuncId) { glDepthFunc(unDepthFuncId); }
-	void GEngine::SetStencilFunc(StencilConfigs unFuncId, UInt32 unRefValue, UInt8 unBitMask) { glStencilFunc(unFuncId, unRefValue, unBitMask); }
+	void GraphEngine::SetModes(Bit bEnable, ProcessingModes pm) { if (bEnable) { glEnable(static_cast<UInt32>(pm)); } else { glDisable(static_cast<UInt32>(pm)); } }
+	void GraphEngine::SetViewport(Int32 nX, Int32 nY, Int32 nW, Int32 nH) { glViewport(nX, nY, nW, nH); }
+	void GraphEngine::SetDrawMode(DrawModes dMode, FacePlanes facePlane) { m_Config.General.PolyMode.dMode = dMode; glPolygonMode(facePlane, dMode); }
+	void GraphEngine::SetLineWidth(Float32 nLineWidth) { glLineWidth(nLineWidth); }
+	void GraphEngine::SetPixelSize(Float32 nPxSize) { glPointSize(nPxSize); }
+	void GraphEngine::SetBlendFunc(BlendConfigs unSrcFactorId, BlendConfigs unDestFactorId) { glBlendFunc(unSrcFactorId, unDestFactorId); }
+	void GraphEngine::SetDepthFunc(DepthConfigs unDepthFuncId) { glDepthFunc(unDepthFuncId); }
+	void GraphEngine::SetStencilFunc(StencilConfigs unFuncId, UInt32 unRefValue, UInt8 unBitMask) { glStencilFunc(unFuncId, unRefValue, unBitMask); }
 	// --==<core_methods>==--
-	void GEngine::Run()
+	void GraphEngine::Run()
 	{
 		Init();
 		if (!m_bIsRunning) { return; }
@@ -52,7 +54,7 @@ namespace GLIB
 		};
 		m_thrRun = Thread(fnUpdate);
 	}
-	bool GEngine::Init()
+	bool GraphEngine::Init()
 	{
 		if (m_bIsRunning) { return false; }
 		GetMemory() = MemArena(new Byte[1 << 16], 1 << 16);
@@ -88,29 +90,114 @@ namespace GLIB
 	#endif
 	#endif	// GLIB_GAPI
 
+		for (auto& itState : m_States) { if (!itState->Init()) { return false; } }
+
 		return (m_bIsRunning = true);
 	}
-	void GEngine::Quit()
+	void GraphEngine::Quit()
 	{
 		if (!m_bIsRunning) { return; }
 		m_bIsRunning = false;
 
+		for (auto& itState : m_States) { itState->OnQuit(); }
+
+		auto& rFbs = ADataRes::GetDataResources<FrameBuf>();
+		while (!rFbs.empty()) { rFbs.begin()->second->~FrameBuf(); }
+		auto& rTxs = ADataRes::GetDataResources<Texture>();
+		while (!rTxs.empty()) { rTxs.begin()->second->~Texture(); }
+		auto& rShds = ADataRes::GetDataResources<Shader>();
+		while (!rShds.empty()) { rShds.begin()->second->~Shader(); }
+		auto& rGMtls = ADataRes::GetDataResources<GMaterial>();
+		while (!rGMtls.empty()) { rGMtls.begin()->second->~GMaterial(); }
+
 		delete[] GetMemory().GetDataBeg();
 		GetMemory() = MemArena(nullptr, 0);
 	}
-	void GEngine::Update()
+	void GraphEngine::Update()
 	{
+		for (auto& itState : m_States) { itState->Update(); }
+	}
+	void GraphEngine::OnEvent(AEvent& rEvt)
+	{
+		if (rEvt.IsInCategory(EC_MOUSE)) {
+			MouseEvent* pmEvt = static_cast<MouseEvent*>(&rEvt);
+			switch (pmEvt->evType) {
+			case ET_MOUSE_MOVE:
+				break;
+			case ET_MOUSE_SCROLL:
+				break;
+			case ET_MOUSE_RELEASE:
+				break;
+			case ET_MOUSE_PRESS:
+				break;
+			}
+			if (rEvt.bIsHandled) return;
+			for (auto& itState : m_States) { itState->OnEvent(*pmEvt); }
+		}
+		else if (rEvt.IsInCategory(EC_KEYBOARD)) {
+			KeyboardEvent* pkEvt = static_cast<KeyboardEvent*>(&rEvt);
+			switch (pkEvt->evType) {
+			case ET_KEY_RELEASE:
+				switch (pkEvt->unKeyCode) {
+					break;
+				default: break;
+				}
+				break;
+			case ET_KEY_PRESS:
+				switch (pkEvt->unKeyCode) {
+				default: break;
+				}
+				break;
+			case ET_KEY_CHAR:
+				break;
+				if (rEvt.bIsHandled) { return; }
+				for (auto& itState : m_States) { itState->OnEvent(*pkEvt); }
+			}
+		}
+		else if (rEvt.IsInCategory(EC_WINDOW)) {
+			WindowEvent* pwEvt = static_cast<WindowEvent*>(&rEvt);
+			switch (pwEvt->evType) {
+			case ET_WINDOW_RESIZE:
+				break;
+			case ET_WINDOW_MOVE:
+				break;
+			case ET_WINDOW_FOCUS:
+				break;
+			case ET_WINDOW_CLOSE:
+				StopRunning();
+				rEvt.bIsHandled = true;
+				break;
+			}
+			if (rEvt.bIsHandled) { return; }
+			for (auto& itState : m_States) { itState->OnEvent(*pwEvt); }
+		}
 	}
 	// --==</core_methods>==--
 
 	// --==<drawing_methods>==--
-	void GEngine::OnDraw(VertexArr& rVtxArr, GMaterial& rGMtl) {
+	void GraphEngine::OnDraw(VertexArr& rVtxArr, GMaterial& rGMtl) {
 		rGMtl.Enable();
 		rVtxArr.Bind();
-		if (rVtxArr.GetIdxBuffer() != nullptr) { glDrawElements(rVtxArr.GetDrawPrimitive(), rVtxArr.GetIdxBuffer()->GetDataSize() / sizeof(UInt32), GL_UNSIGNED_INT, 0); }
-		else { glDrawArrays(rVtxArr.GetDrawPrimitive(), 0, rVtxArr.GetVtxBuffers().size()); }
+		if (rVtxArr.GetIdxBuffer() != nullptr) {
+			glDrawElements(rVtxArr.GetDrawPrimitive(), rVtxArr.GetIdxBuffer()->GetDataSize() / sizeof(UInt32), GL_UNSIGNED_INT, 0);
+		}
+		else {
+			glDrawArrays(rVtxArr.GetDrawPrimitive(), 0, rVtxArr.GetVtxBuffers().size());
+		}
 		rVtxArr.Unbind();
 		rGMtl.Disable();
+	}
+	void GraphEngine::OnDraw(Drawable& rDrb) {
+		rDrb.gMtl->Enable();
+		rDrb.vtxArr->Bind();
+		if (rDrb.idxBuf.GetRef() != nullptr) {
+			glDrawElements(rDrb.vtxArr->GetDrawPrimitive(), rDrb.vtxArr->GetIdxBuffer()->GetDataSize() / sizeof(UInt32), GL_UNSIGNED_INT, 0);
+		}
+		else {
+			glDrawArrays(rDrb.vtxArr->GetDrawPrimitive(), 0, rDrb.vtxArr->GetVtxBuffers().size());
+		}
+		rDrb.vtxArr->Unbind();
+		rDrb.gMtl->Disable();
 	}
 	// --==</drawing_methods>==--
 }
@@ -118,8 +205,8 @@ namespace GLIB
 /// OnDraw (AShape)
 	/// Description:
 	/// -- Shapes have a vertex data, indices and bound AGMaterial
-	/// -- GEngine collects all the Vertex and Index data into some arrays from given object
-	/// -- AGMaterial of the object provides GEngine's AGMaterial with textures
+	/// -- GraphEngine collects all the Vertex and Index data into some arrays from given object
+	/// -- AGMaterial of the object provides GraphEngine's AGMaterial with textures
 	/// -- Every new texture from new AGMaterial will be bound to the current GMtl
 	/// -- In the EndDraw it will bind all owned textures and will set their samplerIDs to the own shader
 	/// -- There is also default white texture which will be used if we don not have other textures

@@ -49,7 +49,8 @@ namespace GLIB
 	VertexBuf::~VertexBuf() { }
 
 	// --core_methods
-	void VertexBuf::Create(RefKeeper<VertexBuf>& rVtxBuf) { rVtxBuf.MakeRef<VertexBuf>(); }
+	VertexBuf* VertexBuf::Create() { return GraphEngine::Get().NewT<VertexBuf>(); }
+	void VertexBuf::Create(RefKeeper<VertexBuf>& rvtxBuf) { rvtxBuf.MakeRef<VertexBuf>(GraphEngine::Get().GetMemory()); }
 	// --==</VertexBuf>==--
 }
 namespace GLIB
@@ -59,38 +60,36 @@ namespace GLIB
 	IndexBuf::~IndexBuf() { }
 
 	// --core_methods
-	void IndexBuf::Create(RefKeeper<IndexBuf>& rIdxBuf) { rIdxBuf.MakeRef<IndexBuf>(); }
+	IndexBuf* IndexBuf::Create() { return GraphEngine::Get().NewT<IndexBuf>(); }
+	void IndexBuf::Create(RefKeeper<IndexBuf>& ridxBuf) { ridxBuf.MakeRef<IndexBuf>(GraphEngine::Get().GetMemory()); }
 	// --==</IndexBuf>==--
 }
 namespace GLIB
 {
 	// --==<ShaderBuf>==--
-	ShaderBuf::ShaderBuf() : AGBuffer(GBT_SHADER), m_bufLayout(ShaderBufLayout()) { }
+	ShaderBuf::ShaderBuf() : AGBuffer(GBT_SHADER) { }
 	ShaderBuf::~ShaderBuf() { }
-	// --setters
-	void ShaderBuf::SetLayout(const ShaderBufLayout& rBufLayout) {
-		m_bufLayout = rBufLayout;
-		if (m_szData < rBufLayout.GetSize()) { SetData(rBufLayout.GetSize()); }
-		for (auto& rBlock : rBufLayout.GetBlocks()) { Bind(rBlock.unBindPoint, rBlock.szAll, rBlock.szOffset); }
-	}
 	// --core_methods
-	void ShaderBuf::Bind() const
-	{
-		AGBuffer::Bind();
-		for (auto& rBlock : m_bufLayout.GetBlocks()) { Bind(rBlock.unBindPoint, rBlock.szAll, rBlock.szOffset); }
+	void ShaderBuf::Bind() const {
+		if (m_bIsBound) { return; }
+		glBindBuffer(m_gbType, m_unRId);
+		m_bIsBound = true;
 	}
 	void ShaderBuf::Bind(UInt32 unPoint) const {
-		glBindBuffer(GL_UNIFORM_BUFFER, m_unRId);
 		glBindBufferBase(GL_UNIFORM_BUFFER, unPoint, m_unRId);
 	}
 	void ShaderBuf::Bind(UInt32 unPoint, Size szData, Size szOffset) const {
-		glBindBuffer(GL_UNIFORM_BUFFER, m_unRId);
 		glBindBufferRange(GL_UNIFORM_BUFFER, unPoint, m_unRId, szOffset, szData);
 	}
-	void ShaderBuf::Create(RefKeeper<ShaderBuf>& rShdBuf) { rShdBuf.MakeRef<ShaderBuf>(); }
+	void ShaderBuf::Remake(const ShaderBufLayout& rBufLayout) {
+		if (m_szData < rBufLayout.GetSize()) { SetData(rBufLayout.GetSize()); }
+		for (auto& rBlock : rBufLayout.GetBlocks()) { Bind(rBlock.unBindPoint, rBlock.szAll, rBlock.szOffset); }
+	}
+
+	ShaderBuf* ShaderBuf::Create() { return GraphEngine::Get().NewT<ShaderBuf>(); }
+	void ShaderBuf::Create(RefKeeper<ShaderBuf>& rshdBuf) { rshdBuf.MakeRef<ShaderBuf>(GraphEngine::Get().GetMemory()); }
 	// --==</AShaderBuf>==--
 }
-#endif	// GLIB_GAPI
 namespace GLIB
 {
 	VertexArr::VertexArr() :
@@ -128,6 +127,8 @@ namespace GLIB
 		Unbind();
 	}
 
-	void VertexArr::Create(RefKeeper<VertexArr>& rVtxArr) { rVtxArr.MakeRef<VertexArr>(); }
+	VertexArr* VertexArr::Create() { return GraphEngine::Get().NewT<VertexArr>(); }
+	void VertexArr::Create(RefKeeper<VertexArr>& rvtxArr) { rvtxArr.MakeRef<VertexArr>(GraphEngine::Get().GetMemory()); }
 	// --==</core_methods>==--
 }
+#endif	// GLIB_GAPI

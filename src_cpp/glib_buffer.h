@@ -132,8 +132,8 @@ namespace GLIB
 		// --predicates
 		inline Bit IsBound() const { return m_bIsBound; }
 		// --core_methods
-		virtual void Bind() const;
-		virtual void Unbind() const;
+		void Bind() const;
+		void Unbind() const;
 		// --operators
 		Ptr operator new[](Size szMem) = delete;
 		void operator delete(Ptr pBlock) = delete;
@@ -153,7 +153,9 @@ namespace GLIB
 	public:
 		VertexBuf();
 		virtual ~VertexBuf();
-		static void Create(RefKeeper<VertexBuf>& rVtxBuf);
+
+		static VertexBuf* Create();
+		static void Create(RefKeeper<VertexBuf>& rvtxBuf);
 	};
 	/// Abstract IndexBuffer Class
 	class GLIB_API IndexBuf : public AGBuffer
@@ -161,7 +163,9 @@ namespace GLIB
 	public:
 		IndexBuf();
 		virtual ~IndexBuf();
-		static void Create(RefKeeper<IndexBuf>& rIdxBuf);
+		// --core_methods
+		static IndexBuf* Create();
+		static void Create(RefKeeper<IndexBuf>& ridxBuf);
 	};
 	/// Abstract ShaderBuffer class
 	/// Description:
@@ -172,17 +176,14 @@ namespace GLIB
 		ShaderBuf();
 		virtual ~ShaderBuf();
 		// --getters
-		inline const ShaderBufLayout& GetLayout() { return m_bufLayout; }
-		// --setters
-		void SetLayout(const ShaderBufLayout& rShdLayout);
 		// --core_methods
-		virtual void Bind() const override;
+		void Bind() const;
 		void Bind(UInt32 unPoint) const;
 		void Bind(UInt32 unPoint, Size szData, Size szOffset = 0) const;
+		void Remake(const ShaderBufLayout& rShdLayout);
 
-		static void Create(RefKeeper<ShaderBuf>& rShdBuf);
-	private:
-		ShaderBufLayout m_bufLayout;
+		static ShaderBuf* Create();
+		static void Create(RefKeeper<ShaderBuf>& rsdhBuf);
 	};
 }
 namespace GLIB
@@ -212,7 +213,8 @@ namespace GLIB
 		void Unbind() const;
 		void Remake(const VertexBufLayout& rvtxLayout);
 
-		static void Create(RefKeeper<VertexArr>& rVtxArr);
+		static VertexArr* Create();
+		static void Create(RefKeeper<VertexArr>& rvtxArr);
 	private:
 		UInt32 m_unRId;
 		mutable Bit m_bIsBound;

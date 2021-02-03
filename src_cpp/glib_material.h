@@ -7,6 +7,11 @@
 namespace GLIB
 {
 	/// GraphicsMaterial Class
+	/// Description:
+	/// -- This is a wrapper for shader which sets up uniforms
+	/// -- Graphics material is responsible for colors and maps settings
+	/// -- There are also few attributes it needs to set,
+	/// but generally this is concerned about drawable object properties
 	class GLIB_API GMaterial : public ADataRes
 	{
 	public:
@@ -38,6 +43,9 @@ namespace GLIB
 		// --core_methods
 		void Enable();
 		void Disable();
+
+		static GMaterial* Create(const char* strName);
+		static void Create(const char* strName, RefKeeper<GMaterial>& rgMtl);
 		// --data_methods
 		virtual bool SaveF(const char* strFPath) override;
 		virtual bool LoadF(const char* strFPath) override;

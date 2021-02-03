@@ -1,6 +1,7 @@
 #include <glib_pch.hpp>
 #include "glib_material.h"
 
+#include <glib_engine.h>
 #include <glib_buffer.h>
 #include <glib_texture.h>
 #include <glib_shader.h>
@@ -61,6 +62,9 @@ namespace GLIB
 		}
 		m_pShader->Disable();
 	}
+
+	GMaterial* GMaterial::Create(const char* strName) { return NewT<GMaterial>(GraphEngine::Get().GetMemory(), strName); }
+	void GMaterial::Create(const char* strName, RefKeeper<GMaterial>& rgMtl) { rgMtl.MakeRef<GMaterial>(GraphEngine::Get().GetMemory(), strName); }
 	// --data_methods
 	bool GMaterial::SaveF(const char* strFPath) { return true; }
 	bool GMaterial::LoadF(const char* strFPath) { return true; }
