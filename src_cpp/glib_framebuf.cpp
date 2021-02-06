@@ -10,22 +10,19 @@
 namespace GLIB
 {
 	FrameBuf::FrameBuf(const char* strName, const FrameBufInfo& rfbInfo) :
-		ADataRes(strName),
+		TDataRes(strName),
 		m_unRId(0), m_bIsBound(false),
 		m_Info(rfbInfo),
 		m_rgbaClear{ 0.5f, 0.5f, 0.5f, 1.0f }
-	{
-		ADataRes::AddDataRes<FrameBuf>(this);
-	}
+	{ }
 	FrameBuf::~FrameBuf()
 	{
 		SetViewport({ 0, 0, 0, 0 });
 		Remake();
-		ADataRes::RmvDataRes<FrameBuf>(GetId());
 	}
 
 	// --setters
-	void FrameBuf::SetViewport(V4i xywhViewport) { m_Info.xywhViewport = xywhViewport; }
+	void FrameBuf::SetViewport(V4i rectViewport) { m_Info.rectViewport = rectViewport; }
 	void FrameBuf::SetClearColor(V4f rgbaClear) { m_rgbaClear = rgbaClear; }
 	void FrameBuf::AttachTexture(RefKeeper<Texture>& rTex) {
 		m_Attachments.push_back(rTex);
@@ -106,7 +103,7 @@ namespace GLIB
 		bool bIsCompleted = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 		NWL_ASSERT(bIsCompleted, "FrameBufOgl is not created!");
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		Unbind();
 	}
 	void FrameBuf::Clear(UInt32 bitMask) {
 		glClearColor(m_rgbaClear.r, m_rgbaClear.g, m_rgbaClear.b, m_rgbaClear.a);
@@ -115,16 +112,19 @@ namespace GLIB
 
 	void FrameBuf::ReadPixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nW, Int32 nH)
 	{
+		const TextureInfo& texInfo = GetAttachment()->GetTexInfo();
 		Bind();
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + unAttachIdx);
-		glReadPixels(nX, nY, nW, nH, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+		glReadPixels(nX, nY, nW, nH, texInfo.texFormat, texInfo.pxFormat, pData);
 		Unbind();
 	}
-	void FrameBuf::WritePixels(Ptr pData, UInt32 unAttachIdx, Int32 nW, Int32 nH)
+	void FrameBuf::WritePixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nW, Int32 nH)
 	{
+		const TextureInfo& texInfo = GetAttachment()->GetTexInfo();
 		Bind();
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + unAttachIdx);
-		glDrawPixels(nW, nH, GL_RGBA, GL_UNSIGNED_BYTE, pData);
+		//glDrawBuffer(GL_COLOR_ATTACHMENT0 + unAttachIdx);
+		glRasterPos2i(nX, nY);
+		glDrawPixels(nW, nH, texInfo.texFormat, texInfo.pxFormat, pData);
 		Unbind();
 	}
 

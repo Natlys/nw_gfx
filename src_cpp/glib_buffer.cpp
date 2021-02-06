@@ -94,7 +94,6 @@ namespace GLIB
 {
 	VertexArr::VertexArr() :
 		m_unRId(0), m_bIsBound(false),
-		m_idxBuf(nullptr),
 		m_gpType(PT_TRIANGLES) { glCreateVertexArrays(1, &m_unRId); }
 	VertexArr::~VertexArr() { glDeleteVertexArrays(1, &m_unRId); }
 	
@@ -112,10 +111,14 @@ namespace GLIB
 	}
 
 	void VertexArr::Remake(const VertexBufLayout& rvtxLayout) {
+		NWL_ASSERT(m_vtxBufs.size() > 0, "there are no vertex buffers!");
 		Bind();
-		if (m_idxBuf != nullptr) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuf->GetRenderId()); }
+		if (m_idxBuf.GetRef() != nullptr) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_idxBuf->GetRenderId()); }
 		else { glBindBuffer(GBT_INDEX, 0); }
-		for (auto& itBuf : m_vtxBufs) { glBindBuffer(GL_ARRAY_BUFFER, itBuf->GetRenderId()); }
+		for (auto& itBuf : m_vtxBufs) {
+			NWL_ASSERT(itBuf->GetRenderId() != 0, "vertex buffer is invalid!");
+			glBindBuffer(GL_ARRAY_BUFFER, itBuf->GetRenderId());
+		}
 		for (UInt32 ati = 0; ati < m_vtxLayout.GetElems().size(); ati++) { glDisableVertexAttribArray(ati); }
 		m_vtxLayout = rvtxLayout;
 		for (UInt32 ati = 0; ati < m_vtxLayout.GetElems().size(); ati++) {
@@ -125,6 +128,18 @@ namespace GLIB
 				rBufElem.bNormalized ? GL_TRUE : GL_FALSE, m_vtxLayout.GetStride(), reinterpret_cast<Ptr>(rBufElem.unOffset));
 		}
 		Unbind();
+	}
+	void VertexArr::CreateVtxBuffer()
+	{
+		RefKeeper<VertexBuf> vtxBuf;
+		VertexBuf::Create(vtxBuf);
+		AddVtxBuffer(vtxBuf);
+	}
+	void VertexArr::CreateIdxBuffer()
+	{
+		RefKeeper<IndexBuf> idxBuf;
+		IndexBuf::Create(idxBuf);
+		SetIdxBuffer(idxBuf);
 	}
 
 	VertexArr* VertexArr::Create() { return GraphEngine::Get().NewT<VertexArr>(); }

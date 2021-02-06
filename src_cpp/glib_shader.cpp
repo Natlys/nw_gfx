@@ -10,17 +10,9 @@
 namespace GLIB
 {
 	SubShader::SubShader(const char* strName, ShaderTypes sdType) :
-		ACodeRes(strName),
-		m_shdType(sdType), m_unRId(0), m_pOverShader(nullptr)
-	{
-		Remake();
-		ADataRes::AddDataRes<SubShader>(this);
-	}
-	SubShader::~SubShader()
-	{
-		Remake();
-		ADataRes::RmvDataRes<SubShader>(GetId());
-	}
+		TDataRes(strName), ACodeRes(),
+		m_shdType(sdType), m_unRId(0), m_pOverShader(nullptr) { Remake(); }
+	SubShader::~SubShader() { Remake(); }
 
 	// --==<data_methods>==--
 	bool SubShader::SaveF(const char* strFPath) { return true; }
@@ -73,10 +65,12 @@ namespace GLIB
 				strCodeStream >> strToken;
 				if (strToken == "core") m_strName += strToken;
 			}
-			else if (strToken.find("layout") != -1) {		// layout(location=%x/%std140)in /uniform{
-				if ((nCurr = strToken.find(')')) != -1) {}
-				else { std::getline(strCodeStream, strToken, ')'); }
-				strCodeStream >> strToken;
+			else if (strToken.find("layout") != -1) {		// layout(location=%x/%std140)in/uniform{
+				if ((nCurr = strToken.find(')')) != -1) {
+					strToken = strToken.substr(nCurr + 1, strToken.size() - nCurr);
+					if (strToken == "") { strCodeStream >> strToken; }
+				}
+				else { std::getline(strCodeStream, strToken, ')'); strCodeStream >> strToken; }
 				if (strToken == "in") {		// layout(location=%loc)in %type %name;
 					strCodeStream >> strToken;
 					/// --<macro_helper>--
@@ -90,7 +84,7 @@ namespace GLIB
 		BufferElement BufElem(&strName[0], type, count, false);	\
 		while(unCount-- > 0) { command(BufElem); } }
 				/// --<macro_helper>--
-					MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, m_pOverShader->m_vtxLayout.AddElement)
+						MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, m_pOverShader->m_vtxLayout.AddElement)
 						MAKE_BUF_ELEM(strToken == "short", SDT_INT16, 1, m_pOverShader->m_vtxLayout.AddElement)
 						MAKE_BUF_ELEM(strToken == "int", SDT_INT32, 1, m_pOverShader->m_vtxLayout.AddElement)
 						MAKE_BUF_ELEM(strToken == "float", SDT_FLOAT32, 1, m_pOverShader->m_vtxLayout.AddElement)
@@ -114,7 +108,7 @@ namespace GLIB
 						strCodeStream >> strToken;
 						if (strToken.find('{') != -1) { continue; }
 						if (strToken.find('}') != -1) { break; }
-						MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, shdBlock.BufElems.push_back)
+							MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, shdBlock.BufElems.push_back)
 							MAKE_BUF_ELEM(strToken == "short", SDT_INT16, 1, shdBlock.BufElems.push_back)
 							MAKE_BUF_ELEM(strToken == "int", SDT_INT32, 1, shdBlock.BufElems.push_back)
 							MAKE_BUF_ELEM(strToken == "float", SDT_FLOAT32, 1, shdBlock.BufElems.push_back)
@@ -170,17 +164,9 @@ namespace GLIB
 namespace GLIB
 {
 	Shader::Shader(const char* strName) :
-		ACodeRes(strName),
-		m_unRId(0), m_bIsEnabled(false)
-	{
-		Remake();
-		ADataRes::AddDataRes<Shader>(this);
-	}
-	Shader::~Shader()
-	{
-		Remake();
-		ADataRes::RmvDataRes<Shader>(GetId());
-	}
+		TDataRes(strName), ACodeRes(),
+		m_unRId(0), m_bIsEnabled(false) { Remake(); }
+	Shader::~Shader() { Remake(); }
 
 	// --setters
 	void Shader::SetBool(const char* name, bool value) const { glUniform1i(GetUniformLoc(name), value); }

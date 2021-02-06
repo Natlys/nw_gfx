@@ -8,9 +8,10 @@
 #if (defined GLIB_GAPI)
 namespace GLIB
 {
-	/// Abstract SubShader Class
-	class GLIB_API SubShader : public ACodeRes
+	/// SubShader Class
+	class GLIB_API SubShader : public TDataRes<SubShader>, public ACodeRes
 	{
+	public:
 		friend class Shader;
 	public:
 		SubShader(const char* strName, ShaderTypes sdType);
@@ -39,7 +40,7 @@ namespace GLIB
 		Shader* m_pOverShader;
 	};
 	/// Shader Class
-	class GLIB_API Shader : public ACodeRes
+	class GLIB_API Shader : public TDataRes<Shader>, public ACodeRes
 	{
 	public:
 		using Globals = HashMap<String, Int32>;

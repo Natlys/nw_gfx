@@ -195,16 +195,15 @@ namespace GLIB
 		VertexArr();
 		~VertexArr();
 		// --getters
-		inline DArray<VertexBuf*>& GetVtxBuffers() { return m_vtxBufs; }
-		inline VertexBuf* GetVtxBuffer(UInt32 unIdx = 0) { return m_vtxBufs[unIdx]; }
-		inline IndexBuf* GetIdxBuffer() { return m_idxBuf; }
+		inline DArray<RefKeeper<VertexBuf>>& GetVtxBuffers() { return m_vtxBufs; }
+		inline VertexBuf* GetVtxBuffer(UInt32 unIdx = 0) { return m_vtxBufs[unIdx].GetRef(); }
+		inline IndexBuf* GetIdxBuffer() { return m_idxBuf.GetRef(); }
 		inline VertexBufLayout& GetLayout() { return m_vtxLayout; }
 		inline GPrimitiveTypes GetDrawPrimitive() const { return m_gpType; }
 		// --setters
-		inline void AddVtxBuffer(VertexBuf& rVtxBuf) { m_vtxBufs.push_back(&rVtxBuf); }
-		inline void RmvVtxBuffer(VertexBuf* pVtxBuf) { m_vtxBufs.erase(std::find(m_vtxBufs.begin(), m_vtxBufs.end(), pVtxBuf)); }
+		inline void AddVtxBuffer(RefKeeper<VertexBuf>& rvtxBuf) { m_vtxBufs.push_back(rvtxBuf); }
 		inline void RmvVtxBuffer(UInt32 unIdx) { m_vtxBufs.erase(m_vtxBufs.begin() + unIdx); }
-		inline void SetIdxBuffer(IndexBuf* pIdxBuf) { m_idxBuf = pIdxBuf; }
+		inline void SetIdxBuffer(RefKeeper<IndexBuf>& ridxBuf) { m_idxBuf.SetRef(ridxBuf); }
 		inline void SetDrawPrimitive(GPrimitiveTypes gpType) { m_gpType = gpType; }
 		// --predicates
 		inline Bit IsBound() { return m_bIsBound; }
@@ -212,14 +211,16 @@ namespace GLIB
 		void Bind() const;
 		void Unbind() const;
 		void Remake(const VertexBufLayout& rvtxLayout);
+		void CreateVtxBuffer();
+		void CreateIdxBuffer();
 
 		static VertexArr* Create();
 		static void Create(RefKeeper<VertexArr>& rvtxArr);
 	private:
 		UInt32 m_unRId;
 		mutable Bit m_bIsBound;
-		DArray<VertexBuf*> m_vtxBufs;
-		IndexBuf* m_idxBuf;
+		DArray<RefKeeper<VertexBuf>> m_vtxBufs;
+		RefKeeper<IndexBuf> m_idxBuf;
 		VertexBufLayout m_vtxLayout;
 		GPrimitiveTypes m_gpType;
 	};

@@ -63,7 +63,7 @@ namespace GLIB
 		UInt8 unTexCount = 0;
 		// --objects
 		Shader* pShader = nullptr;
-		GMaterial* pGMtl = nullptr;
+		GMaterial* pgMtl = nullptr;
 		VertexBuf* pVtxBuf = nullptr;
 		IndexBuf* pIdxBuf = nullptr;
 		ShaderBuf* pShdBuf = nullptr;

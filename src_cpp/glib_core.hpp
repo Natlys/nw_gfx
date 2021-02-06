@@ -500,9 +500,7 @@ namespace GLIB
 	struct GLIB_API GCamera;
 
 	struct GLIB_API FrameBufInfo;
-	struct GLIB_API ImageInfo;
 	struct GLIB_API TextureInfo;
-	struct GLIB_API RenderInfo;
 
 	struct GLIB_API VertexBatch1d;
 	struct GLIB_API VertexBatch2d;

@@ -70,16 +70,6 @@ namespace GLIB
 }
 namespace GLIB
 {
-	/// ImageInfo struct
-	struct GLIB_API ImageInfo
-	{
-	public:
-		UByte* ClrData;
-		Int32 nWidth = 1, nHeight = 1, nDepth = 1;
-		Int32 nChannels = 1;
-	public:
-		inline Size GetDataSize() { return nChannels * nWidth * nHeight * nDepth; }
-	};
 	/// TextureInfo struct
 	struct GLIB_API TextureInfo
 	{
@@ -101,7 +91,7 @@ namespace GLIB
 	/// -> Set props and data -> LoadData -> MakeTexture -> Bind drawing stuff
 	/// -> Enable -> Draw -> Disable
 	/// --It's a wrapping image which has to wrap a mesh
-	class GLIB_API Texture : public ADataRes
+	class GLIB_API Texture : public TDataRes<Texture>
 	{
 	public:
 		Texture(const char* strName, TextureTypes texTypes);
@@ -123,6 +113,8 @@ namespace GLIB
 		void Bind(UInt32 unTexSlot = 0);
 		void Unbind();
 		void Remake();
+		void Clear(Ptr pValue);
+
 		static Texture* Create(const char* strName, TextureTypes texType);
 		static void Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex);
 		// --data_methods

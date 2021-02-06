@@ -9,8 +9,8 @@
 namespace GLIB
 {
 	GMaterial::GMaterial(const char* strName) :
-		ADataRes(strName) { ADataRes::AddDataRes<GMaterial>(this); }
-	GMaterial::~GMaterial() { ADataRes::RmvDataRes<GMaterial>(GetId()); }
+		TDataRes(strName) { }
+	GMaterial::~GMaterial() { }
 
 	// --setters
 	void GMaterial::SetShader(Shader* pShader) {
@@ -22,7 +22,7 @@ namespace GLIB
 			for (auto& itGlob : pShader->GetShdLayout().GetGlobals()) {
 				switch (itGlob.sdType) {
 				case SDT_FLOAT32: if (itGlob.unCount == 4) { m_Colors[itGlob.strName] = V4f{ 1.0f, 1.0f, 1.0f, 1.0f }; } break;
-				case SDT_SAMPLER: m_Textures[itGlob.strName] = ADataRes::GetDataRes<Texture>("tex_white_solid"); break;
+				case SDT_SAMPLER: m_Textures[itGlob.strName] = TDataRes<Texture>::GetDataRes("tex_white_solid"); break;
 				}
 			}
 		}

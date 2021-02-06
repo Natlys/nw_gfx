@@ -1,5 +1,7 @@
-<<<<<<< HEAD
-# Prerequisites
+# directories
+bin/
+
+# gPrerequisites
 *.d
 
 # Compiled Object files
@@ -11,6 +13,7 @@
 # Precompiled Headers
 *.gch
 *.pch
+*.pdb
 
 # Compiled Dynamic libraries
 *.so
@@ -31,11 +34,6 @@
 *.exe
 *.out
 *.app
-=======
-# Ignore these directories
-.vs/
-bin/
-.git/
-# files
-**.vcxproj**
->>>>>>> root/root_
+
+# Visual studio
+*.vcx**

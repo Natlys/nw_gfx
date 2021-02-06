@@ -18,7 +18,7 @@ void main(){
 #shader_type pixel
 #version 400 core
 
-out vec4 ps_pxClr;
+out vec4 ps_pxClr0;
 
 in VS_OUT{
 	vec2 texCrd;
@@ -27,6 +27,7 @@ in VS_OUT{
 uniform sampler2D unf_tex;
 
 void main(){
-	ps_pxClr = vec4(texture(unf_tex, ps_in.texCrd).rgba);
+	ps_pxClr0 = vec4(texture(unf_tex, ps_in.texCrd).rgba);
 }
+
 )";

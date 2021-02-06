@@ -10,18 +10,10 @@
 namespace GLIB
 {
 	Texture::Texture(const char* strName, TextureTypes texType) :
-		ADataRes(strName),
+		TDataRes(strName),
 		m_texType(texType), m_unRId(0), m_unTexSlot(0), m_bIsBound(false),
-		m_texInfo(TextureInfo()), m_imgInfo(ImageInfo())
-	{
-		ADataRes::AddDataRes<Texture>(this);
-	}
-	Texture::~Texture()
-	{
-		m_imgInfo.nWidth = -1;
-		Remake();
-		ADataRes::RmvDataRes<Texture>(GetId());
-	}
+		m_texInfo(TextureInfo()), m_imgInfo(ImageInfo()) { Remake(); }
+	Texture::~Texture() { m_imgInfo.nWidth = -1; Remake(); }
 	
 	// --setters
 	void Texture::SetInfo(const TextureInfo& rTexInfo) {
@@ -64,11 +56,11 @@ namespace GLIB
 			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_S, m_texInfo.WrapTypeS);
 			glTexImage1D(GL_TEXTURE_1D, 0, m_texInfo.texInterFormat,
 				m_imgInfo.nWidth, 0,
-				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			if (m_texInfo.bGenSubImage) {
 				glTexSubImage1D(GL_TEXTURE_1D, 0,
 					0, m_imgInfo.nWidth,
-					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			}
 			break;
 		case TXT_2D:
@@ -78,11 +70,11 @@ namespace GLIB
 			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_T, m_texInfo.WrapTypeT);
 			glTexImage2D(GL_TEXTURE_2D, 0, m_texInfo.texInterFormat,
 				m_imgInfo.nWidth, m_imgInfo.nHeight, 0,
-				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			if (m_texInfo.bGenSubImage) {
 				glTexSubImage2D(GL_TEXTURE_2D, 0,
 					0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight,
-					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			}
 			break;
 		case TXT_3D:
@@ -93,11 +85,11 @@ namespace GLIB
 			glTextureParameteri(m_unRId, GL_TEXTURE_WRAP_R, m_texInfo.WrapTypeR);
 			glTexImage3D(GL_TEXTURE_3D, 0, m_texInfo.texInterFormat,
 				m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth, 0,
-				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+				m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			if (m_texInfo.bGenSubImage) {
 				glTexSubImage3D(GL_TEXTURE_3D, 0,
 					0, 0, 0, m_imgInfo.nWidth, m_imgInfo.nHeight, m_imgInfo.nDepth,
-					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.ClrData[0]);
+					m_texInfo.texFormat, m_texInfo.pxFormat, &m_imgInfo.pClrData[0]);
 			}
 		case TXT_2D_MULTISAMPLE:
 			glTexImage2DMultisample(m_texType, m_texInfo.unSamples, m_texInfo.texInterFormat,
@@ -114,6 +106,10 @@ namespace GLIB
 
 		Unbind();
 	}
+	void Texture::Clear(Ptr pValue) {
+		glClearTexImage(m_unRId, 0, m_texInfo.texFormat, m_texInfo.pxFormat, pValue);
+	}
+
 	Texture* Texture::Create(const char* strName, TextureTypes texType) { return GraphEngine::Get().NewT<Texture>(strName, texType); }
 	void Texture::Create(const char* strName, TextureTypes texType, RefKeeper<Texture>& rTex) {
 		rTex.MakeRef<Texture>(GraphEngine::Get().GetMemory(), strName, texType);
@@ -137,8 +133,8 @@ namespace GLIB
 		ImageInfo imgInfo;
 		TextureInfo texInfo;
 
-		imgInfo.ClrData = stbi_load(strFPath, &imgInfo.nWidth, &imgInfo.nHeight, &imgInfo.nChannels, 0);
-		if (imgInfo.ClrData == nullptr) { bSuccess = false; }
+		imgInfo.pClrData = stbi_load(strFPath, &imgInfo.nWidth, &imgInfo.nHeight, &imgInfo.nChannels, 0);
+		if (imgInfo.pClrData == nullptr) { bSuccess = false; }
 		switch (imgInfo.nChannels) {
 		case 1: texInfo.texFormat = TXF_RED; texInfo.texInterFormat = TXFI_RED_UINT32; break;
 		case 3: texInfo.texFormat = TXF_RGB; texInfo.texInterFormat = TXFI_RGB; break;
@@ -148,7 +144,7 @@ namespace GLIB
 		if (!bSuccess) {
 			imgInfo.nWidth = imgInfo.nHeight = imgInfo.nDepth = 1;
 			imgInfo.nChannels = 4;
-			imgInfo.ClrData = s_texErr;
+			imgInfo.pClrData = s_texErr;
 			texInfo.texFormat = TXF_RGBA; texInfo.texInterFormat = TXFI_RGBA8;
 			texInfo.FilterMag = texInfo.FilterMin = TXF_NEAREST;
 			texInfo.WrapTypeS = texInfo.WrapTypeT = texInfo.WrapTypeR = TXW_REPEAT;
@@ -157,7 +153,7 @@ namespace GLIB
 		SetInfo(texInfo);
 		SetInfo(imgInfo);
 		Remake();
-		if (bSuccess) { stbi_image_free(imgInfo.ClrData); }
+		if (bSuccess) { stbi_image_free(imgInfo.pClrData); }
 
 		return bSuccess;
 	}

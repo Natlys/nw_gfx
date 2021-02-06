@@ -7,7 +7,7 @@ layout(location = 2) in vec2 atb_texCrd;
 layout(location = 3) in float atb_texSlot;
 layout(location = 4) in mat4 atb_mdlTransform;
 
-out VS_OUT{
+out VS_BLOCK{
 	vec4 vtxClr;
 	vec2 texCrd;
 	float texSlot;
@@ -34,17 +34,17 @@ void main()
 
 layout (location = 0) out vec4 ps_pxClr0;
 
-in VS_OUT{
+in VS_BLOCK{
 	vec4 vtxClr;
 	vec2 texCrd;
 	float texSlot;
-} vs_in;
+} ps_in;
 
 uniform vec4 unf_albedoClr;
 uniform sampler2D unf_tex[7];
 
 void main()
 {
-	ps_pxClr0 = vec4(texture(unf_tex[int(vs_in.texSlot)], vs_in.texCrd).rgba *
-	vs_in.vtxClr * unf_albedoClr);
+	ps_pxClr0 = vec4(texture(unf_tex[int(ps_in.texSlot)], ps_in.texCrd).rgba *
+		ps_in.vtxClr * unf_albedoClr);
 }

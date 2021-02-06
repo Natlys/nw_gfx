@@ -4,6 +4,8 @@
 #include <nwlib/nwl_engine.h>
 
 #include <glib_tools.h>
+#include <glib_drawable.h>
+#include <glib_material.h>
 #include <glib_core.hpp>
 
 namespace GLIB
@@ -68,9 +70,9 @@ namespace GLIB
 			unDrawCalls = 0;
 		}
 		// --operators
-		inline OutStream& operator<<(OutStream& rStream);
+		inline OStream& operator<<(OStream& rStream);
 	};
-	inline OutStream& GraphInfo::operator<<(OutStream& rStream) {
+	inline OStream& GraphInfo::operator<<(OStream& rStream) {
 		rStream <<
 			"====<graphics_info>====" << std::endl <<
 			"graphics context: " << &strVersion[0] << std::endl <<
@@ -81,13 +83,13 @@ namespace GLIB
 			"====<graphics_info>====" << std::endl;
 		return rStream;
 	}
-	inline OutStream& operator<<(OutStream& rStream, GraphInfo& rgInfo) { return rgInfo.operator<<(rStream); }
+	inline OStream& operator<<(OStream& rStream, GraphInfo& rgInfo) { return rgInfo.operator<<(rStream); }
 }
 namespace GLIB
 {
 	/// GraphicsEngine class
 	/// -- Depending on the specification during the build
-	class GLIB_API GraphEngine : public AEngine<GraphEngine>
+	class GLIB_API GraphEngine : public AEngine<GraphEngine, AEngineState>
 	{
 	public:
 		GraphEngine();
@@ -98,7 +100,7 @@ namespace GLIB
 		inline const GraphConfig& GetConfigs() { return m_Config; }
 		inline FrameBuf* GetFrameBuf() { return m_pfmBuf; }
 		// --setters
-		void SetModes(Bit bEnable, ProcessingModes pm);
+		void SetModes(Bit bEnable, ProcessingModes pModes);
 		void SetViewport(Int32 nX, Int32 nY, Int32 nWidth, Int32 nHeight);
 		void SetDrawMode(DrawModes dMode, FacePlanes facePlane);
 		void SetLineWidth(Float32 nLineWidth);
@@ -106,7 +108,7 @@ namespace GLIB
 		void SetBlendFunc(BlendConfigs factorSrc, BlendConfigs factorDest);
 		void SetDepthFunc(DepthConfigs funcId);
 		void SetStencilFunc(StencilConfigs funcId, UInt32 unRefValue, UInt8 unBitMask);
-		void SetFrameBuf(FrameBuf* pfmBuf) { m_pfmBuf = pfmBuf; }
+		void SetFrameBuf(FrameBuf* pfmBuf);
 		// --core_methods
 		virtual void Run() override;
 		virtual bool Init() override;
@@ -114,13 +116,14 @@ namespace GLIB
 		virtual void Update() override;
 		virtual void OnEvent(AEvent& rEvt) override;
 		// --drawing_methods
-		void OnDraw(VertexArr& rVtxArray, GMaterial& rGMtl);
+		void OnDraw(VertexArr& rVtxArray, GMaterial& rgMtl);
 		void OnDraw(Drawable& rDrb);
 	private:
 		GraphInfo m_Info;
 		GraphConfig m_Config;
 		
 		FrameBuf* m_pfmBuf;
+		Drawable m_drbScreen;
 	};
 }
 

@@ -10,7 +10,7 @@ namespace GLIB
 	struct GLIB_API FrameBufInfo
 	{
 	public:
-		V4i xywhViewport = { 0, 0, 1, 1 };
+		V4i rectViewport = { 0, 0, 1, 1 };
 		Bit bSwapChain = false;
 		Bit bResizable = true;
 		UInt32 unColorCount = 0;
@@ -18,11 +18,11 @@ namespace GLIB
 		Bit bHasStencil = false;
 
 	public:
-		inline Int32 GetWidth() const { return { xywhViewport.z - xywhViewport.x }; }
-		inline Int32 GetHeight() const { return { xywhViewport.w - xywhViewport.y }; }
+		inline Int32 GetWidth() const { return { rectViewport.z - rectViewport.x }; }
+		inline Int32 GetHeight() const { return { rectViewport.w - rectViewport.y }; }
 	};
 	/// FrameBuffer class
-	class GLIB_API FrameBuf : public ADataRes
+	class GLIB_API FrameBuf : public TDataRes<FrameBuf>
 	{
 	public:
 		FrameBuf(const char* strName, const FrameBufInfo& rFbInfo);
@@ -33,21 +33,23 @@ namespace GLIB
 		inline Int32 GetWidth() const { return m_Info.GetWidth(); }
 		inline Int32 GetHeight() const { return m_Info.GetHeight(); }
 		inline Texture* GetAttachment(UInt32 unIdx = 0);
-		inline const V4i& GetViewport() const { return m_Info.xywhViewport; }
+		inline const V4i& GetViewport() const { return m_Info.rectViewport; }
 		inline const FrameBufInfo& GetInfo() const { return m_Info; }
 		inline V4f GetClearColor() const { return m_rgbaClear; }
 		// --setters
-		void SetViewport(V4i xywhViewport);
+		void SetViewport(V4i rectViewport);
 		void SetClearColor(V4f rgbaClear);
 		void AttachTexture(RefKeeper<Texture>& rTex);
 		void DetachTexture(UInt32 unIdx);
+		// --predicates
+		inline bool IsBound() { return m_bIsBound; }
 		// --core_methods
 		void Bind() const;
 		void Unbind() const;
 		void Remake();
 		void Clear(UInt32 bitMask = FB_COLOR | FB_DEPTH | FB_STENCIL);
 		void ReadPixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nWidth = 1, Int32 nHeight = 1);
-		void WritePixels(Ptr pData, UInt32 unAttachIdx, Int32 nWidth, Int32 nHeight);
+		void WritePixels(Ptr pData, UInt32 unAttachIdx, Int32 nX, Int32 nY, Int32 nWidth = 1, Int32 nHeight = 1);
 
 		static FrameBuf* Create(const char* strName, const FrameBufInfo& rfbInfo);
 		static void Create(const char* strName, const FrameBufInfo& rfbInfo, RefKeeper<FrameBuf>& rfmBuf);
