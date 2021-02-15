@@ -1,53 +1,47 @@
 --==<graphics_library_project>==--
-project "nw_glib"
+project "nw_gfx"
 	kind "staticlib" --.lib
 	staticruntime "on"
 	language "c++"
 	cppdialect "c++17"
-	targetdir ("bin/"..dir_out.."%{prj.name}")
-	objdir ("bin/int/"..dir_out.."%{prj.name}")
-	pchheader "glib_pch.hpp"
-	pchsource "src_cpp/glib_pch.cpp"
+	targetdir (dir_out_res)
+	objdir (dir_out_int)
+	pchheader "nwg_pch.hpp"
+	pchsource "src_cpp/nwg_pch.cpp"
 	files
 	{
-		"src_cpp/**.c**",
-		"src_cpp/**.h**",
-		"src_glsl/**.glsl",
+		"%{dir_cpp.own}**.c**",
+		"%{dir_cpp.own}**.h**",
+		dir_data,
+		dir_lua.."**.**",
+		dir_glsl.."**.**",
+		dir_hlsl.."**.**",
+		dir_data.."**.h", dir_data.."**.rc",  dir_data.."**.aps",
 	}
 	includedirs
 	{
-		"src_cpp/",
+		"%{dir_cpp.own}",
+		"%{dir_cpp.ext}",
 		"%{dir_cpp.nw_lib}",
-		"%{dir_cpp.glfw}",
-		"%{dir_cpp.glad}",
-		"%{dir_cpp.stbi}"
+		dir_data,
 	}
 	libdirs
 	{
 		"%{dir_lib.nw_lib}",
-		"%{dir_lib.glfw}",
-		"%{dir_lib.glad}"
 	}
 	links
 	{
 		"nw_lib",
-		"glfw",
-		"glad",
-		"opengl32.lib"
-	}
-	defines
-	{
-		"GLIB_BUILD_LIB",
-		"GLIB_LINK_STATIC"
-		--"GLIB_LINK_DYNAMIC"
+		"opengl32.lib",
+		"d3d11.lib",
 	}
 	filter "system:windows"
 		systemversion "latest"
-		defines { "GLIB_PLATFORM_WINDOWS" }
+		defines { "NWG_PLATFORM_WINDOWS" }
 	filter "configurations:debug"
-		defines "GLIB_DEBUG"
+		defines "NWG_DEBUG"
 		symbols "on"
 	filter "configurations:release"
-		defines "GLIB_RELEASE"
+		defines "NWG_RELEASE"
 		optimize "on"
---==</graphics_library_project>==--
+--==</graphics_project>==--

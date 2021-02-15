@@ -7,7 +7,7 @@ layout(location = 2) in vec2 atb_texCrd;
 layout(location = 3) in float atb_texSlot;
 layout(location = 4) in mat4 atb_mdlTransform;
 
-out VS_BLOCK{
+out VS_OUT{
 	vec4 vtxClr;
 	vec2 texCrd;
 	float texSlot;
@@ -21,8 +21,8 @@ layout(std140) uniform unf_Matrices{
 void main()
 {
 	gl_Position = unf_camProj * unf_camView *
-	atb_mdlTransform *
-	vec4(atb_vtxCrd.xyz, 1.0f);
+		atb_mdlTransform *
+		vec4(atb_vtxCrd.xyz, 1.0f);
 
 	vs_out.vtxClr = atb_vtxClr;
 	vs_out.texCrd = atb_texCrd;
@@ -32,19 +32,19 @@ void main()
 #shader_type pixel
 #version 400 core
 
-layout (location = 0) out vec4 ps_pxClr0;
+out vec4 ps_pxClr;
 
-in VS_BLOCK{
+in VS_OUT{
 	vec4 vtxClr;
 	vec2 texCrd;
 	float texSlot;
-} ps_in;
+}vs_in;
 
 uniform vec4 unf_albedoClr;
 uniform sampler2D unf_tex[7];
 
 void main()
 {
-	ps_pxClr0 = vec4(texture(unf_tex[int(ps_in.texSlot)], ps_in.texCrd).rgba *
-		ps_in.vtxClr * unf_albedoClr);
+	ps_pxClr = vec4(texture(unf_tex[int(vs_in.texSlot)], vs_in.texCrd).rgba *
+		vs_in.vtxClr * unf_albedoClr);
 }
