@@ -1,8 +1,6 @@
 #include <nwg_pch.hpp>
 #include "nwg_camera_lad.h"
 
-#pragma warning(disable:4244)
-
 namespace NWG
 {
 	GfxCameraLad::GfxCameraLad() :
@@ -21,41 +19,25 @@ namespace NWG
 		float MoveSpeed = this->nMoveSpeed * TimeSys::GetDeltaS();
 		if (rCamera.GetMode() == GCM_2D)
 		{
-			if (m_kbd->GetHeld(KC_W)) {
-				rCamera.yCrd += MoveSpeed;
-			}
-			if (m_kbd->GetHeld(KC_S)) {
-				rCamera.yCrd -= MoveSpeed;
-			}
-			if (m_kbd->GetHeld(KC_D)) {
-				rCamera.xCrd += MoveSpeed;
-			}
-			if (m_kbd->GetHeld(KC_A))
-				rCamera.xCrd -= MoveSpeed;
+			if (m_kbd->GetHeld(KC_W)) { rCamera.xyzCrd.y += MoveSpeed; }
+			if (m_kbd->GetHeld(KC_S)) { rCamera.xyzCrd.y -= MoveSpeed; }
+			if (m_kbd->GetHeld(KC_D)) { rCamera.xyzCrd.x += MoveSpeed; }
+			if (m_kbd->GetHeld(KC_A)) { rCamera.xyzCrd.x -= MoveSpeed; }
 		}
 		else if (rCamera.GetMode() == GCM_3D) {
 			MoveSpeed = -MoveSpeed;
 			if (m_kbd->GetHeld(KC_W)) {	// Move Forward
-				rCamera.xCrd += rCamera.dirFront.x * MoveSpeed;
+				rCamera.xyzCrd.x += rCamera.dirFront.x * MoveSpeed;
 				//rCamera.yCrd += rCamera.dirFront.y * MoveSpeed;
-				rCamera.zCrd += rCamera.dirFront.z * MoveSpeed;
-			} if (m_kbd->GetHeld(KC_S)) {	// Move Back
-				rCamera.xCrd -= rCamera.dirFront.x * MoveSpeed;
-				//rCamera.yCrd -= rCamera.dirFront.y * MoveSpeed;
-				rCamera.zCrd -= rCamera.dirFront.z * MoveSpeed;
-			} if (m_kbd->GetHeld(KC_D)) {	// Move Right
-				rCamera.xCrd += rCamera.dirRight.x * MoveSpeed;
-				rCamera.yCrd += rCamera.dirRight.y * MoveSpeed;
-				rCamera.zCrd += rCamera.dirRight.z * MoveSpeed;
-			} if (m_kbd->GetHeld(KC_A)) {	// Move Left
-				rCamera.xCrd -= rCamera.dirRight.x * MoveSpeed;
-				rCamera.yCrd -= rCamera.dirRight.y * MoveSpeed;
-				rCamera.zCrd -= rCamera.dirRight.z * MoveSpeed;
-			} if (m_kbd->GetHeld(KC_SPACE)) {		// Move Up
-				rCamera.yCrd -= MoveSpeed;
-			} if (m_kbd->GetHeld(KC_LSHIFT)) {	// Move Down
-				rCamera.yCrd += MoveSpeed;
+				rCamera.xyzCrd.z += rCamera.dirFront.z * MoveSpeed;
 			}
+			if (m_kbd->GetHeld(KC_S)) {	// Move Back
+				rCamera.xyzCrd.x -= rCamera.dirFront.x * MoveSpeed;
+				//rCamera.yCrd -= rCamera.dirFront.y * MoveSpeed;
+				rCamera.xyzCrd.z -= rCamera.dirFront.z * MoveSpeed; } if (m_kbd->GetHeld(KC_D)) { rCamera.xyzCrd += rCamera.dirRight * MoveSpeed; }
+			if (m_kbd->GetHeld(KC_A)) { rCamera.xyzCrd -= rCamera.dirRight * MoveSpeed; }
+			if (m_kbd->GetHeld(KC_SPACE)) { rCamera.xyzCrd -= MoveSpeed; }
+			if (m_kbd->GetHeld(KC_LSHIFT)) { rCamera.xyzCrd += MoveSpeed; }
 		}
 	}
 	// --==</core_methods>==--
@@ -65,31 +47,31 @@ namespace NWG
 	{
 		if (!(m_crs->GetMode() & CRS_CAPTURED)) { return; }
 		switch (rcEvt.evType) {
-		case ET_CURSOR_MOVE:
+		case EVT_CURSOR_MOVE:
 			if (rCamera.GetMode() == GCM_2D) {
 				if (m_crs->GetHeld(CRS_RIGHT)) {
 					rCamera.xyzCrd.x += -m_crs->GetMoveDeltaX() * TimeSys::GetDeltaS() * nMoveSpeed;
 					rCamera.xyzCrd.y += m_crs->GetMoveDeltaY() * TimeSys::GetDeltaS() * nMoveSpeed;
 				}
-				float nRoll_deg = rCamera.nRoll + m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDeltaS();
-				if (nRoll_deg < -nMaxRoll) { rCamera.nRoll = nMaxRoll; }
-				else if (nRoll_deg > nMaxRoll) { rCamera.nRoll = -nMaxRoll; }
-				else { rCamera.nRoll = nRoll_deg; }
+				float nRoll_deg = rCamera.xyzRtn.z + m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDeltaS();
+				if (nRoll_deg < -nMaxRoll) { rCamera.xyzRtn.z = nMaxRoll; }
+				else if (nRoll_deg > nMaxRoll) { rCamera.xyzRtn.z = -nMaxRoll; }
+				else { rCamera.xyzRtn.z = nRoll_deg; }
 			}
 			else if (rCamera.GetMode() == GCM_3D) {
-				float nYaw_deg = rCamera.nYaw - m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDeltaS();
-				float nPitch_deg = rCamera.nPitch - static_cast<Float32>(m_crs->GetMoveDeltaY()) * nRtnSpeed * TimeSys::GetDeltaS();
+				float nYaw_deg = rCamera.xyzRtn.y - m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDeltaS();
+				float nPitch_deg = rCamera.xyzRtn.x - static_cast<Float32>(m_crs->GetMoveDeltaY()) * nRtnSpeed * TimeSys::GetDeltaS();
 
-				if (nYaw_deg < -nMaxYaw) { rCamera.nYaw = nMaxYaw; }
-				else if (nYaw_deg > nMaxYaw) { rCamera.nYaw = -nMaxYaw; }
-				else { rCamera.nYaw = nYaw_deg; }
+				if (nYaw_deg < -nMaxYaw) { rCamera.xyzRtn.y = nMaxYaw; }
+				else if (nYaw_deg > nMaxYaw) { rCamera.xyzRtn.y = -nMaxYaw; }
+				else { rCamera.xyzRtn.y = nYaw_deg; }
 
-				if (nPitch_deg > nMaxPitch) { rCamera.nPitch = nMaxPitch; }
-				else if (nPitch_deg < -nMaxPitch) { rCamera.nPitch = -nMaxPitch; }
-				else { rCamera.nPitch = nPitch_deg; }
+				if (nPitch_deg > nMaxPitch) { rCamera.xyzRtn.x = nMaxPitch; }
+				else if (nPitch_deg < -nMaxPitch) { rCamera.xyzRtn.x = -nMaxPitch; }
+				else { rCamera.xyzRtn.x = nPitch_deg; }
 			}
 			break;
-		case ET_CURSOR_SCROLL:
+		case EVT_CURSOR_SCROLL:
 			if (!(m_crs->GetMode() & CRS_CAPTURED)) return;
 			float nZoom = -rcEvt.nY * nZoomSpeed * TimeSys::GetDeltaS();
 			if (rCamera.GetType() == GCT_ORTHO) {
@@ -106,18 +88,12 @@ namespace NWG
 	void GfxCameraLad::OnEvent(KeyboardEvent& rkEvt, GfxCamera& rCamera)
 	{
 		if (!(m_crs->GetMode() & CRS_CAPTURED)) { return; }
-		if (m_kbd->GetHeld(KC_LCTRL)) {
-			if (m_kbd->GetHeld(KC_C)) {
-				if (m_kbd->GetHeld(KC_0)) { rCamera = GfxCamera(); }
-				else if (m_kbd->GetHeld(KC_2)) { rCamera.SetMode(GCM_2D); rCamera.SetType(GCT_ORTHO); }
-				else if (m_kbd->GetHeld(KC_3)) { rCamera.SetMode(GCM_3D); rCamera.SetType(GCT_PERSPECT); }
-			}
-		}
 		switch (rkEvt.evType) {
-		case ET_KEYBOARD_RELEASE:
+		case EVT_KEYBOARD_RELEASE:
 			switch (rkEvt.keyCode) {
-			case KC_0:
-				break;
+			case KC_0: rCamera = GfxCamera(); break;
+			case KC_2: rCamera.SetMode(GCM_2D); rCamera.SetType(GCT_ORTHO); break;
+			case KC_3: rCamera.SetMode(GCM_3D); rCamera.SetType(GCT_PERSPECT); break;
 			default: break;
 			}
 			break;
@@ -126,7 +102,7 @@ namespace NWG
 	void GfxCameraLad::OnEvent(WindowEvent& rwEvt, GfxCamera& rCamera)
 	{
 		switch (rwEvt.evType) {
-		case ET_WINDOW_RESIZE:
+		case EVT_WINDOW_RESIZE:
 			whBounds = V2f{ rwEvt.nX, rwEvt.nY };
 			break;
 		}

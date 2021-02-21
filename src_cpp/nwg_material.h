@@ -4,6 +4,7 @@
 #if (defined NWG_GAPI)
 #include <nwg_res.h>
 #include <nwg_tools.h>
+#include <nwg_shader.h>
 #pragma warning(disable:4267)
 namespace NWG
 {
@@ -16,29 +17,22 @@ namespace NWG
 	class NWG_API GfxMaterial : public TEntity<GfxMaterial>, public AGfxRes, public ADataRes
 	{
 	public:
-		using Textures = HashMap<String, Texture*>;
+		using Textures = HashMap<String, RefKeeper<Texture>>;
 		using Colors = HashMap<String, V4f>;
 	public:
 		GfxMaterial(GfxEngine& rGfx, const char* strName);
+		GfxMaterial(GfxEngine& rGfx, const char* strName, RefKeeper<ShaderProgram>& rshdProg);
 		virtual ~GfxMaterial();
 		// --getters
-		inline ShaderProgram* GetShaderProg() { return m_pshdProg; }
+		inline RefKeeper<ShaderProgram>& GetShaderProg() { return m_pshdProg; }
 		inline UInt8 GetTexCount() { return m_Textures.size(); }
 		inline Textures& GetTextures() { return m_Textures; }
 		inline Colors& GetColors() { return m_Colors; }
-		inline Texture* GetTexture(const char* strType = "") {
-			if (strcmp(strType, "") == 0) { return m_Textures.begin()->second; }
-			auto itTex = m_Textures.find(&strType[0]);
-			return itTex == m_Textures.end() ? nullptr : itTex->second;
-		}
-		inline V4f* GetColor(const char* strType = "") {
-			if (strcmp(strType, "") == 0) { return &m_Colors.begin()->second; }
-			auto itClr = m_Colors.find(&strType[0]);
-			return itClr == m_Colors.end() ? nullptr : &itClr->second;
-		}
+		inline RefKeeper<Texture>& GetTexture(const char* strType = "");
+		inline V4f* GetColor(const char* strType = "");
 		// --setters
-		void SetShaderProg(ShaderProgram* pshdProg);
-		void SetTexture(Texture* pTex, const char* strType = "");
+		void SetShaderProg(RefKeeper<ShaderProgram>& rshdProg);
+		void SetTexture(RefKeeper<Texture>& rTex, const char* strType = "");
 		void SetColor(const V4f& rgbaClr, const char* strType = "");
 		// --core_methods
 		virtual void Bind() override;
@@ -47,10 +41,20 @@ namespace NWG
 		virtual bool LoadF(const char* strFPath) override;
 	private:
 		String m_strName;
-		ShaderProgram* m_pshdProg;
+		RefKeeper<ShaderProgram> m_pshdProg;
 		Textures m_Textures;
 		Colors m_Colors;
 	};
+	inline RefKeeper<Texture>& GfxMaterial::GetTexture(const char* strType) {
+		if (strcmp(strType, "") == 0) { return m_Textures.begin()->second; }
+		auto itTex = m_Textures.find(&strType[0]);
+		return itTex == m_Textures.end() ? m_Textures.begin()->second : itTex->second;
+	}
+	inline V4f* GfxMaterial::GetColor(const char* strType) {
+		if (strcmp(strType, "") == 0) { return &m_Colors.begin()->second; }
+		auto itClr = m_Colors.find(&strType[0]);
+		return itClr == m_Colors.end() ? nullptr : &itClr->second;
+	}
 }
 #endif	// NWG_GAPI
 #endif // NWG_MATERIAL_H

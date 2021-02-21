@@ -6,40 +6,23 @@
 #include <nwg_tools.h>
 namespace NWG
 {
-	/// TextureInfo struct
-	struct NWG_API TextureInfo
-	{
-	public:
-		TextureWraps WrapTypeS = TXW_REPEAT, WrapTypeT = TXW_REPEAT, WrapTypeR = TXW_REPEAT;
-		TextureFilters FilterMin = TXF_NEAREST, FilterMag = TXF_NEAREST;
-		TextureFormats texFormat = TXF_RGBA;
-		TextureInterFormats texInterFormat = TXFI_RGBA8;
-		PixelFormats pxFormat = PXF_UINT8;
-		Bit bGenMipmap = true;
-		Bit bGenSubImage = true;
-		UInt32 unSamples = 1;
-	};
-}
-namespace NWG
-{
 	/// Texture class
 	/// Description:
-	/// -> Set props and data -> LoadData -> MakeTexture -> Bind drawing stuff
-	/// -> Enable -> Draw -> Disable
-	/// --It's a wrapping image which has to wrap a mesh
 	class NWG_API Texture : public TEntity<Texture>, public AGfxRes, public ADataRes
 	{
+	public:
+		TextureWraps m_WrapS, m_WrapT, m_WrapR;
+		TextureFilters m_Filter;
+		V4f m_rgbaBorder;
 	public:
 		Texture(GfxEngine& rGfx, const char* strName, TextureTypes texTypes);
 		virtual ~Texture();
 		// --getters
-		inline UInt32 GetTexSlot() const { return m_unTexSlot; }
-		inline TextureTypes GetType() const { return m_texType; }
-		inline const TextureInfo& GetTexInfo() const { return m_texInfo; }
+		inline UInt8 GetTexSlot() const { return m_unSlot; }
+		inline TextureTypes GetTexType() const { return m_texType; }
 		inline const ImageInfo& GetImgInfo() const { return m_imgInfo; }
 		// --setters
-		void SetSlot(UInt32 unSlot) { m_unTexSlot = unSlot; }
-		void SetInfo(const TextureInfo& rTexInfo);
+		void SetSlot(UInt8 unSlot);
 		void SetInfo(const ImageInfo& rImgInfo);
 		// --core_methods
 		virtual void Bind() override;
@@ -50,9 +33,12 @@ namespace NWG
 		virtual bool LoadF(const char* strFPath);
 	private:
 		TextureTypes m_texType;
-		UInt32 m_unTexSlot;
-		TextureInfo m_texInfo;
+		UInt8 m_unSlot;
 		ImageInfo m_imgInfo;
+#if (NWG_GAPI & NWG_GAPI_DX)
+		ID3D11ShaderResourceView* m_pNative;
+		ID3D11SamplerState* m_pSampler;
+#endif
 	};
 }
 #endif	// NWG_GAPI

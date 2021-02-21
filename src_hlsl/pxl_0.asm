@@ -7,16 +7,17 @@
 //
 // Name                 Index   Mask Register SysValue  Format   Used
 // -------------------- ----- ------ -------- -------- ------- ------
-// color                    0   xyz         0     NONE   float   xyz 
+// vs_vtx_clr               0   xyz         0     NONE   float   xyz 
 //
 //
 // Output signature:
 //
 // Name                 Index   Mask Register SysValue  Format   Used
 // -------------------- ----- ------ -------- -------- ------- ------
-// SV_Target                0   xyzw        0   TARGET   float   xyzw
+// sv_target                0   xyzw        0   TARGET   float   xyzw
 //
-ps_4_0
+ps_5_0
+dcl_globalFlags refactoringAllowed | skipOptimization
 dcl_input_ps linear v0.xyz
 dcl_output o0.xyzw
 //
@@ -24,7 +25,7 @@ dcl_output o0.xyzw
 //   v0.x <- vtxClr.x; v0.y <- vtxClr.y; v0.z <- vtxClr.z; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 8 "D:\dev\native_world\nw_gfx\src_hlsl\shd_0_pxl.hlsl"
+#line 3 "D:\dev\native_world\nw_gfx\src_hlsl\pxl_0.hlsl"
 mov o0.xyz, v0.xyzx
 mov o0.w, l(1.000000)
 ret 

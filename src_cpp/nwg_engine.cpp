@@ -2,17 +2,10 @@
 #include "nwg_engine.h"
 #if (defined NWG_GAPI)
 #include <nwg_tools.h>
-#include <nwg_framebuf.h>
+#include <nwg_frame_buf.h>
 #include <nwg_drawable.h>
-#include <nwg_camera.h>
-#include <nwg_array.h>
-#include <nwg_shader.h>
-#include <nwg_material.h>
-#include <nwg_texture.h>
 #include <nwg_loader.h>
-#pragma warning(disable:4244)
 #if (NWG_GAPI & NWG_GAPI_OGL)
-#include <../src_glsl/shd_screen.glsl>
 namespace NWG
 {
 	GfxEngine::GfxEngine(HWND pWindow) :
@@ -174,7 +167,8 @@ namespace NWG
 		DXGI_SWAP_CHAIN_DESC swapDesc{ 0 };
 		swapDesc.BufferDesc.Width = 0;
 		swapDesc.BufferDesc.Height = 0;
-		swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		//swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapDesc.BufferDesc.RefreshRate.Numerator = 0;
 		swapDesc.BufferDesc.RefreshRate.Denominator = 0;
 		swapDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -184,18 +178,20 @@ namespace NWG
 		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapDesc.BufferCount = 1;
 		swapDesc.OutputWindow = m_pWindow;
-		swapDesc.Windowed = TRUE;
+		//swapDesc.Windowed = TRUE;
+		swapDesc.Windowed = FALSE;
 		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		swapDesc.Flags = 0;
 		D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_DEBUG,
 			nullptr, NULL, D3D11_SDK_VERSION, &swapDesc, &m_pSwap, &m_pDevice, nullptr, &m_pContext);
-	
+		if (m_pDevice == nullptr || m_pContext == nullptr || m_pSwap == nullptr) { throw WinException("graphics engine is not initialized"); }
+
 		ID3D11Resource* pBackBuf = nullptr;
 		m_pSwap->GetBuffer(NULL, __uuidof(ID3D11Resource), reinterpret_cast<Ptr*>(&pBackBuf));
 		m_pDevice->CreateRenderTargetView(pBackBuf, nullptr, &m_pTarget);
 		m_pContext->OMSetRenderTargets(1u, &m_pTarget, nullptr);
 		SetViewport(0, 0, 800, 600);
-		SetPrimitive(GPT_DEFAULT);
+		SetPrimitive(GPT_TRIANGLES);
 	}
 	GfxEngine::~GfxEngine()
 	{
@@ -205,7 +201,7 @@ namespace NWG
 		if (m_pSwap != nullptr) { m_pSwap->Release(); }
 	}
 	// --==<setters>==--
-	void GfxEngine::SetPrimitive(GfxPrimitives gPrimitive) { m_pContext->IASetPrimitiveTopology(static_cast<D3D11_PRIMITIVE_TOPOLOGY>(gPrimitive)); }
+	void GfxEngine::SetPrimitive(GfxPrimitives gPrimitive) { m_pContext->IASetPrimitiveTopology(ConvertEnum<GfxPrimitives, D3D11_PRIMITIVE_TOPOLOGY>(gPrimitive)); }
 	void GfxEngine::SetModes(Bit bEnable, ProcessingModes pmModes) {
 
 		switch (pmModes) {
@@ -278,13 +274,10 @@ namespace NWG
 		if (m_dInfo.unIdx > 0) { m_pContext->DrawIndexed(m_dInfo.unIdx, 0u, 0u); }
 		else if (m_dInfo.unVtx > 0) { m_pContext->Draw(m_dInfo.unVtx, 0u); }
 	}
-	void GfxEngine::OnDraw(VertexedDrawable& rDrb)
+	void GfxEngine::OnDraw(ADrawable& rDrb)
 	{
-		rDrb.Draw();
-	}
-	void GfxEngine::OnDraw(IndexedDrawable& rDrb)
-	{
-		rDrb.Draw();
+		rDrb.Bind();
+		for (auto& itBuf : rDrb.GetVtxBufs()) { }
 	}
 	void GfxEngine::Create(RefKeeper<GfxEngine>& rEngine, HWND& rWindow)
 	{

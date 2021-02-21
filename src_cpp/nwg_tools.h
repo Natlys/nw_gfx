@@ -2,108 +2,117 @@
 #define NWG_TOOLS_H
 #include <nwg_core.hpp>
 #if (defined NWG_GAPI)
-#pragma warning(disable:4267)
 namespace NWG
 {
-	template<typename SDType> inline ShaderDataTypes GetSdType() { return SDT_DEFAULT; }
-	template<> inline ShaderDataTypes GetSdType<Int8>() { return SDT_SINT8; }
-	template<> inline ShaderDataTypes GetSdType<UInt8>() { return SDT_UINT8; }
-	template<> inline ShaderDataTypes GetSdType<Int16>() { return SDT_SINT16; }
-	template<> inline ShaderDataTypes GetSdType<UInt16>() { return SDT_UINT16; }
-	template<> inline ShaderDataTypes GetSdType<Int32>() { return SDT_SINT32; }
-	template<> inline ShaderDataTypes GetSdType<UInt32>() { return SDT_UINT32; }
-	template<> inline ShaderDataTypes GetSdType<Float32>() { return SDT_FLOAT32; }
-	template<> inline ShaderDataTypes GetSdType<V2f>() { return SDT_FLOAT32_VEC2; }
-	template<> inline ShaderDataTypes GetSdType<V3f>() { return SDT_FLOAT32_VEC3; }
-	template<> inline ShaderDataTypes GetSdType<V4f>() { return SDT_FLOAT32_VEC4; }
-	inline Size SdTypeGetSize(ShaderDataTypes sDataType, UInt32 unCount = 1) {
-		Size szData = 0;
-		switch (sDataType) {
-		case SDT_BOOL: case SDT_SINT8: case SDT_UINT8:	szData = 1;	break;
-		case SDT_SINT16: case SDT_UINT16:	szData = 2;	break;
-		case SDT_SINT32: case SDT_UINT32:	szData = 4;	break;
-		case SDT_SAMPLER:		szData = 4;		break;
-		case SDT_FLOAT64:			szData = 8;	break;
-		case SDT_FLOAT32:		szData = 4;						break;
-		case SDT_FLOAT32_VEC2:									szData = 8 * 2;	break;
-		case SDT_FLOAT32_VEC3:									szData = 8 * 3;	break;
-		case SDT_FLOAT32_VEC4:									szData = 8 * 4;	break;
-		default:	NWL_ERR("Invalid shader data type");		szData = 0;	break;
-		}
-		return szData * unCount;
-	}
-	inline Size SdTypeGetAllignedSize(ShaderDataTypes sDataType, UInt32 unCount = 1) {
-		Size szAll = 0;
-		switch (sDataType) {
-		case SDT_BOOL: case SDT_SINT8: case SDT_UINT8:			szAll = 4;	break;
-		case SDT_SINT16: case SDT_UINT16:						szAll = 4;	break;
-		case SDT_SINT32: case SDT_UINT32: case SDT_SAMPLER:		szAll = 4;	break;
-		case SDT_FLOAT32:										szAll = 4;	break;
-		case SDT_FLOAT64:										szAll = 8;	break;
-		default:	NWL_ERR("Invalid shader data type");		szAll = 0;	break;
-		}
-		return szAll * ((unCount + (szAll - 1)) & ~(szAll - 1));
-	}
-	inline const char* SdTypeGetStr(ShaderDataTypes sdType) {
-		return sdType == SDT_BOOL ? "boolean" :
-			sdType == SDT_SINT8 ? "byte" : sdType == SDT_UINT8 ? "unsigned byte" :
-			sdType == SDT_SINT16 ? "short" : sdType == SDT_UINT16 ? "unsigned short" :
-			sdType == SDT_SINT32 ? "integer" : sdType == SDT_UINT32 ? "unsigned integer" :
-			sdType == SDT_FLOAT32 ? "float" : sdType == SDT_FLOAT64 ? "double" :
-			"unknown";
-	}
+	template<typename DType> DataTypes DtGet();
+	template<typename NwEnum, typename ConvType> ConvType ConvertEnum(NwEnum nwEnum);
+	
+	const char* DtGetStr(DataTypes sdType);
+	Size DtGetSize(DataTypes sDataType, UInt32 unCount = 1);
+	Size DtGetAlignedSize(DataTypes sDataType, UInt32 unCount = 1);
 }
 namespace NWG
 {
-	struct GfxDataInfo
+	struct NWG_API GfxContextInfo
+	{
+	public:
+		Char strRenderer[256], strVersion[256], strVendor[256], strShdLang[256];
+		Int32 nMaxVertexAttribs = 0;
+		Int32 nActiveTextureId = 0;
+		Int32 nMaxTextures = 0;
+	public:
+		OStream& operator<<(OStream& rStream);
+	};
+	struct NWG_API GfxDrawInfo
+	{
+	public:
+		Size szVtx = 0;
+		Size szIdx = 0;
+		UInt32 unIdx = 0;
+		UInt32 unVtx = 0;
+		DataTypes sdIdx = DT_UINT32;
+	public:
+		void Reset() { szVtx = szIdx = 0; unIdx = unVtx = 0; }
+	};
+	struct NWG_API GfxDataInfo
 	{
 	public:
 		Size szData = 0;
 		UInt32 szStride = 0;
 		UInt32 szOffset = 0;
 		Ptr pData = nullptr;
-		ShaderDataTypes sdType = SDT_DEFAULT;
+		DataTypes sdType = DT_DEFAULT;
 	public:
 		GfxDataInfo() = default;
 		GfxDataInfo(Size sizeOfData, Size sizeOfStride, Size sizeOfOffset,
-			Ptr ptrToData, ShaderDataTypes dataType) :
-			szData(sizeOfData), szStride(sizeOfStride), szOffset(sizeOfOffset),
-			pData(ptrToData), sdType(dataType) {}
-		GfxDataInfo(Size sizeOfData, Size sizeOfStride, Size sizeOfOffset,
-			Ptr ptrToData) :
-			szData(sizeOfData), szStride(sizeOfStride), szOffset(sizeOfOffset),
-			pData(ptrToData), sdType(SDT_DEFAULT) {}
+			Ptr ptrToData, DataTypes dataType);
+		GfxDataInfo(Size sizeOfData, Size sizeOfStride, Size sizeOfOffset, Ptr ptrToData);
+		// --operators
+		OStream& operator<<(OStream& rStream);
 	};
 }
-#if (NWG_GAPI & NWG_GAPI_OGL)
-// --functions
 namespace NWG
 {
-	/// Clear GL error buffer
+	struct NWG_API GfxConfig {
+		struct {
+			struct {
+				DrawModes dMode = DM_FILL;
+				FacePlanes facePlane = FACE_DEFAULT;
+			} PolyMode;
+			Float32 nLineWidth = 0.5f;
+			Float32 nPixelSize = 0.5f;
+			UInt32 unSwapInterval = 1u;
+		} General;
+		struct {
+			Bit bEnable = false;
+			BlendConfigs FactorSrc = BC_SRC_ALPHA;
+			BlendConfigs FactorDest = BC_ONE_MINUS_SRC_ALPHA;
+		} Blending;
+		struct {
+			Bit bEnable = false;
+			CullFaceConfigs CullFactor = CFC_DEFAULT;
+		} Culling;
+		struct {
+			Bit bEnable = false;
+			DepthConfigs Func = DTC_DEFAULT;
+		} DepthTest;
+		struct {
+			Bit bEnable = false;
+			StencilConfigs Func = STC_DEFAULT;
+			UInt8 nBitMask = 0x0;
+			UInt32 nRefValue = 0x0;
+		} StencilTest;
+	public:
+		void Reset();
+	};
+}
+
+#if (NWG_GAPI & NWG_GAPI_OGL)
+namespace NWG
+{
 	void OglClearErr();
-	/// Return suitable error message accordingly to glGetError()
 	bool OglErrLog(const char* strInfo, const char* strFile, int nLine);
-	/// Get compile and linking status return true if there are errors
 	int OglErrLogShader(ShaderTypes ShaderType, UInt32 unShaderId);
 }
 	#if (defined NWG_DEBUG)
-			#define OGL_CALL(call) OglClearErr();\
-				call;\
-				NWL_ASSERT(OglErrLog(#call, NWL_FNAME_APATH((std::string)__FILE__), __LINE__), "GL_ERROR: ")
-			#define NWL_OGL_SHADER_ERR_LOG(errType, objectID) (OglErrLogShader(errType, objectID))
-			#define NWL_OGL_SHADER_ERR_LOG(errType, objectID) (OglErrLogShader(errType, objectID))
+			#define NWG_DEBUG_CALL(code) ( OglClearErr(); (code) NWL_ASSERT(OglErrLog(#call, __FILE__, __LINE__, "GL_ERROR: "))
 	#else
-		#define OGL_CALL(function);
+		#define NWG_DEBUG_CALL(code) (code)
 	#endif
 #endif
+
 #if (NWG_GAPI & NWG_GAPI_DX)
-#include <C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\dxgiformat.h>
-// --functions
 namespace NWG
 {
+	void DxClearErr();
 	bool DxErrLog(const char* strInfo, const char* strFile, int nLine);
-	DXGI_FORMAT SdToDxFormat(ShaderDataTypes sdType);
 }
+	#if (defined NWG_DEBUG)
+		#define NWG_DEBUG_CALL(call) ( DxClearErr(); (call) NWL_ASSERT(DxErrLog(#call, __FILE__, __LINE__, "GL_ERROR: "))
+	#else
+		#define NWG_DEBUG_CALL(code) (code)
+	#endif
 #endif
+
 #endif	// NWG_GAPI
 #endif	// NWG_TOOLS_H

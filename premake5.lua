@@ -13,8 +13,8 @@ project "nw_gfx"
 		"%{dir_cpp.own}**.c**",
 		"%{dir_cpp.own}**.h**",
 		dir_data,
-		dir_glsl.."**.**",
-		dir_hlsl.."**.**",
+		dir_glsl.."**.glsl",
+		dir_hlsl.."**.hlsl",
 		dir_data.."**.h", dir_data.."**.rc",  dir_data.."**.aps",
 	}
 	includedirs

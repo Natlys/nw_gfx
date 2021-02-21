@@ -12,14 +12,14 @@ namespace NWG
 	{
 	public:
 		Char strName[128] = "none";
-		ShaderDataTypes sdType = SDT_DEFAULT;
+		DataTypes sdType = DT_DEFAULT;
 		UInt32 unCount = 0;
 		UInt32 unNum = 0;
 		Size szOffset = 0;
 		Bit bNormalized = false;
 	public:
 		BufElem() { }
-		BufElem(const char* sName, ShaderDataTypes dataType, UInt32 Count, bool Normalized) :
+		BufElem(const char* sName, DataTypes dataType, UInt32 Count, bool Normalized) :
 			strName(""), sdType(dataType),
 			unCount(Count), bNormalized(Normalized), szOffset(0) {
 			strcpy(strName, sName);
@@ -55,7 +55,7 @@ namespace NWG
 		// --setters
 		void SetElements(const DArray<BufElem>& rBufElems);
 		void AddElement(const BufElem& rBufElem, Int8 nElems = 1);
-		void AddElement(const char* strName, ShaderDataTypes sdType, UInt8 unCount, Int8 nElems = 1);
+		void AddElement(const char* strName, DataTypes sdType, UInt8 unCount, Int8 nElems = 1);
 		// --core_methods
 		void Remake();
 	private:

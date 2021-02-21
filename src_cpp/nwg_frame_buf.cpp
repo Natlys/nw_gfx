@@ -1,6 +1,5 @@
 #include <nwg_pch.hpp>
-#include "nwg_framebuf.h"
-
+#include "nwg_frame_buf.h"
 #if (defined NWG_GAPI)
 #include <nwg_texture.h>
 #include <nwg_loader.h>

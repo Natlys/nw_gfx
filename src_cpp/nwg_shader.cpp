@@ -1,11 +1,9 @@
 #include <nwg_pch.hpp>
 #include "nwg_shader.h"
 #if (defined NWG_GAPI)
-#pragma warning(disable:4267)
 #include <nwg_engine.h>
-#include <nwg_buffer.h>
+#include <nwg_shd_buf.h>
 #include <nwg_loader.h>
-#pragma warning(disable:4267)
 #if (NWG_GAPI & NWG_GAPI_OGL)
 namespace NWG
 {
@@ -87,18 +85,18 @@ namespace NWG
 		BufElem BufElem(&strName[0], type, count, false);	\
 		while(unCount-- > 0) { command(BufElem); } }
 				/// --<macro_helper>--
-							MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "short", SDT_INT16, 1, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "int", SDT_INT32, 1, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "float", SDT_FLOAT32, 1, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "vec2", SDT_FLOAT32, 2, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "vec3", SDT_FLOAT32, 3, m_vtxLayout.AddElement)
-								MAKE_BUF_ELEM(strToken == "vec4", SDT_FLOAT32, 4, m_vtxLayout.AddElement)
+							MAKE_BUF_ELEM(strToken == "bool", DT_BOOL, 1, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "short", DT_INT16, 1, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "int", DT_INT32, 1, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "float", DT_FLOAT32, 1, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "vec2", DT_FLOAT32, 2, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "vec3", DT_FLOAT32, 3, m_vtxLayout.AddElement)
+								MAKE_BUF_ELEM(strToken == "vec4", DT_FLOAT32, 4, m_vtxLayout.AddElement)
 								if ((nCurr = strToken.find("mat")) != -1) {
 									strCodeStream >> strName;
 									if (sscanf(&strToken[0], "mat%d", &nCurr) > 0) {
 										for (UInt8 ei = 0; ei < nCurr; ei++) {
-											m_vtxLayout.AddElement(BufElem{ &strName[0], SDT_FLOAT32, static_cast<UInt32>(nCurr), false });
+											m_vtxLayout.AddElement(BufElem{ &strName[0], DT_FLOAT32, static_cast<UInt32>(nCurr), false });
 										}
 									}
 								}
@@ -111,16 +109,16 @@ namespace NWG
 								strCodeStream >> strToken;
 								if (strToken.find('{') != -1) { continue; }
 								if (strToken.find('}') != -1) { break; }
-								MAKE_BUF_ELEM(strToken == "bool", SDT_BOOL, 1, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "short", SDT_INT16, 1, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "int", SDT_INT32, 1, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "float", SDT_FLOAT32, 1, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "vec2", SDT_FLOAT32, 2, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "vec3", SDT_FLOAT32, 4, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "vec4", SDT_FLOAT32, 4, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "mat2", SDT_FLOAT32, 2 * 2, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "mat3", SDT_FLOAT32, 3 * 4, shdBlock.BufElems.push_back)
-									MAKE_BUF_ELEM(strToken == "mat4", SDT_FLOAT32, 4 * 4, shdBlock.BufElems.push_back)
+								MAKE_BUF_ELEM(strToken == "bool", DT_BOOL, 1, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "short", DT_INT16, 1, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "int", DT_INT32, 1, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "float", DT_FLOAT32, 1, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "vec2", DT_FLOAT32, 2, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "vec3", DT_FLOAT32, 4, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "vec4", DT_FLOAT32, 4, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "mat2", DT_FLOAT32, 2 * 2, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "mat3", DT_FLOAT32, 3 * 4, shdBlock.BufElems.push_back)
+									MAKE_BUF_ELEM(strToken == "mat4", DT_FLOAT32, 4 * 4, shdBlock.BufElems.push_back)
 							}
 							m_shdLayout.AddBlock(shdBlock);
 							m_Blocks[&shdBlock.strName[0]] = shdBlock.unBindPoint;
@@ -128,7 +126,7 @@ namespace NWG
 					}
 					else if (strToken == "uniform") {	// uniform {type} {name};
 						std::getline(strCodeStream, strToken, ';');
-						auto fnMakeElems = [&](const char* strComp, ShaderDataTypes sdType, UInt8 unCount = 1)->bool {
+						auto fnMakeElems = [&](const char* strComp, DataTypes sdType, UInt8 unCount = 1)->bool {
 							if ((nCurr = strToken.find(strComp)) != -1) {
 								Int32 nCount = 1;
 								Int32 nBeg = (nCurr += strlen(strComp) + 1);
@@ -152,11 +150,11 @@ namespace NWG
 							}
 							return true;
 						};
-						fnMakeElems("sampler1D", SDT_SAMPLER); fnMakeElems("sampler2D", SDT_SAMPLER); fnMakeElems("sampler3D", SDT_SAMPLER);
-						fnMakeElems("bool", SDT_BOOL); fnMakeElems("char", SDT_INT8); fnMakeElems("short", SDT_INT16); fnMakeElems("int", SDT_INT32);
-						fnMakeElems("float", SDT_FLOAT32); fnMakeElems("vec2", SDT_FLOAT32, 2);
-						fnMakeElems("vec3", SDT_FLOAT32, 3); fnMakeElems("vec4", SDT_FLOAT32, 4);
-						fnMakeElems("mat2", SDT_FLOAT32, 2 * 2); fnMakeElems("mat3", SDT_FLOAT32, 3 * 3); fnMakeElems("mat4", SDT_FLOAT32, 4 * 4);
+						fnMakeElems("sampler1D", DT_SAMPLER); fnMakeElems("sampler2D", DT_SAMPLER); fnMakeElems("sampler3D", DT_SAMPLER);
+						fnMakeElems("bool", DT_BOOL); fnMakeElems("char", DT_INT8); fnMakeElems("short", DT_INT16); fnMakeElems("int", DT_INT32);
+						fnMakeElems("float", DT_FLOAT32); fnMakeElems("vec2", DT_FLOAT32, 2);
+						fnMakeElems("vec3", DT_FLOAT32, 3); fnMakeElems("vec4", DT_FLOAT32, 4);
+						fnMakeElems("mat2", DT_FLOAT32, 2 * 2); fnMakeElems("mat3", DT_FLOAT32, 3 * 3); fnMakeElems("mat4", DT_FLOAT32, 4 * 4);
 					}
 				}
 			}
@@ -212,12 +210,6 @@ namespace NWG
 
 
 	// --==<implementation_methods>==-
-	inline Int32 Shader::GetUniformLoc(const char* strName) const {
-		for (auto& itPar : m_Uniforms) { if (strcmp(itPar.first.c_str(), strName) == 0) { return itPar.second; } }
-		Int32 nLoc = glGetUniformLocation(m_unRId, strName);
-		m_Uniforms[strName] = nLoc;
-		return nLoc;
-	}
 	inline Int32 Shader::GetBlockIdx(const char* strName) const {
 		for (auto& itBlk : m_Blocks) { if (strcmp(itBlk.first.c_str(), strName) == 0) { return itBlk.second; } }
 		Int32 nIdx = glGetUniformBlockIndex(m_unRId, &strName[0]);
@@ -231,7 +223,9 @@ namespace NWG
 namespace NWG
 {
 	Shader::Shader(GfxEngine& rGfx, ShaderTypes sdType) :
-		TEntity(), AGfxRes(rGfx), ACodeRes(), m_sdType(sdType) {}
+		TEntity(), AGfxRes(rGfx), ACodeRes(),
+		m_sdType(sdType),
+		m_pBlob(nullptr) {}
 	Shader::~Shader() { if (m_pBlob != nullptr) { m_pBlob->Release(); m_pBlob = nullptr; } }
 	// --setters
 	void Shader::SetProgram(ShaderProgram* psProg) { m_psProg = psProg; }
@@ -250,7 +244,9 @@ namespace NWG
 }
 namespace NWG
 {
-	VertexShader::VertexShader(GfxEngine& rGfx) : Shader(rGfx, ST_VERTEX), m_pNative(nullptr), m_inLayout(rGfx) { }
+	VertexShader::VertexShader(GfxEngine& rGfx) : Shader(rGfx, ST_VERTEX),
+		m_pNative(nullptr),
+		m_inLayout(InputLayout(rGfx)) { }
 	VertexShader::~VertexShader() { if (m_pNative != nullptr) { m_pNative->Release(); m_pNative = nullptr; } }
 	// --core_methods
 	void VertexShader::Bind()
@@ -270,7 +266,9 @@ namespace NWG
 		m_pGfx->GetDevice()->CreateVertexShader(m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), NULL, &m_pNative);
 		
 		m_pGfx->GetContext()->VSSetShader(m_pNative, NULL, NULL);
-		m_vtxLayout.AddElement(BufElem("coord", GetSdType<V3f>(), 1, false));
+		m_vtxLayout.AddElement(BufElem("vtx_crd", DtGet<V3f>(), 1, false));
+		m_vtxLayout.AddElement(BufElem("tex_crd", DtGet<V2f>(), 1, false));
+		m_vtxLayout.AddElement(BufElem("nrm_crd", DtGet<V3f>(), 1, false));
 		m_inLayout.SetShader(this);
 		m_inLayout.Remake();
 		
@@ -304,17 +302,6 @@ namespace NWG
 		TEntity(), AGfxRes(rGfx), ADataRes(strName),
 		m_shdLayout(ShaderLayout()) {  }
 	ShaderProgram::~ShaderProgram() { Remake(); }
-	// --setters
-	void ShaderProgram::SetBool(const char* name, bool value) const { }
-	void ShaderProgram::SetInt(const char* name, int value) const { }
-	void ShaderProgram::SetIntArray(const char* name, Int32* pIntArr, UInt32 unCount) const { }
-	void ShaderProgram::SetUIntArray(const char* name, UInt32* pUIntArr, UInt32 unCount) const {  }
-	void ShaderProgram::SetFloat(const char* name, float value) const { }
-	void ShaderProgram::SetFloatArray(const char* name, float* pFloatArr, UInt32 unCount) const {}
-	void ShaderProgram::SetV2f(const char* name, const V2f& value) const { }
-	void ShaderProgram::SetV3f(const char* name, const V3f& value) const { }
-	void ShaderProgram::SetV4f(const char* name, const V4f& value) const { }
-	void ShaderProgram::SetM4f(const char* name, const Mat4f& value) const { }
 	// --==<core_methods>==--
 	void ShaderProgram::Bind() {
 		for (auto& itShader : m_Shaders) {

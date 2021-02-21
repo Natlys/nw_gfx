@@ -10,7 +10,7 @@ namespace NWG
 	// --setters
 	void VertexLayout::SetElements(const DArray<BufElem>& rBufElems) { m_Elems = rBufElems; }
 	void VertexLayout::AddElement(const BufElem& rBufElem, Int8 nElems) { while (nElems-- > 0) { m_Elems.push_back(rBufElem); } }
-	void VertexLayout::AddElement(const char* strName, ShaderDataTypes sdType, UInt8 unCount, Int8 nElems) {
+	void VertexLayout::AddElement(const char* strName, DataTypes sdType, UInt8 unCount, Int8 nElems) {
 		AddElement(BufElem(strName, sdType, unCount, false), nElems);
 	}
 	void VertexLayout::Remake() {
@@ -18,7 +18,7 @@ namespace NWG
 		m_szStride = 0;
 		for (auto& rBufElem : m_Elems) {
 			rBufElem.szOffset = m_szStride;
-			m_szStride += SdTypeGetSize(rBufElem.sdType, rBufElem.unCount);
+			m_szStride += DtGetSize(rBufElem.sdType, rBufElem.unCount);
 		}
 	}
 }
@@ -35,7 +35,7 @@ namespace NWG
 			rBlock.szOffset = szData;
 			for (auto& rElem : rBlock.Elems) {
 				rElem.szOffset += rBlock.szAll;
-				rBlock.szAll += SdTypeGetAllignedSize(rElem.sdType, rElem.unCount);
+				rBlock.szAll += DtGetAlignedSize(rElem.sdType, rElem.unCount);
 			}
 			szData += rBlock.szAll;
 		}
@@ -63,8 +63,8 @@ namespace NWG
 		for (UInt32 bei = 0; bei < dxElems.size(); bei++) {
 			auto& itElem = rLayout.GetElem(bei);
 			auto& dxElem = dxElems[bei];
-			dxElem.Format = static_cast<DXGI_FORMAT>(itElem.sdType);
-			dxElem.SemanticName = "coord";
+			dxElem.Format = ConvertEnum<DataTypes, DXGI_FORMAT>(itElem.sdType);
+			dxElem.SemanticName = itElem.strName;
 			dxElem.SemanticIndex = 0;
 			dxElem.InputSlot = itElem.unNum;
 			dxElem.AlignedByteOffset = itElem.szOffset;
