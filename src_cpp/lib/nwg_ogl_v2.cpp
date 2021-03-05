@@ -27,7 +27,7 @@ namespace NWG
 		OglGetProgramiv = (PFNGLGETPROGRAMIVPROC)OglGetProc("glGetProgramiv");
 		OglGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)OglGetProc("glGetProgramInfoLog");
 		OglGetShaderiv = (PFNGLGETSHADERIVPROC)OglGetProc("glGetShaderiv");
-		OglGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)OglGetProc("glGetShaderInfoLog");
+		OglGetshader_infoLog = (PFNGLGETSHADERINFOLOGPROC)OglGetProc("glGetshader_infoLog");
 		OglGetShaderSource = (PFNGLGETSHADERSOURCEPROC)OglGetProc("glGetShaderSource");
 		OglGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)OglGetProc("glGetUniformLocation");
 		OglGetUniformfv = (PFNGLGETUNIFORMFVPROC)OglGetProc("glGetUniformfv");
@@ -132,7 +132,7 @@ PFNGLGETATTRIBLOCATIONPROC OglGetAttribLocation;
 PFNGLGETPROGRAMIVPROC OglGetProgramiv = NULL;
 PFNGLGETPROGRAMINFOLOGPROC OglGetProgramInfoLog = NULL;
 PFNGLGETSHADERIVPROC OglGetShaderiv = NULL;
-PFNGLGETSHADERINFOLOGPROC OglGetShaderInfoLog = NULL;
+PFNGLGETSHADERINFOLOGPROC OglGetshader_infoLog = NULL;
 PFNGLGETSHADERSOURCEPROC OglGetShaderSource;
 PFNGLGETUNIFORMLOCATIONPROC OglGetUniformLocation;
 PFNGLGETUNIFORMFVPROC OglGetUniformfv;

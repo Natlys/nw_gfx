@@ -5,71 +5,41 @@
 #include <core/nwg_switch.h>
 namespace NWG
 {
-	struct NWG_API GfxContextInfo : public AInfo
+	struct NWG_API gfx_context_info : public a_info
 	{
 	public:
-		Char strRenderer[256], strVersion[256], strVendor[256], strShdLang[256];
-		Int32 nMaxVertexAttribs = 0;
-		Int32 nActiveTextureId = 0;
-		Int32 nMaxTextures = 0;
+		sbyte renderer[256], version[256], vendor[256], shader_language[256];
+		si32 max_vtx_attribs = 0;
+		si32 max_textures = 0;
 	public:
-		GfxContextInfo() = default;
-		GfxContextInfo(const char* sRenderer, const char* sVersion, const char* sShaderLanguage);
+		gfx_context_info(cstring str_renderer = "default", cstring str_version = "default",
+			cstring str_vendor = "default", cstring str_shader_lang = "default");
 		// --operators
-		virtual OutStream& operator<<(OutStream& rStream) const override;
-		virtual InStream& operator>>(InStream& rStream) override;
+		virtual out_stream& operator<<(out_stream& stm) const override;
+		virtual in_stream& operator>>(in_stream& stm) override;
 	};
 }
 namespace NWG
 {
-	struct NWG_API GfxConfig
+	struct NWG_API gfx_config
 	{
-		struct {
-			struct {
-				DrawModes dMode = DM_DEFAULT;
-				FacePlanes facePlane = FACE_DEFAULT;
-				GfxPrimitives gPrimitive = GPT_DEFAULT;
-			} DrawMode;
-			Float32 nLineWidth = 0.5f;
-			Float32 nPixelSize = 0.5f;
-			UInt32 unSwapInterval = 1u;
-			V4i rectViewport = { 0, 0, 800, 600 };
-			V4f rgbaClear = { 0.3f, 0.5f, 0.7f, 1.0f };
-		} General;
-		struct {
-			Bit bEnable = false;
-			BlendConfigs FactorSrc = BC_SRC_ALPHA;
-			BlendConfigs FactorDest = BC_ONE_MINUS_SRC_ALPHA;
-		} Blending;
-		struct {
-			Bit bEnable = false;
-			CullFaceConfigs CullFactor = CFC_DEFAULT;
-		} Culling;
-		struct {
-			Bit bEnable = false;
-			DepthConfigs Func = DTC_DEFAULT;
-		} DepthTest;
-		struct {
-			Bit bEnable = false;
-			StencilConfigs Func = STC_DEFAULT;
-			UInt8 nBitMask = 0x0;
-			UInt32 nRefValue = 0x0;
-		} StencilTest;
-	public:
-		void Reset();
+		gfx_primitives prim_type = GPT_DEFAULT;
+		si32 swap_interval = 1u;
+		v4si32 viewport = { 0, 0, 800, 600 };
+		v4f32 clear_color = { 0.3f, 0.5f, 0.7f, 1.0f };
 	};
 }
 
 #if (NWG_GAPI & NWG_GAPI_OGL)
 namespace NWG
 {
-	void OglClearErr();
-	bool OglErrLog(const char* strInfo, const char* strFile, int nLine);
-	int OglErrLogShader(ShaderTypes ShaderType, UInt32 unShaderId);
+	void ogl_clear_err();
+	bool ogl_get_err_log(const char* stinfo, const char* strFile, int nLine);
+	int ogl_get_err_log(shader_types ShaderType, si32 unShaderId);
 }
 	#if (defined NWG_DEBUG)
-			#define NWG_DEBUG_CALL(code) ( OglClearErr(); code		\
-			if (OglErrLog(#code, __FILE__, __LINE__, "GL_ERROR: ") == false) { NWL_BREAK(); } )
+			#define NWG_DEBUG_CALL(code) ( ogl_clear_err(); code		\
+			if (ogl_get_err_log(#code, __FILE__, __LINE__, "GL_ERROR: ") == false) { NWL_BREAK(); } )
 	#else
 		#define NWG_DEBUG_CALL(code) (code)
 	#endif
@@ -77,14 +47,14 @@ namespace NWG
 #if (NWG_GAPI & NWG_GAPI_DX)
 namespace NWG
 {
-	void DxClearErr();
-	bool DxErrLog(const char* strInfo, const char* strFile, int nLine);
+	void dx_clear_err();
+	bool dx_err_log(cstring comment, cstring file, si32 line);
 }
-	#if (defined NWG_DEBUG)
-		#define NWG_DEBUG_CALL(code) ( DxClearErr(); (code) NWL_ASSERT(DxErrLog(##code, __FILE__, __LINE__, "GL_ERROR: "))
-	#else
+#	if (defined NWG_DEBUG)
+		#define NWG_DEBUG_CALL(code) ( dx_clear_err(); (code) NWL_ASSERT(DxErrLog(##code, __FILE__, __LINE__, "GL_ERROR: "))
+#	else
 		#define NWG_DEBUG_CALL(code) (code)
-	#endif
+#	endif
 #endif
 
 #endif	// NWG_GAPI

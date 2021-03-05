@@ -30,16 +30,16 @@ namespace NWG
 	typedef void* (__stdcall* GetProcAddressOgl)(const char* name);
 	extern GetProcAddressOgl OglGetProcAddress;
 
-	typedef GfxContext(__stdcall* CreateContextOgl)(GfxDevice device);
-	typedef GfxContext(__stdcall* GetCurrContextOgl)();
-	typedef int(__stdcall* DeleteContextOgl)(GfxContext context);
-	typedef int(__stdcall* MakeContextCurrOgl)(GfxDevice device, GfxContext context);
+	typedef gfx_context(__stdcall* CreateContextOgl)(gfx_device device);
+	typedef gfx_context(__stdcall* GetCurrContextOgl)();
+	typedef int(__stdcall* DeleteContextOgl)(gfx_context context);
+	typedef int(__stdcall* MakeContextCurrOgl)(gfx_device device, gfx_context context);
 	extern CreateContextOgl OglNewContext;
 	extern DeleteContextOgl OglDelContext;
 	extern GetCurrContextOgl OglGetCurrContext;
 	extern MakeContextCurrOgl OglMakeContextCurr;
 
-	typedef GfxDevice(__stdcall* GetCurrDeviceOgl)();
+	typedef gfx_device(__stdcall* GetCurrDeviceOgl)();
 	extern GetCurrDeviceOgl OglGetCurrDevice;
 }
 #endif	// NWG_OGL_WGL

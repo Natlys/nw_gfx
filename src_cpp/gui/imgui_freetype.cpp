@@ -109,7 +109,7 @@ namespace
         FontInfo        Info;               // Font descriptor of the current font.
         FT_Face         Face;
         unsigned int    UserFlags;          // = ImFontConfig::RasterizerFlags
-        FT_Int32        LoadFlags;
+        FT_si32        LoadFlags;
         FT_Render_Mode  RenderMode;
     };
 

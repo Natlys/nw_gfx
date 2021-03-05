@@ -7425,7 +7425,7 @@ bool    GUI::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, Im
     }
 
     // Update selected tab
-    if (tab_appearing && (tab_bar->Flags & ImGuiTabBarFlags_AutoSelectNewTabs) && tab_bar->NextSelectedTabId == 0)
+    if (tab_appearing && (tab_bar->Flags & ImGuiTabBarFlags_AutoSelectnew_oneabs) && tab_bar->NextSelectedTabId == 0)
         if (!tab_bar_appearing || tab_bar->SelectedTabId == 0)
             tab_bar->NextSelectedTabId = id;  // New tabs gets activated
     if ((flags & ImGuiTabItemFlags_SetSelected) && (tab_bar->SelectedTabId != id)) // SetSelected can only be passed on explicit tab bar
@@ -7439,7 +7439,7 @@ bool    GUI::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, Im
 
     // On the very first frame of a tab bar we let first tab contents be visible to minimize appearing glitches
     if (!tab_contents_visible && tab_bar->SelectedTabId == 0 && tab_bar_appearing && docked_window == NULL)
-        if (tab_bar->Tabs.Size == 1 && !(tab_bar->Flags & ImGuiTabBarFlags_AutoSelectNewTabs))
+        if (tab_bar->Tabs.Size == 1 && !(tab_bar->Flags & ImGuiTabBarFlags_AutoSelectnew_oneabs))
             tab_contents_visible = true;
 
     // Note that tab_is_new is not necessarily the same as tab_appearing! When a tab bar stops being submitted
@@ -7709,7 +7709,7 @@ bool GUI::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, Im
     bool close_button_pressed = false;
     bool close_button_visible = false;
     if (close_button_id != 0)
-        if (is_contents_visible || bb.GetWidth() >= g.Style.TabMinWidthForUnselectedCloseButton)
+        if (is_contents_visible || bb.GetWidth() >= g.Style.TabMiwidthForUnselectedCloseButton)
             if (g.HoveredId == tab_id || g.HoveredId == close_button_id || g.ActiveId == tab_id || g.ActiveId == close_button_id)
                 close_button_visible = true;
     if (close_button_visible)
@@ -7749,9 +7749,9 @@ bool GUI::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, Im
 // - GetColumnIndex()
 // - GetColumnCount()
 // - GetColumnOffset()
-// - GetColumnWidth()
+// - GetColumwidth()
 // - SetColumnOffset()
-// - SetColumnWidth()
+// - SetColumwidth()
 // - PushColumnClipRect() [Internal]
 // - PushColumnsBackground() [Internal]
 // - PopColumnsBackground() [Internal]
@@ -7832,7 +7832,7 @@ float GUI::GetColumnOffset(int column_index)
     return x_offset;
 }
 
-static float GetColumnWidthEx(ImGuiColumns* columns, int column_index, bool before_resize = false)
+static float GetColumwidthEx(ImGuiColumns* columns, int column_index, bool before_resize = false)
 {
     if (column_index < 0)
         column_index = columns->Current;
@@ -7845,7 +7845,7 @@ static float GetColumnWidthEx(ImGuiColumns* columns, int column_index, bool befo
     return GUI::GetColumnOffsetFromNorm(columns, offset_norm);
 }
 
-float GUI::GetColumnWidth(int column_index)
+float GUI::GetColumwidth(int column_index)
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
@@ -7870,7 +7870,7 @@ void GUI::SetColumnOffset(int column_index, float offset)
     IM_ASSERT(column_index < columns->Columns.Size);
 
     const bool preserve_width = !(columns->Flags & ImGuiColumnsFlags_NoPreserveWidths) && (column_index < columns->Count - 1);
-    const float width = preserve_width ? GetColumnWidthEx(columns, column_index, columns->IsBeingResized) : 0.0f;
+    const float width = preserve_width ? GetColumwidthEx(columns, column_index, columns->IsBeingResized) : 0.0f;
 
     if (!(columns->Flags & ImGuiColumnsFlags_NoForceWithinWindow))
         offset = ImMin(offset, columns->OffMaxX - g.Style.ColumnsMinSpacing * (columns->Count - column_index));
@@ -7880,7 +7880,7 @@ void GUI::SetColumnOffset(int column_index, float offset)
         SetColumnOffset(column_index + 1, offset + ImMax(g.Style.ColumnsMinSpacing, width));
 }
 
-void GUI::SetColumnWidth(int column_index, float width)
+void GUI::SetColumwidth(int column_index, float width)
 {
     ImGuiWindow* window = GetCurrentWindowRead();
     ImGuiColumns* columns = window->DC.CurrentColumns;

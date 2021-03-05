@@ -12,7 +12,7 @@ namespace GUI
     static ID3D11Buffer* s_pVtxBuf = NULL;
     static ID3D11Buffer* s_pIdxBuf = NULL;
     static ID3D11VertexShader* s_pVtxShader = NULL;
-    static ID3D11InputLayout* s_pInLayout = NULL;
+    static ID3D11input_layout* s_pInLayout = NULL;
     static ID3D11Buffer* s_pVtxCBuf = NULL;
     static ID3D11PixelShader* s_pPxlShader = NULL;
     static ID3D11SamplerState* s_pFontSampler = NULL;
@@ -44,7 +44,7 @@ namespace GUI
         // Setup shader and vertex buffers
         unsigned int stride = sizeof(ImDrawVert);
         unsigned int offset = 0;
-        ctx->IASetInputLayout(s_pInLayout);
+        ctx->IASetinput_layout(s_pInLayout);
         ctx->IASetVertexBuffers(0, 1, &s_pVtxBuf, &stride, &offset);
         ctx->IASetIndexBuffer(s_pIdxBuf, sizeof(ImDrawIdx) == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
         ctx->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -160,7 +160,7 @@ namespace GUI
             ID3D11Buffer* IndexBuffer, * VertexBuffer, * VSConstantBuffer;
             UINT                        IndexBufferOffset, VertexBufferStride, VertexBufferOffset;
             DXGI_FORMAT                 IndexBufferFormat;
-            ID3D11InputLayout* InputLayout;
+            ID3D11input_layout* input_layout;
         };
         BACKUP_DX11_STATE old;
         old.ScissorRectsCount = old.ViewportsCount = D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE;
@@ -180,7 +180,7 @@ namespace GUI
         ctx->IAGetPrimitiveTopology(&old.PrimitiveTopology);
         ctx->IAGetIndexBuffer(&old.IndexBuffer, &old.IndexBufferFormat, &old.IndexBufferOffset);
         ctx->IAGetVertexBuffers(0, 1, &old.VertexBuffer, &old.VertexBufferStride, &old.VertexBufferOffset);
-        ctx->IAGetInputLayout(&old.InputLayout);
+        ctx->IAGetinput_layout(&old.input_layout);
 
         // Setup desired DX state
         Dx11SetupRenderState(draw_data, ctx);
@@ -238,7 +238,7 @@ namespace GUI
         ctx->IASetPrimitiveTopology(old.PrimitiveTopology);
         ctx->IASetIndexBuffer(old.IndexBuffer, old.IndexBufferFormat, old.IndexBufferOffset); if (old.IndexBuffer) old.IndexBuffer->Release();
         ctx->IASetVertexBuffers(0, 1, &old.VertexBuffer, &old.VertexBufferStride, &old.VertexBufferOffset); if (old.VertexBuffer) old.VertexBuffer->Release();
-        ctx->IASetInputLayout(old.InputLayout); if (old.InputLayout) old.InputLayout->Release();
+        ctx->IASetinput_layout(old.input_layout); if (old.input_layout) old.input_layout->Release();
     }
 
     static void Dx11CreateFontsTexture()
@@ -359,7 +359,7 @@ namespace GUI
                 { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)IM_OFFSETOF(ImDrawVert, uv),  D3D11_INPUT_PER_VERTEX_DATA, 0 },
                 { "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)IM_OFFSETOF(ImDrawVert, col), D3D11_INPUT_PER_VERTEX_DATA, 0 },
             };
-            if (s_pDevice->CreateInputLayout(local_layout, 3, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &s_pInLayout) != S_OK)
+            if (s_pDevice->Createinput_layout(local_layout, 3, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &s_pInLayout) != S_OK)
             {
                 vertexShaderBlob->Release();
                 return false;

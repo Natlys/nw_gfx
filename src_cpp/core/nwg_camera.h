@@ -3,54 +3,55 @@
 #include <nwg_core.hpp>
 namespace NWG
 {
-	enum GfxCameraTypes : UInt32 {
+	enum gfx_cameraTypes : si32 {
 		GCT_DEFAULT = 0,
 		GCT_ORTHO = 1, GCT_PERSPECT = 2,
 	};
-	enum GfxCameraModes : UInt32 {
+	enum gfx_cameraModes : si32 {
 		GCM_DEFAULT = 0,
 		GCM_2D = 2, GCM_3D = 3,
 	};
 }
 namespace NWG
 {
-	/// GraphicsCamera struct
-	/// Description:
-	/// -- Makes all relevant rotation and movement calculations
-	/// -- Makes projection and view-lookAt matricies
-	/// Interface:
-	/// -> Config Frustrum, tarGet, 
-	/// -> Set coordinates and rotation
-	/// -> Get transform matricies: proj and view
-	struct NWG_API GfxCamera
+	/// graphics_camera struct
+	/// description:
+	/// --makes all relevant rotation and movement calculations
+	/// --makes projection and view-lookAt matricies
+	/// interface:
+	/// ->config Frustrum, tarGet, 
+	/// ->set coordinates and rotation
+	/// ->get transform matricies: proj and view
+	struct NWG_API gfx_camera
 	{
 	public:
-		V3f xyzCrd = { 0.0f, 0.0f, 0.0f };
-		V3f xyzRtn = { 0.0f, 90.0f, 0.0f };
-
-		V3f dirRight = { 1.0f, 0.0f, 0.0f },
-			dirUp = { 0.0f, 1.0f, 0.0f },
-			dirFront = { 0.0f, 0.0f, 1.0f },
-			dirWorldUp = { 0.0f, 1.0f, 0.0f };
-
-		Float32 nViewField = 45.0f, nViewScale = 1.0f;
-		Float32 nAspectRatio = 16.0f / 9.0f;
-		Float32 nNearClip = 0.1f, nFarClip = 100.0f;
+		v3f32
+			coord = { 0.0f, 0.0f, 0.0f },
+			rotation = { 0.0f, 90.0f, 0.0f };
+		v3f32
+			right_dir = { 1.0f, 0.0f, 0.0f },
+			upper_dir = { 0.0f, 1.0f, 0.0f },
+			front_dir = { 0.0f, 0.0f, 1.0f },
+			world_up_dir = { 0.0f, 1.0f, 0.0f };
+		f32 view_field = 45.0f, view_scale = 1.0f;
+		f32 aspect_ratio = 16.0f / 9.0f;
+		f32 near_clip = 0.1f, far_clip = 100.0f;
 	public:
-		GfxCamera();
+		gfx_camera();
 		// --getters
-		const Mat4f& GetViewMatrix();
-		const Mat4f& GetProjMatrix();
-		inline const GfxCameraTypes& GetType() const { return m_gcType; }
-		inline const GfxCameraModes& GetMode() const { return m_gcMode; }
+		const m4f32& get_proj_mat()const		{ return m_proj; }
+		const m4f32& get_view_mat() const		{ return m_view; }
+		inline const gfx_cameraTypes& get_type() const	{ return m_type; }
+		inline const gfx_cameraModes& get_mode() const	{ return m_mode; }
 		// --setters
-		void SetType(GfxCameraTypes gcType);
-		void SetMode(GfxCameraModes gcMode);
-	private:
-		Mat4f m_m4View, m_m4Proj;
-
-		GfxCameraTypes m_gcType;
-		GfxCameraModes m_gcMode;
+		void set_type(gfx_cameraTypes camera_type);
+		void set_mode(gfx_cameraModes camera_mode);
+		// --core_methods
+		void update();
+	protected:
+		m4f32 m_view, m_proj;
+		gfx_cameraTypes m_type;
+		gfx_cameraModes m_mode;
 	};
 }
 #endif // NWG_CAMERA_H

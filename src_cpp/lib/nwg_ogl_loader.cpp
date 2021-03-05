@@ -7,7 +7,7 @@
 #include "nwg_ogl_arb.h"
 namespace NWG
 {
-	static GfxLib s_libOgl = NULL;
+	static gfx_lib s_libOgl = NULL;
 	static OglVersion s_version{ 0 };
 
 	GetProcAddressOgl OglGetProcAddress = NULL;

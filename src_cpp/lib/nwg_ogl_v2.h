@@ -88,101 +88,7 @@ namespace NWG
 #define GL_STENCIL_BACK_REF               0x8CA3
 #define GL_STENCIL_BACK_VALUE_MASK        0x8CA4
 #define GL_STENCIL_BACK_WRITEMASK         0x8CA5
-#ifdef GLCOREARB_PROTOTYPES
-GLAPI void APIENTRY glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha);
-GLAPI void APIENTRY glDrawBuffers(GLsizei n, const GLenum* bufs);
-GLAPI void APIENTRY glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-GLAPI void APIENTRY glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask);
-GLAPI void APIENTRY glStencilMaskSeparate(GLenum face, GLuint mask);
-GLAPI void APIENTRY glAttachShader(GLuint program, GLuint shader);
-GLAPI void APIENTRY glBindAttribLocation(GLuint program, GLuint index, const GLchar* name);
-GLAPI void APIENTRY glCompileShader(GLuint shader);
-GLAPI GLuint APIENTRY glCreateProgram(void);
-GLAPI GLuint APIENTRY glCreateShader(GLenum type);
-GLAPI void APIENTRY glDeleteProgram(GLuint program);
-GLAPI void APIENTRY glDeleteShader(GLuint shader);
-GLAPI void APIENTRY glDetachShader(GLuint program, GLuint shader);
-GLAPI void APIENTRY glDisableVertexAttribArray(GLuint index);
-GLAPI void APIENTRY glEnableVertexAttribArray(GLuint index);
-GLAPI void APIENTRY glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufSize, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
-GLAPI void APIENTRY glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
-GLAPI void APIENTRY glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsizei* count, GLuint* obj);
-GLAPI GLint APIENTRY glGetAttribLocation(GLuint program, const GLchar* name);
-GLAPI void APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params);
-GLAPI void APIENTRY glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei* length, GLchar* infoLog);
-GLAPI void APIENTRY glGetShaderiv(GLuint shader, GLenum pname, GLint* params);
-GLAPI void APIENTRY glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* infoLog);
-GLAPI void APIENTRY glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* source);
-GLAPI GLint APIENTRY glGetUniformLocation(GLuint program, const GLchar* name);
-GLAPI void APIENTRY glGetUniformfv(GLuint program, GLint location, GLfloat* params);
-GLAPI void APIENTRY glGetUniformiv(GLuint program, GLint location, GLint* params);
-GLAPI void APIENTRY glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble* params);
-GLAPI void APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params);
-GLAPI void APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params);
-GLAPI void APIENTRY glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid** pointer);
-GLAPI GLboolean APIENTRY glIsProgram(GLuint program);
-GLAPI GLboolean APIENTRY glIsShader(GLuint shader);
-GLAPI void APIENTRY glLinkProgram(GLuint program);
-GLAPI void APIENTRY glShaderSource(GLuint shader, GLsizei count, const GLchar* const* string, const GLint* length);
-GLAPI void APIENTRY glUseProgram(GLuint program);
-GLAPI void APIENTRY glUniform1f(GLint location, GLfloat v0);
-GLAPI void APIENTRY glUniform2f(GLint location, GLfloat v0, GLfloat v1);
-GLAPI void APIENTRY glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-GLAPI void APIENTRY glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-GLAPI void APIENTRY glUniform1i(GLint location, GLint v0);
-GLAPI void APIENTRY glUniform2i(GLint location, GLint v0, GLint v1);
-GLAPI void APIENTRY glUniform3i(GLint location, GLint v0, GLint v1, GLint v2);
-GLAPI void APIENTRY glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-GLAPI void APIENTRY glUniform1fv(GLint location, GLsizei count, const GLfloat* value);
-GLAPI void APIENTRY glUniform2fv(GLint location, GLsizei count, const GLfloat* value);
-GLAPI void APIENTRY glUniform3fv(GLint location, GLsizei count, const GLfloat* value);
-GLAPI void APIENTRY glUniform4fv(GLint location, GLsizei count, const GLfloat* value);
-GLAPI void APIENTRY glUniform1iv(GLint location, GLsizei count, const GLint* value);
-GLAPI void APIENTRY glUniform2iv(GLint location, GLsizei count, const GLint* value);
-GLAPI void APIENTRY glUniform3iv(GLint location, GLsizei count, const GLint* value);
-GLAPI void APIENTRY glUniform4iv(GLint location, GLsizei count, const GLint* value);
-GLAPI void APIENTRY glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glValidateProgram(GLuint program);
-GLAPI void APIENTRY glVertexAttrib1d(GLuint index, GLdouble x);
-GLAPI void APIENTRY glVertexAttrib1dv(GLuint index, const GLdouble* v);
-GLAPI void APIENTRY glVertexAttrib1f(GLuint index, GLfloat x);
-GLAPI void APIENTRY glVertexAttrib1fv(GLuint index, const GLfloat* v);
-GLAPI void APIENTRY glVertexAttrib1s(GLuint index, GLshort x);
-GLAPI void APIENTRY glVertexAttrib1sv(GLuint index, const GLshort* v);
-GLAPI void APIENTRY glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y);
-GLAPI void APIENTRY glVertexAttrib2dv(GLuint index, const GLdouble* v);
-GLAPI void APIENTRY glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y);
-GLAPI void APIENTRY glVertexAttrib2fv(GLuint index, const GLfloat* v);
-GLAPI void APIENTRY glVertexAttrib2s(GLuint index, GLshort x, GLshort y);
-GLAPI void APIENTRY glVertexAttrib2sv(GLuint index, const GLshort* v);
-GLAPI void APIENTRY glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-GLAPI void APIENTRY glVertexAttrib3dv(GLuint index, const GLdouble* v);
-GLAPI void APIENTRY glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z);
-GLAPI void APIENTRY glVertexAttrib3fv(GLuint index, const GLfloat* v);
-GLAPI void APIENTRY glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort z);
-GLAPI void APIENTRY glVertexAttrib3sv(GLuint index, const GLshort* v);
-GLAPI void APIENTRY glVertexAttrib4Nbv(GLuint index, const GLbyte* v);
-GLAPI void APIENTRY glVertexAttrib4Niv(GLuint index, const GLint* v);
-GLAPI void APIENTRY glVertexAttrib4Nsv(GLuint index, const GLshort* v);
-GLAPI void APIENTRY glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-GLAPI void APIENTRY glVertexAttrib4Nubv(GLuint index, const GLubyte* v);
-GLAPI void APIENTRY glVertexAttrib4Nuiv(GLuint index, const GLuint* v);
-GLAPI void APIENTRY glVertexAttrib4Nusv(GLuint index, const GLushort* v);
-GLAPI void APIENTRY glVertexAttrib4bv(GLuint index, const GLbyte* v);
-GLAPI void APIENTRY glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-GLAPI void APIENTRY glVertexAttrib4dv(GLuint index, const GLdouble* v);
-GLAPI void APIENTRY glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-GLAPI void APIENTRY glVertexAttrib4fv(GLuint index, const GLfloat* v);
-GLAPI void APIENTRY glVertexAttrib4iv(GLuint index, const GLint* v);
-GLAPI void APIENTRY glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-GLAPI void APIENTRY glVertexAttrib4sv(GLuint index, const GLshort* v);
-GLAPI void APIENTRY glVertexAttrib4ubv(GLuint index, const GLubyte* v);
-GLAPI void APIENTRY glVertexAttrib4uiv(GLuint index, const GLuint* v);
-GLAPI void APIENTRY glVertexAttrib4usv(GLuint index, const GLushort* v);
-GLAPI void APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer);
-#endif // GLCOREARB_PROTOTYPES
+
 typedef void (APIENTRYP PFNGLBLENDEQUATIONSEPARATEPROC) (GLenum modeRGB, GLenum modeAlpha);
 typedef void (APIENTRYP PFNGLDRAWBUFFERSPROC) (GLsizei n, const GLenum* bufs);
 typedef void (APIENTRYP PFNGLSTENCILOPSEPARATEPROC) (GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
@@ -298,7 +204,7 @@ extern PFNGLGETATTRIBLOCATIONPROC OglGetAttribLocation;
 extern PFNGLGETPROGRAMIVPROC OglGetProgramiv;
 extern PFNGLGETPROGRAMINFOLOGPROC OglGetProgramInfoLog;
 extern PFNGLGETSHADERIVPROC OglGetShaderiv;
-extern PFNGLGETSHADERINFOLOGPROC OglGetShaderInfoLog;
+extern PFNGLGETSHADERINFOLOGPROC OglGetshader_infoLog;
 extern PFNGLGETSHADERSOURCEPROC OglGetShaderSource;
 extern PFNGLGETUNIFORMLOCATIONPROC OglGetUniformLocation;
 extern PFNGLGETUNIFORMFVPROC OglGetUniformfv;
@@ -391,7 +297,7 @@ extern PFNGLVERTEXATTRIBPOINTERPROC OglVertexAttribPointer;
 #define glGetProgramiv		OglGetProgramiv
 #define glGetProgramInfoLog		OglGetProgramInfoLog
 #define glGetShaderiv		OglGetShaderiv
-#define glGetShaderInfoLog		OglGetShaderInfoLog
+#define glGetshader_infoLog		OglGetshader_infoLog
 #define glGetShaderSource		OglGetShaderSource
 #define glGetUniformLocation		OglGetUniformLocation
 #define glGetUniformfv		OglGetUniformfv
@@ -413,6 +319,10 @@ extern PFNGLVERTEXATTRIBPOINTERPROC OglVertexAttribPointer;
 #define glUniform2i		OglUniform2i
 #define glUniform3i		OglUniform3i
 #define glUniform4i		OglUniform4i
+#define glUniform1ui		OglUniform1ui
+#define glUniform2ui		OglUniform2ui
+#define glUniform3ui		OglUniform3ui
+#define glUniform4ui		OglUniform4ui
 #define glUniform1fv		OglUniform1fv
 #define glUniform2fv		OglUniform2fv
 #define glUniform3fv		OglUniform3fv
@@ -483,14 +393,7 @@ extern PFNGLVERTEXATTRIBPOINTERPROC OglVertexAttribPointer;
 #define GL_SRGB8_ALPHA8                   0x8C43
 #define GL_COMPRESSED_SRGB                0x8C48
 #define GL_COMPRESSED_SRGB_ALPHA          0x8C49
-#ifdef GLCOREARB_PROTOTYPES
-GLAPI void APIENTRY glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-GLAPI void APIENTRY glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
-#endif // GLCOREARB_PROTOTYPES
+
 typedef void (APIENTRYP PFNGLUNIFORMMATRIX2X3FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
 typedef void (APIENTRYP PFNGLUNIFORMMATRIX3X2FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
 typedef void (APIENTRYP PFNGLUNIFORMMATRIX2X4FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);

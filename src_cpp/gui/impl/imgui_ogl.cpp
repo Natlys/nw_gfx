@@ -52,8 +52,8 @@ namespace GUI
 
     void OglRenderDrawData(ImDrawData* dData);
 
-    bool CheckShader(GLuint unId, const char* strDesc);
-    bool CheckProgram(GLuint unId, const char* strDesc);
+    bool CheckShader(GLuint idx, const char* strDesc);
+    bool CheckProgram(GLuint idx, const char* strDesc);
 }
 namespace GUI
 {
@@ -488,12 +488,12 @@ namespace GUI
         // Build texture atlas
         ImGuiIO& io = GUI::GetIO();
         unsigned char* pPixels;
-        int nWidth, nHeight;
+        int width, height;
         // load as rgba 32-bit (75% of the memory is wasted, but default font is so small)
         // because it is more likely to be compatible with user's existing shaders.
         // if your ImTextureId represent a higher-level concept than just a gl texture id,
         // consider calling GetTexDataAsAlpha8() instead to save on gpu memory.
-        io.Fonts->GetTexDataAsRGBA32(&pPixels, &nWidth, &nHeight);
+        io.Fonts->GetTexDataAsRGBA32(&pPixels, &width, &height);
         // upload texture to graphics system
         GLint nLastTex;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &nLastTex);
@@ -505,7 +505,7 @@ namespace GUI
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-            nWidth, nHeight, 0,
+            width, height, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, pPixels);
         // store our identifier
         io.Fonts->TexID = (ImTextureID)(intptr_t)s_nFontMap;
@@ -528,34 +528,34 @@ namespace GUI
     // if you get an error please report on github.
     // you may try different gl context version or glsl version.
     // see gl<>glsl version table at the top of this file.
-    bool CheckShader(GLuint unId, const char* strDesc)
+    bool CheckShader(GLuint idx, const char* strDesc)
     {
         GLint nStatus = 0, nLogLen = 0;
-        glGetShaderiv(unId, GL_COMPILE_STATUS, &nStatus);
-        glGetShaderiv(unId, GL_INFO_LOG_LENGTH, &nLogLen);
+        glGetShaderiv(idx, GL_COMPILE_STATUS, &nStatus);
+        glGetShaderiv(idx, GL_INFO_LOG_LENGTH, &nLogLen);
         if ((GLboolean)nStatus == GL_FALSE) {
             fprintf(stderr, "ERROR: OglCreateDeviceObjects: failed to compile %s!\n", strDesc);
         }
         if (nLogLen > 1) {
             ImVector<char> buf;
             buf.resize((int)(nLogLen + 1));
-            glGetShaderInfoLog(unId, nLogLen, NULL, (GLchar*)buf.begin());
+            glGetshader_infoLog(idx, nLogLen, NULL, (GLchar*)buf.begin());
             fprintf(stderr, "%s\n", buf.begin());
         }
         return (GLboolean)nStatus == GL_TRUE;
     }
-    bool CheckProgram(GLuint unId, const char* strDesc)
+    bool CheckProgram(GLuint idx, const char* strDesc)
     {
         GLint nStatus = 0, nLogLen = 0;
-        glGetProgramiv(unId, GL_LINK_STATUS, &nStatus);
-        glGetProgramiv(unId, GL_INFO_LOG_LENGTH, &nLogLen);
+        glGetProgramiv(idx, GL_LINK_STATUS, &nStatus);
+        glGetProgramiv(idx, GL_INFO_LOG_LENGTH, &nLogLen);
         if ((GLboolean)nStatus == GL_FALSE) {
             fprintf(stderr, "ERROR: OglCreateDeviceObjects: failed to link %s! (with glsl '%s')\n", strDesc, s_strGlslVer);
         }
         if (nLogLen > 1) {
             ImVector<char> buf;
             buf.resize((int)(nLogLen + 1));
-            glGetProgramInfoLog(unId, nLogLen, NULL, (GLchar*)buf.begin());
+            glGetProgramInfoLog(idx, nLogLen, NULL, (GLchar*)buf.begin());
             fprintf(stderr, "%s\n", buf.begin());
         }
         return (GLboolean)nStatus == GL_TRUE;

@@ -33,8 +33,8 @@ dcl_input_ps linear v0.xy
 dcl_output o0.xyzw
 //
 // Initial variable locations:
-//   v0.x <- texCrd.x; v0.y <- texCrd.y; 
-//   v1.x <- nrmCrd.x; v1.y <- nrmCrd.y; v1.z <- nrmCrd.z; 
+//   v0.x <- tex_crd.x; v0.y <- tex_crd.y; 
+//   v1.x <- nrm_crd.x; v1.y <- nrm_crd.y; v1.z <- nrm_crd.z; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
 #line 6 "D:\dev\native_world\nw_gfx\src_hlsl\pxl_3d_default.hlsl"

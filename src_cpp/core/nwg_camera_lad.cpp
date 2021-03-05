@@ -2,109 +2,95 @@
 #include "nwg_camera_lad.h"
 namespace NWG
 {
-	GfxCameraLad::GfxCameraLad() :
-		nZoomSpeed(1000.0f),
-		nMoveSpeed(2.0f),
-		nRtnSpeed(200.0f),
-		whBounds{ 800.0f, 600.0f },
-		m_kbd(nullptr), m_crs(nullptr) { }
-	GfxCameraLad::~GfxCameraLad() = default;
-
+	gfx_camera_lad::gfx_camera_lad() :
+		gfx_camera(),
+		zoom_speed(1000.0f),
+		move_speed(2.0f),
+		rotation_speed(200.0f),
+		m_kbd(keyboard_state()), m_crs(cursor_state()), m_timer(timer()) { }
 	// --==<core_methods>==--
-	void GfxCameraLad::UpdateCamera(GfxCamera& rCamera)
+	void gfx_camera_lad::update()
 	{
-		rCamera.nAspectRatio = whBounds.x / whBounds.y;
-		if (!(m_crs->GetMode() & CRS_CAPTURED)) { return; }
-		float MoveSpeed = this->nMoveSpeed * TimeSys::GetDelta();
-		if (rCamera.GetMode() == GCM_2D)
-		{
-			if (m_kbd->GetHeld(KC_W)) { rCamera.xyzCrd.y += MoveSpeed; }
-			if (m_kbd->GetHeld(KC_S)) { rCamera.xyzCrd.y -= MoveSpeed; }
-			if (m_kbd->GetHeld(KC_D)) { rCamera.xyzCrd.x += MoveSpeed; }
-			if (m_kbd->GetHeld(KC_A)) { rCamera.xyzCrd.x -= MoveSpeed; }
-		}
-		else if (rCamera.GetMode() == GCM_3D) {
-			MoveSpeed = -MoveSpeed;
-			if (m_kbd->GetHeld(KC_W)) {	// Move Forward
-				rCamera.xyzCrd.x += rCamera.dirFront.x * MoveSpeed;
-				//rCamera.yCrd += rCamera.dirFront.y * MoveSpeed;
-				rCamera.xyzCrd.z += rCamera.dirFront.z * MoveSpeed;
-			}
-			if (m_kbd->GetHeld(KC_S)) {	// Move Back
-				rCamera.xyzCrd.x -= rCamera.dirFront.x * MoveSpeed;
-				//rCamera.yCrd -= rCamera.dirFront.y * MoveSpeed;
-				rCamera.xyzCrd.z -= rCamera.dirFront.z * MoveSpeed; } if (m_kbd->GetHeld(KC_D)) { rCamera.xyzCrd += rCamera.dirRight * MoveSpeed; }
-			if (m_kbd->GetHeld(KC_A)) { rCamera.xyzCrd -= rCamera.dirRight * MoveSpeed; }
-			if (m_kbd->GetHeld(KC_SPACE)) { rCamera.xyzCrd -= MoveSpeed; }
-			if (m_kbd->GetHeld(KC_LSHIFT)) { rCamera.xyzCrd += MoveSpeed; }
-		}
+		m_timer.update();
+		gfx_camera::update();
 	}
-	// --==</core_methods>==--
-
-	// --==<--on_event_methods>==--
-	void GfxCameraLad::OnEvent(CursorEvent& rcEvt, GfxCamera& rCamera)
+	void gfx_camera_lad::on_event(cursor_event& crs_evt)
 	{
-		if (!(m_crs->GetMode() & CRS_CAPTURED)) { return; }
-		switch (rcEvt.evType) {
+		if (!(m_crs.get_mode() & CRS_CAPTURED)) { return; }
+		m_crs.on_event(crs_evt);
+		switch (crs_evt.type) {
 		case EVT_CURSOR_MOVE:
-			if (rCamera.GetMode() == GCM_2D) {
-				if (m_crs->GetHeld(CRS_RIGHT)) {
-					rCamera.xyzCrd.x += -m_crs->GetMoveDeltaX() * TimeSys::GetDelta() * nMoveSpeed;
-					rCamera.xyzCrd.y += m_crs->GetMoveDeltaY() * TimeSys::GetDelta() * nMoveSpeed;
+			if (m_mode == GCM_2D) {
+				if (m_crs.get_held(CRS_RIGHT)) {
+					coord.x += -m_crs.get_move_delta_x() * move_speed * m_timer.get_delta();
+					coord.y += m_crs.get_move_delta_y() * move_speed * m_timer.get_delta();
 				}
-				float nRoll_deg = rCamera.xyzRtn.z + m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDelta();
-				if (nRoll_deg < -nMaxRoll) { rCamera.xyzRtn.z = nMaxRoll; }
-				else if (nRoll_deg > nMaxRoll) { rCamera.xyzRtn.z = -nMaxRoll; }
-				else { rCamera.xyzRtn.z = nRoll_deg; }
+				f32 roll_deg = rotation.z + m_crs.get_move_delta_x() * move_speed * m_timer.get_delta();
+				if (roll_deg < -max_roll) { rotation.z = max_roll; }
+				else if (roll_deg > max_roll) { rotation.z = -max_roll; }
+				else { rotation.z = roll_deg; }
 			}
-			else if (rCamera.GetMode() == GCM_3D) {
-				float nYaw_deg = rCamera.xyzRtn.y - m_crs->GetMoveDeltaX() * nRtnSpeed * TimeSys::GetDelta();
-				float nPitch_deg = rCamera.xyzRtn.x - static_cast<Float32>(m_crs->GetMoveDeltaY()) * nRtnSpeed * TimeSys::GetDelta();
+			else if (m_mode == GCM_3D) {
+				f32 yaw_deg = rotation.y - m_crs.get_move_delta_x() * rotation_speed * m_timer.get_delta();
+				f32 pitch_deg = rotation.x - static_cast<f32>(m_crs.get_move_delta_y()) * rotation_speed * m_timer.get_delta();
 
-				if (nYaw_deg < -nMaxYaw) { rCamera.xyzRtn.y = nMaxYaw; }
-				else if (nYaw_deg > nMaxYaw) { rCamera.xyzRtn.y = -nMaxYaw; }
-				else { rCamera.xyzRtn.y = nYaw_deg; }
+				if (yaw_deg < -max_yaw) { rotation.y = max_yaw; }
+				else if (yaw_deg > max_yaw) { rotation.y = -max_yaw; }
+				else { rotation.y = yaw_deg; }
 
-				if (nPitch_deg > nMaxPitch) { rCamera.xyzRtn.x = nMaxPitch; }
-				else if (nPitch_deg < -nMaxPitch) { rCamera.xyzRtn.x = -nMaxPitch; }
-				else { rCamera.xyzRtn.x = nPitch_deg; }
+				if (pitch_deg > max_pitch) { rotation.x = max_pitch; }
+				else if (pitch_deg < -max_pitch) { rotation.x = -max_pitch; }
+				else { rotation.x = pitch_deg; }
 			}
 			break;
 		case EVT_CURSOR_SCROLL:
-			if (!(m_crs->GetMode() & CRS_CAPTURED)) return;
-			float nZoom = -rcEvt.nY * nZoomSpeed * TimeSys::GetDelta();
-			if (rCamera.GetType() == GCT_ORTHO) {
-				float nScale = rCamera.nViewScale + nZoom * rCamera.nViewScale / 40.0f + 0.01f;
-				if (nScale > 0.0f) rCamera.nViewScale = nScale;
+			f32 zoom_val = -crs_evt.val_y * zoom_speed * m_timer.get_delta();
+			if (m_type == GCT_ORTHO) {
+				f32 scale = view_scale + zoom_val * view_scale / 40.0f + 0.01f;
+				if (scale > 0.0f) { view_scale = scale; }
 			}
-			else if (rCamera.GetType() == GCT_PERSPECT) {
-				float nViewField = rCamera.nViewField + nZoom;
-				if (nViewField >= 0.01f && nViewField <= 180.0f) rCamera.nViewField = nViewField;
-			}
-			break;
-		}
-	}
-	void GfxCameraLad::OnEvent(KeyboardEvent& rkEvt, GfxCamera& rCamera)
-	{
-		if (!(m_crs->GetMode() & CRS_CAPTURED)) { return; }
-		switch (rkEvt.evType) {
-		case EVT_KEYBOARD_RELEASE:
-			switch (rkEvt.keyCode) {
-			case KC_0: rCamera = GfxCamera(); break;
-			case KC_2: rCamera.SetMode(GCM_2D); rCamera.SetType(GCT_ORTHO); break;
-			case KC_3: rCamera.SetMode(GCM_3D); rCamera.SetType(GCT_PERSPECT); break;
-			default: break;
+			else if (m_type == GCT_PERSPECT) {
+				f32 fov = view_field + zoom_val;
+				if (fov >= 0.01f && fov <= 180.0f) { view_field = fov; }
 			}
 			break;
 		}
 	}
-	void GfxCameraLad::OnEvent(WindowEvent& rwEvt, GfxCamera& rCamera)
+	void gfx_camera_lad::on_event(keyboard_event& kbd_evt)
 	{
-		switch (rwEvt.evType) {
+		if (!(m_crs.get_mode() & CRS_CAPTURED)) { return; }
+		m_kbd.on_event(kbd_evt);
+		f32 speed = move_speed * m_timer.get_delta();
+		if (m_mode == GCM_2D) {
+			if (m_kbd.get_held(KC_W)) { coord.y += speed; }
+			if (m_kbd.get_held(KC_S)) { coord.y -= speed; }
+			if (m_kbd.get_held(KC_D)) { coord.x += speed; }
+			if (m_kbd.get_held(KC_A)) { coord.x -= speed; }
+		}
+		else if (m_mode == GCM_3D) {
+			speed = -speed;
+			if (m_kbd.get_held(KC_W)) {
+				coord.x += front_dir.x * speed;
+				coord.y += front_dir.y * speed;
+				coord.z += front_dir.z * speed;
+			}
+			if (m_kbd.get_held(KC_S)) {
+				coord.x -= front_dir.x * speed;
+				coord.z -= front_dir.z * speed;
+			}
+			if (m_kbd.get_held(KC_D)) { coord += right_dir * speed; }
+			if (m_kbd.get_held(KC_A)) { coord -= right_dir * speed; }
+			if (m_kbd.get_held(KC_SPACE)) { coord -= speed; }
+			if (m_kbd.get_held(KC_LSHIFT)) { coord += speed; }
+		}
+	}
+	void gfx_camera_lad::on_event(window_event& wnd_evt)
+	{
+		switch (wnd_evt.type) {
 		case EVT_WINDOW_RESIZE:
-			whBounds = V2f{ rwEvt.nX, rwEvt.nY };
+			aspect_ratio = wnd_evt.val_x / wnd_evt.val_y;
 			break;
 		}
 	}
-	// --==</--on_event_methods>==--
+	// --==</core_methods>==--
 }
