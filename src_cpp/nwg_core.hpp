@@ -17,40 +17,41 @@
 #define NWG_GAPI		NWG_GAPI_OGL
 
 #if (NWG_GAPI & NWG_GAPI_OGL)
-using GfxDevice = HDC;
-using GfxContext = HGLRC;
-using GfxLib = HMODULE;
+using gfx_device = HDC;
+using gfx_window = HWND;
+using gfx_context = HGLRC;
+using gfx_lib = HMODULE;
+using GLuint = unsigned int;
 #endif	// NWG_GAPI
 #if (NWG_GAPI & NWG_GAPI_DX)
-using GfxDevice = ID3D11Device*;
-using GfxContext = ID3D11DeviceContext*;
-using GfxLib = HMODULE;
+using gfx_device = ID3D11Device*;
+using gfx_context = ID3D11DeviceContext*;
+using gfx_lib = HMODULE;
 #endif	// NWG_GAPI
 // --==</configurations>==--
 #include <nwg_pch.hpp>
 namespace NWG
 {
-	class NWG_API GfxEngine;
-	class NWG_API FrameBuf;
+	class NWG_API gfx_engine;
+	class NWG_API gfx_camera_lad;
 
-	class NWG_API AGfxRes;
-	class NWG_API ADrawCmp;
-	class NWG_API DrawVtxCmp;
-	class NWG_API DrawIdxCmp;
+	class NWG_API a_gfx_cmp;
+	class NWG_API a_drawable;
+	class NWG_API drawable_vtx;
+	class NWG_API drawable_idx;
 
-	class NWG_API VertexBuf;
-	class NWG_API IndexBuf;
-	class NWG_API ShaderBuf;
+	class NWG_API framebuf;
+	class NWG_API vtx_buf;
+	class NWG_API idx_buf;
+	class NWG_API shd_buf;
+	class NWG_API a_texture;
 
-	class NWG_API ShaderProg;
-	class NWG_API Shader;
-	class NWG_API VertexShader;
-	class NWG_API PixelShader;
-	class NWG_API GeometryShader;
+	class NWG_API gfx_material;
+	class NWG_API shader;
+	class NWG_API vtx_shader;
+	class NWG_API pxl_shader;
+	class NWG_API gmt_shader;
 
-	class NWG_API Texture;
-	class NWG_API GfxMaterial;
-
-	struct NWG_API GfxCamera;
+	struct NWG_API gfx_camera;
 }
 #endif	// NWG_CORE_HPP

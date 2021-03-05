@@ -184,8 +184,8 @@ static void ShowDemoWindowMisc();
 // You may then search for keywords in the code when you are interested by a specific feature.
 void GUI::ShowDemoWindow(bool* p_open)
 {
-    // Exceptionally add an extra assert here for people confused about initial Dear ImGui setup
-    // Most ImGui functions would normally just crash if the context is missing.
+    // exceptionally add an extra assert here for people confused about initial Dear ImGui setup
+    // most ImGui functions would normally just crash if the context is missing.
     IM_ASSERT(GUI::GetCurrentContext() != NULL && "Missing dear imgui context. Refer to examples app!");
 
     // Examples Apps (accessible from the "Examples" menu)
@@ -2075,7 +2075,7 @@ static void ShowDemoWindowLayout()
             ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
             if (disable_mouse_wheel)
                 window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-            GUI::BeginChild("ChildL", ImVec2(GUI::GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags);
+            GUI::BeginChild("ChildL", ImVec2(GUI::GetWindowContentRegiowidth() * 0.5f, 260), false, window_flags);
             for (int i = 0; i < 100; i++)
                 GUI::Text("%04d: scrollable region", i);
             GUI::EndChild();
@@ -2307,7 +2307,7 @@ static void ShowDemoWindowLayout()
             // Expose a couple of the available flags. In most cases you may just call BeginTabBar() with no flags (0).
             static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable;
             GUI::CheckboxFlags("ImGuiTabBarFlags_Reorderable", (unsigned int*)&tab_bar_flags, ImGuiTabBarFlags_Reorderable);
-            GUI::CheckboxFlags("ImGuiTabBarFlags_AutoSelectNewTabs", (unsigned int*)&tab_bar_flags, ImGuiTabBarFlags_AutoSelectNewTabs);
+            GUI::CheckboxFlags("ImGuiTabBarFlags_AutoSelectnew_oneabs", (unsigned int*)&tab_bar_flags, ImGuiTabBarFlags_AutoSelectnew_oneabs);
             GUI::CheckboxFlags("ImGuiTabBarFlags_TabListPopupButton", (unsigned int*)&tab_bar_flags, ImGuiTabBarFlags_TabListPopupButton);
             GUI::CheckboxFlags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", (unsigned int*)&tab_bar_flags, ImGuiTabBarFlags_NoCloseWithMiddleMouseButton);
             if ((tab_bar_flags & ImGuiTabBarFlags_FittingPolicyMask_) == 0)
@@ -2755,7 +2755,7 @@ static void ShowDemoWindowLayout()
                 GUI::Columns(4);
                 for (int n = 0; n < 4; n++)
                 {
-                    GUI::Text("Width %.2f", GUI::GetColumnWidth());
+                    GUI::Text("Width %.2f", GUI::GetColumwidth());
                     GUI::NextColumn();
                 }
                 GUI::Columns(1);
@@ -3174,7 +3174,7 @@ static void ShowDemoWindowColumns()
             if (h_borders && GUI::GetColumnIndex() == 0)
                 GUI::Separator();
             GUI::Text("%c%c%c", 'a' + i, 'a' + i, 'a' + i);
-            GUI::Text("Width %.2f", GUI::GetColumnWidth());
+            GUI::Text("Width %.2f", GUI::GetColumwidth());
             GUI::Text("Avail %.2f", GUI::GetContentRegionAvail().x);
             GUI::Text("Offset %.2f", GUI::GetColumnOffset());
             GUI::Text("Long text that is likely to clip");

@@ -3,71 +3,72 @@
 #include <math/math_transform.h>
 namespace NWG
 {
-	GfxCamera::GfxCamera() :
-		xyzCrd{ 0.0f, 0.0f, 1.0f }, xyzRtn{ 0.0f, 0.0f, 0.0f },
-		nViewScale(1.0f), nViewField(45.0f),
-		nNearClip(0.1f), nFarClip(100.0f),
-		nAspectRatio(1.3f),
-		dirRight{ 1.0f, 0.0f, 0.0f }, dirUp{ 0.0f, 1.0f, 0.0f }, dirFront{0.0f, 0.0f, 1.0f},
-		dirWorldUp{0.0f, 1.0f, 0.0f},
-		m_gcMode(GCM_2D), m_gcType(GCT_ORTHO),
-		m_m4Proj(Mat4f{ 1.0f }), m_m4View(Mat4f{ 1.0f }) {}
+	gfx_camera::gfx_camera() :
+		coord{ 0.0f, 0.0f, 1.0f }, rotation{ 0.0f, 0.0f, 0.0f },
+		right_dir{ 1.0f, 0.0f, 0.0f }, upper_dir{ 0.0f, 1.0f, 0.0f }, front_dir{0.0f, 0.0f, 1.0f},
+		world_up_dir{0.0f, 1.0f, 0.0f},
+		view_scale(1.0f), view_field(45.0f),
+		near_clip(0.1f), far_clip(100.0f),
+		aspect_ratio(1.3f),
+		m_mode(GCM_2D), m_type(GCT_ORTHO),
+		m_proj(m4f32(1.0f)), m_view(m4f32(1.0f)) {}
 	// --getters
-	const Mat4f& GfxCamera::GetProjMatrix() {
-		if (m_gcType == GCT_ORTHO) {
-			m_m4Proj = glm::ortho(-nViewScale * nAspectRatio,
-				nViewScale * nAspectRatio, -nViewScale, nViewScale, nNearClip, nFarClip);
-		} else if (m_gcType == GCT_PERSPECT) {
-			m_m4Proj = glm::perspective((nViewField * 3.14f / 180.0f),
-				nAspectRatio, nNearClip, nFarClip);
+	void gfx_camera::set_mode(gfx_cameraModes camera_mode) {
+		m_mode = camera_mode;
+		if (camera_mode == GCM_2D) {
 		}
-		return m_m4Proj;
+		else if (camera_mode == GCM_3D) {
+		}
 	}
-	const Mat4f& GfxCamera::GetViewMatrix() {
-		V3f xyzNextFront = V3f(0.0f, 0.0f, 0.0f);
-		float nPitch_rad = (xyzRtn.x) * 3.14f / 180.0f;
-		float nYaw_rad = (xyzRtn.y) * 3.14f / 180.0f;
-		float nRoll_rad = (xyzRtn.z) * 3.14f / 180.0f;
-		
-		if (m_gcType == GCT_PERSPECT)
+	// --setters
+	void gfx_camera::set_type(gfx_cameraTypes camera_type) {
+		m_type = camera_type;
+		if (camera_type == GCT_ORTHO) {
+			near_clip = -100.0f;
+			far_clip = 100.0f;
+		}
+		else if (camera_type == GCT_PERSPECT) {
+			near_clip = 0.01f;
+			far_clip = 100.0f;
+		}
+	}
+	// --core_methods
+	void gfx_camera::update()
+	{
+		if (m_type == GCT_ORTHO) {
+			m_proj = mat_ortho(-view_scale * aspect_ratio,
+				view_scale * aspect_ratio, -view_scale, view_scale, near_clip, far_clip);
+		}
+		else if (m_type == GCT_PERSPECT) {
+			m_proj = mat_perspect(deg_to_rad(view_field),
+				aspect_ratio, near_clip, far_clip);
+		}
+
+		v3f32 next_front_dir = v3f32(0.0f, 0.0f, 0.0f);
+		f32 pitch_rad = deg_to_rad(rotation.x);
+		f32 yaw_rad = deg_to_rad(rotation.y);
+		f32 roll_rad = deg_to_rad(rotation.z);
+
+		if (m_type == GCT_PERSPECT)
 		{
-			xyzNextFront.x = sinf(nYaw_rad) * cosf(nPitch_rad);
-			xyzNextFront.y = sinf(nPitch_rad);
-			xyzNextFront.z = cosf(nYaw_rad) * cosf(nPitch_rad);
-		} else if (m_gcType == GCT_ORTHO) {
-			xyzNextFront.x = cosf(nRoll_rad);
-			xyzNextFront.y = sinf(nRoll_rad);
+			next_front_dir.x = sinf(yaw_rad) * cosf(pitch_rad);
+			next_front_dir.y = sinf(pitch_rad);
+			next_front_dir.z = cosf(yaw_rad) * cosf(pitch_rad);
+		}
+		else if (m_type == GCT_ORTHO) {
+			next_front_dir.x = cosf(roll_rad);
+			next_front_dir.y = sinf(roll_rad);
 		}
 
-		dirFront = glm::normalize(xyzNextFront);
-		dirRight = glm::normalize(glm::cross(dirFront, dirWorldUp));
-		dirUp = glm::normalize(glm::cross(dirRight, dirFront));
+		front_dir = glm::normalize(next_front_dir);
+		right_dir = glm::normalize(glm::cross(front_dir, world_up_dir));
+		upper_dir = glm::normalize(glm::cross(right_dir, front_dir));
 
-		Mat4f m4Transform =
-			glm::translate(Mat4f(1.0f), xyzCrd) *
-			glm::rotate(Mat4f(1.0f), nPitch_rad, V3f(1.0f, 0.0f, 0.0f)) *
-			glm::rotate(Mat4f(1.0f), nYaw_rad, V3f(0.0f, 1.0f, 0.0f)) *
-			glm::rotate(Mat4f(1.0f), nRoll_rad, V3f(0.0f, 0.0f, 1.0f));
-		m_m4View = glm::inverse(m4Transform);
-		return m_m4View;
-	}
-	// --getters
-	void GfxCamera::SetType(GfxCameraTypes gcType) {
-		m_gcType = gcType;
-		if (m_gcType == GCT_ORTHO) {
-			nNearClip = -100.0f;
-			nFarClip = 100.0f;
-		}
-		else if (m_gcType == GCT_PERSPECT) {
-			nNearClip = 0.01f;
-			nFarClip = 100.0f;
-		}
-	}
-	void GfxCamera::SetMode(GfxCameraModes gcMode) {
-		m_gcMode = gcMode;
-		if (m_gcMode == GCM_2D) {
-		}
-		else if (m_gcMode == GCM_3D) {
-		}
+		m4f32 transformation =
+			mat_translate(m4f32(1.0f), coord) *
+			mat_rotate(m4f32(1.0f), pitch_rad, v3f32(1.0f, 0.0f, 0.0f)) *
+			mat_rotate(m4f32(1.0f), yaw_rad, v3f32(0.0f, 1.0f, 0.0f)) *
+			mat_rotate(m4f32(1.0f), roll_rad, v3f32(0.0f, 0.0f, 1.0f));
+		m_view = mat_inverse(transformation);
 	}
 }

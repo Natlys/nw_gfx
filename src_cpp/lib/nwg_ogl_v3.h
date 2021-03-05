@@ -290,10 +290,10 @@ GLAPI void APIENTRY glTexParameterIiv(GLenum target, GLenum pname, const GLint* 
 GLAPI void APIENTRY glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* params);
 GLAPI void APIENTRY glGetTexParameterIiv(GLenum target, GLenum pname, GLint* params);
 GLAPI void APIENTRY glGetTexParameterIuiv(GLenum target, GLenum pname, GLuint* params);
-GLAPI void APIENTRY glClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint* value);
-GLAPI void APIENTRY glClearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint* value);
-GLAPI void APIENTRY glClearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat* value);
-GLAPI void APIENTRY glClearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
+GLAPI void APIENTRY glClearefferiv(GLenum buffer, GLint drawbuffer, const GLint* value);
+GLAPI void APIENTRY glClearefferuiv(GLenum buffer, GLint drawbuffer, const GLuint* value);
+GLAPI void APIENTRY glClearefferfv(GLenum buffer, GLint drawbuffer, const GLfloat* value);
+GLAPI void APIENTRY glClearefferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
 GLAPI const GLubyte* APIENTRY glGetStringi(GLenum name, GLuint index);
 #endif // GLCOREARB_PROTOTYPES
 typedef void (APIENTRYP PFNGLCOLORMASKIPROC) (GLuint index, GLboolean r, GLboolean g, GLboolean b, GLboolean a);
@@ -407,10 +407,10 @@ extern PFNGLTEXPARAMETERIIVPROC OglTexParameterIiv;
 extern PFNGLTEXPARAMETERIUIVPROC OglTexParameterIuiv;
 extern PFNGLGETTEXPARAMETERIIVPROC OglGetTexParameterIiv;
 extern PFNGLGETTEXPARAMETERIUIVPROC OglGetTexParameterIuiv;
-extern PFNGLCLEARBUFFERIVPROC OglClearBufferiv;
-extern PFNGLCLEARBUFFERUIVPROC OglClearBufferuiv;
-extern PFNGLCLEARBUFFERFVPROC OglClearBufferfv;
-extern PFNGLCLEARBUFFERFIPROC OglClearBufferfi;
+extern PFNGLCLEARBUFFERIVPROC OglClearefferiv;
+extern PFNGLCLEARBUFFERUIVPROC OglClearefferuiv;
+extern PFNGLCLEARBUFFERFVPROC OglClearefferfv;
+extern PFNGLCLEARBUFFERFIPROC OglClearefferfi;
 extern PFNGLGETSTRINGIPROC OglGetStringi;
 #define glColorMaski		OglColorMaski
 #define glGetBooleani_v		OglGetBooleani_v
@@ -465,10 +465,10 @@ extern PFNGLGETSTRINGIPROC OglGetStringi;
 #define glTexParameterIuiv		OglTexParameterIuiv
 #define glGetTexParameterIiv		OglGetTexParameterIiv
 #define glGetTexParameterIuiv		OglGetTexParameterIuiv
-#define glClearBufferiv		OglClearBufferiv
-#define glClearBufferuiv		OglClearBufferuiv
-#define glClearBufferfv		OglClearBufferfv
-#define glClearBufferfi		OglClearBufferfi
+#define glClearefferiv		OglClearefferiv
+#define glClearefferuiv		OglClearefferuiv
+#define glClearefferfv		OglClearefferfv
+#define glClearefferfi		OglClearefferfi
 #define glGetStringi		OglGetStringi
 #endif	// GL_VERSION_3_0
 

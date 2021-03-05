@@ -46,10 +46,6 @@ namespace NWG
 		OglGetUniformuiv = (PFNGLGETUNIFORMUIVPROC)OglGetProc("glGetUniformuiv");
 		OglBindFragDataLocation = (PFNGLBINDFRAGDATALOCATIONPROC)OglGetProc("glBindFragDataLocation");
 		OglGetFragDataLocation = (PFNGLGETFRAGDATALOCATIONPROC)OglGetProc("glGetFragDataLocation");
-		OglUniform1ui = (PFNGLUNIFORM1UIPROC)OglGetProc("glUniform1ui");
-		OglUniform2ui = (PFNGLUNIFORM2UIPROC)OglGetProc("glUniform2ui");
-		OglUniform3ui = (PFNGLUNIFORM3UIPROC)OglGetProc("glUniform3ui");
-		OglUniform4ui = (PFNGLUNIFORM4UIPROC)OglGetProc("glUniform4ui");
 		OglUniform1uiv = (PFNGLUNIFORM1UIVPROC)OglGetProc("glUniform1uiv");
 		OglUniform2uiv = (PFNGLUNIFORM2UIVPROC)OglGetProc("glUniform2uiv");
 		OglUniform3uiv = (PFNGLUNIFORM3UIVPROC)OglGetProc("glUniform3uiv");
@@ -58,10 +54,10 @@ namespace NWG
 		OglTexParameterIuiv = (PFNGLTEXPARAMETERIUIVPROC)OglGetProc("glTexParameterIuiv");
 		OglGetTexParameterIiv = (PFNGLGETTEXPARAMETERIIVPROC)OglGetProc("glGetTexParameterIiv");
 		OglGetTexParameterIuiv = (PFNGLGETTEXPARAMETERIUIVPROC)OglGetProc("glGetTexParameterIuiv");
-		OglClearBufferiv = (PFNGLCLEARBUFFERIVPROC)OglGetProc("glClearBufferiv");
-		OglClearBufferuiv = (PFNGLCLEARBUFFERUIVPROC)OglGetProc("glClearBufferuiv");
-		OglClearBufferfv = (PFNGLCLEARBUFFERFVPROC)OglGetProc("glClearBufferfv");
-		OglClearBufferfi = (PFNGLCLEARBUFFERFIPROC)OglGetProc("glClearBufferfi");
+		OglClearefferiv = (PFNGLCLEARBUFFERIVPROC)OglGetProc("glClearefferiv");
+		OglClearefferuiv = (PFNGLCLEARBUFFERUIVPROC)OglGetProc("glClearefferuiv");
+		OglClearefferfv = (PFNGLCLEARBUFFERFVPROC)OglGetProc("glClearefferfv");
+		OglClearefferfi = (PFNGLCLEARBUFFERFIPROC)OglGetProc("glClearefferfi");
 		OglGetStringi = (PFNGLGETSTRINGIPROC)OglGetProc("glGetStringi");
 #endif	// GL_VERSION_3_0
 #if (defined GL_VERSION_3_1)
@@ -134,10 +130,10 @@ PFNGLTEXPARAMETERIIVPROC OglTexParameterIiv;
 PFNGLTEXPARAMETERIUIVPROC OglTexParameterIuiv;
 PFNGLGETTEXPARAMETERIIVPROC OglGetTexParameterIiv;
 PFNGLGETTEXPARAMETERIUIVPROC OglGetTexParameterIuiv;
-PFNGLCLEARBUFFERIVPROC OglClearBufferiv;
-PFNGLCLEARBUFFERUIVPROC OglClearBufferuiv;
-PFNGLCLEARBUFFERFVPROC OglClearBufferfv;
-PFNGLCLEARBUFFERFIPROC OglClearBufferfi;
+PFNGLCLEARBUFFERIVPROC OglClearefferiv;
+PFNGLCLEARBUFFERUIVPROC OglClearefferuiv;
+PFNGLCLEARBUFFERFVPROC OglClearefferfv;
+PFNGLCLEARBUFFERFIPROC OglClearefferfi;
 PFNGLGETSTRINGIPROC OglGetStringi;
 #endif	// GL_VERSION_3_0
 

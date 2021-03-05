@@ -1061,7 +1061,7 @@ typedef void (APIENTRYP PFNGLGETINTERNALFORMATIVPROC) (GLenum target, GLenum int
 #ifndef GL_ARB_shader_atomic_counters
 #define GL_ARB_shader_atomic_counters 1
 #ifdef GLCOREARB_PROTOTYPES
-GLAPI void APIENTRY glGetActiveAtomicCounterBufferiv(GLuint program, GLuint bufferIndex, GLenum pname, GLint* params);
+GLAPI void APIENTRY glGetActiveAtomicCounterefferiv(GLuint program, GLuint bufferIndex, GLenum pname, GLint* params);
 #endif // GLCOREARB_PROTOTYPES
 typedef void (APIENTRYP PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC) (GLuint program, GLuint bufferIndex, GLenum pname, GLint* params);
 #endif
@@ -1135,8 +1135,8 @@ typedef void (APIENTRYP PFNGLGETOBJECTPTRLABELPROC) (const void* ptr, GLsizei bu
 #ifndef GL_ARB_clear_buffer_object
 #define GL_ARB_clear_buffer_object 1
 #ifdef GLCOREARB_PROTOTYPES
-GLAPI void APIENTRY glClearBufferData(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void* data);
-GLAPI void APIENTRY glClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void* data);
+GLAPI void APIENTRY glClearefferData(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void* data);
+GLAPI void APIENTRY glClearefferSubData(GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void* data);
 GLAPI void APIENTRY glClearNamedBufferDataEXT(GLuint buffer, GLenum internalformat, GLenum format, GLenum type, const void* data);
 GLAPI void APIENTRY glClearNamedBufferSubDataEXT(GLuint buffer, GLenum internalformat, GLenum format, GLenum type, GLsizeiptr offset, GLsizeiptr size, const void* data);
 #endif // GLCOREARB_PROTOTYPES
@@ -1507,7 +1507,7 @@ extern PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC OglDrawElementsInsta
 extern PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC OglDrawTransformFeedbackInstanced;
 extern PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC OglDrawTransformFeedbackStreamInstanced;
 extern PFNGLGETINTERNALFORMATIVPROC OglGetInternalformativ;
-extern PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC OglGetActiveAtomicCounterBufferiv;
+extern PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC OglGetActiveAtomicCounterefferiv;
 extern PFNGLBINDIMAGETEXTUREPROC OglBindImageTexture;
 extern PFNGLMEMORYBARRIERPROC OglMemoryBarrier;
 extern PFNGLTEXSTORAGE1DPROC OglTexStorage1D;
@@ -1526,8 +1526,8 @@ extern PFNGLOBJECTLABELPROC OglObjectLabel;
 extern PFNGLGETOBJECTLABELPROC OglGetObjectLabel;
 extern PFNGLOBJECTPTRLABELPROC OglObjectPtrLabel;
 extern PFNGLGETOBJECTPTRLABELPROC OglGetObjectPtrLabel;
-extern PFNGLCLEARBUFFERDATAPROC OglClearBufferData;
-extern PFNGLCLEARBUFFERSUBDATAPROC OglClearBufferSubData;
+extern PFNGLCLEARBUFFERDATAPROC OglClearefferData;
+extern PFNGLCLEARBUFFERSUBDATAPROC OglClearefferSubData;
 extern PFNGLCLEARNAMEDBUFFERDATAEXTPROC OglClearNamedBufferDataEXT;
 extern PFNGLCLEARNAMEDBUFFERSUBDATAEXTPROC OglClearNamedBufferSubDataEXT;
 
@@ -1797,7 +1797,7 @@ extern PFNGLCLEARNAMEDBUFFERSUBDATAEXTPROC OglClearNamedBufferSubDataEXT;
 #define glDrawTransformFeedbackInstanced		OglDrawTransformFeedbackInstanced
 #define glDrawTransformFeedbackStreamInstanced		OglDrawTransformFeedbackStreamInstanced
 #define glGetInternalformativ		OglGetInternalformativ
-#define glGetActiveAtomicCounterBufferiv		OglGetActiveAtomicCounterBufferiv
+#define glGetActiveAtomicCounterefferiv		OglGetActiveAtomicCounterefferiv
 #define glBindImageTexture		OglBindImageTexture
 #define glMemoryBarrier		OglMemoryBarrier
 #define glTexStorage1D		OglTexStorage1D
@@ -1816,8 +1816,8 @@ extern PFNGLCLEARNAMEDBUFFERSUBDATAEXTPROC OglClearNamedBufferSubDataEXT;
 #define glGetObjectLabel		OglGetObjectLabel
 #define glObjectPtrLabel		OglObjectPtrLabel
 #define glGetObjectPtrLabel		OglGetObjectPtrLabel
-#define glClearBufferData		OglClearBufferData
-#define glClearBufferSubData		OglClearBufferSubData
+#define glClearefferData		OglClearefferData
+#define glClearefferSubData		OglClearefferSubData
 #define glClearNamedBufferDataEXT		OglClearNamedBufferDataEXT
 #define glClearNamedBufferSubDataEXT		OglClearNamedBufferSubDataEXT
 #define glDispatchCompute		OglDispatchCompute

@@ -1,11 +1,12 @@
 #include <nwg_pch.hpp>
-#include "nwg_res.h"
+#include "nwg_cmp.h"
 #if (defined NWG_GAPI)
 #if (NWG_GAPI & NWG_GAPI_OGL)
 namespace NWG
 {
-	AGfxRes::AGfxRes(GfxEngine& rGfx) : m_pGfx(&rGfx), m_unRId(0) {}
-	AGfxRes::~AGfxRes() { }
+	a_gfx_cmp::a_gfx_cmp(gfx_engine& graphics) :
+		a_cmp(), m_gfx(&graphics) { }
+	a_gfx_cmp::~a_gfx_cmp() { }
 	// --setters
 	// --core_methods
 }
@@ -13,8 +14,8 @@ namespace NWG
 #if (NWG_GAPI & NWG_GAPI_DX)
 namespace NWG
 {
-	AGfxRes::AGfxRes(GfxEngine& rGfx) : m_pGfx(&rGfx) {}
-	AGfxRes::~AGfxRes() {}
+	a_gfx_cmp::a_gfx_cmp(gfx_engine& graphics) : a_cmp(), m_gfx(&graphics) { }
+	a_gfx_cmp::~a_gfx_cmp() { }
 	// --setters
 	// --core_methods
 }
