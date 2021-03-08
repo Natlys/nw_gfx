@@ -118,11 +118,12 @@ namespace NWG
 	template<>data_types convert_enum<m4f32, data_types>() { return DT_MAT4_FLOAT32; }
 }
 #if (NWG_GAPI & NWG_GAPI_OGL)
-#include <lib/nwg_ogl_v1.h>
-#include <lib/nwg_ogl_v2.h>
-#include <lib/nwg_ogl_v3.h>
-#include <lib/nwg_ogl_v4.h>
-#include <lib/nwg_ogl_arb.h>
+#include <lib/nwg_load_base.h>
+#include <lib/nwg_load_txr.h>
+#include <lib/nwg_load_buf.h>
+#include <lib/nwg_load_fbuf.h>
+#include <lib/nwg_load_shd.h>
+#include <gl/GL.h>
 namespace NWG
 {
 	template<> data_types convert_enum<const GLchar*, data_types>(const GLchar* type_string) {
@@ -233,7 +234,6 @@ namespace NWG
 
 		case PXF_R32_UINT32: return GL_R32UI; break;
 		case PXF_R16G16_UINT32: return GL_RG32UI; break;
-		case PXF_R8G8B8_UINT32: return GL_RGB32UI; break;
 		case PXF_R8G8B8A8_UINT32: return GL_RGBA32UI; break;
 
 		case PXF_D24S8_UINT32: return GL_DEPTH24_STENCIL8; break;
@@ -438,7 +438,7 @@ namespace NWG
 
 		default: throw error("invalid data type", ERC_INVALID_ENUM); aligned_size = 0; break;
 		}
-		return aligned_size * ((count + (aligned_size - 1)) & ~(aligned_size - 1));
+		return count * ((aligned_size + (aligned_size - 1)) & ~(aligned_size - 1));
 	}
 }
 #endif

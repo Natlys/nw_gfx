@@ -121,7 +121,7 @@ static void HelpMarker(const char* desc)
 
 static void ShowDockingDisabledMessage()
 {
-    ImGuiIO& io = GUI::GetIO();
+    imgui_io& io = GUI::GetIO();
     GUI::Text("ERROR: Docking is not enabled! See Demo > Configuration.");
     GUI::Text("Set io.ConfigFlags |= ImGuiConfigFlags_DockingEnable in your code, or ");
     GUI::SameLine(0.0f, 0.0f);
@@ -132,7 +132,7 @@ static void ShowDockingDisabledMessage()
 // Helper to display basic user controls.
 void GUI::ShowUserGuide()
 {
-    ImGuiIO& io = GUI::GetIO();
+    imgui_io& io = GUI::GetIO();
     GUI::BulletText("Double-click on title bar to collapse window.");
     GUI::BulletText(
         "Click and drag on lower corner to resize window\n"
@@ -261,7 +261,7 @@ void GUI::ShowDemoWindow(bool* p_open)
 
     // We specify a default position/size in case there's no data in the .ini file.
     // We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-    ImGuiViewport* main_viewport = GUI::GetMainViewport();
+    imgui_viewport* main_viewport = GUI::GetMainViewport();
     GUI::SetNextWindowPos(ImVec2(main_viewport->GetWorkPos().x + 650, main_viewport->GetWorkPos().y + 20), ImGuiCond_FirstUseEver);
     GUI::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
@@ -343,7 +343,7 @@ void GUI::ShowDemoWindow(bool* p_open)
 
     if (GUI::CollapsingHeader("Configuration"))
     {
-        ImGuiIO& io = GUI::GetIO();
+        imgui_io& io = GUI::GetIO();
 
         if (GUI::TreeNode("Configuration##2"))
         {
@@ -385,7 +385,7 @@ void GUI::ShowDemoWindow(bool* p_open)
             }
 
             GUI::CheckboxFlags("io.ConfigFlags: ViewportsEnable", (unsigned int *)&io.ConfigFlags, ImGuiConfigFlags_ViewportsEnable);
-            GUI::SameLine(); HelpMarker("[beta] Enable beta multi-viewports support. See ImGuiPlatformIO for details.");
+            GUI::SameLine(); HelpMarker("[beta] Enable beta multi-viewports support. See imgui_platform_io for details.");
             if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
             {
                 GUI::Indent();
@@ -831,7 +831,7 @@ static void ShowDemoWindowWidgets()
             GUI::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Pink");
             GUI::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Yellow");
             GUI::TextDisabled("Disabled");
-            GUI::SameLine(); HelpMarker("The TextDisabled color is stored in ImGuiStyle.");
+            GUI::SameLine(); HelpMarker("The TextDisabled color is stored in imgui_style.");
             GUI::TreePop();
         }
 
@@ -844,7 +844,7 @@ static void ShowDemoWindowWidgets()
             static float wrap_width = 200.0f;
             GUI::SliderFloat("Wrap width", &wrap_width, -20, 600, "%.0f");
 
-            ImDrawList* draw_list = GUI::GetWindowDrawList();
+            imgui_draw_list* draw_list = GUI::GetWindowDrawList();
             for (int n = 0; n < 2; n++)
             {
                 GUI::Text("Test paragraph %d:", n);
@@ -894,25 +894,25 @@ static void ShowDemoWindowWidgets()
 
     if (GUI::TreeNode("Images"))
     {
-        ImGuiIO& io = GUI::GetIO();
-        GUI::TextWrapped("Below we are displaying the font texture (which is the only texture we have access to in this demo). Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. Hover the texture for a zoomed view!");
+        imgui_io& io = GUI::GetIO();
+        GUI::TextWrapped("Below we are displaying the font texture (which is the only texture we have access to in this demo). Use the 'imgui_texture_id' type as storage to pass pointers or identifier to your own texture data. Hover the texture for a zoomed view!");
 
         // Below we are displaying the font texture because it is the only texture we have access to inside the demo!
-        // Remember that ImTextureID is just storage for whatever you want it to be. It is essentially a value that
-        // will be passed to the rendering back-end via the ImDrawCmd structure.
+        // Remember that imgui_texture_id is just storage for whatever you want it to be. It is essentially a value that
+        // will be passed to the rendering back-end via the imgui_draw_cmd structure.
         // If you use one of the default imgui_impl_XXXX.cpp rendering back-end, they all have comments at the top
-        // of their respective source file to specify what they expect to be stored in ImTextureID, for example:
+        // of their respective source file to specify what they expect to be stored in imgui_texture_id, for example:
         // - The imgui_impl_dx11.cpp renderer expect a 'ID3D11ShaderResourceView*' pointer
         // - The imgui_impl_opengl3.cpp renderer expect a GLuint OpenGL texture identifier, etc.
         // More:
-        // - If you decided that ImTextureID = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
+        // - If you decided that imgui_texture_id = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
         //   to GUI::Image(), and gather width/height through your own functions, etc.
         // - You can use ShowMetricsWindow() to inspect the draw data that are being passed to your renderer,
         //   it will help you debug issues if you are confused about it.
-        // - Consider using the lower-level ImDrawList::AddImage() API, via GUI::GetWindowDrawList()->AddImage().
+        // - Consider using the lower-level imgui_draw_list::AddImage() API, via GUI::GetWindowDrawList()->AddImage().
         // - Read https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
         // - Read https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
-        ImTextureID my_tex_id = io.Fonts->TexID;
+        imgui_texture_id my_tex_id = io.Fonts->TexID;
         float my_tex_w = (float)io.Fonts->TexWidth;
         float my_tex_h = (float)io.Fonts->TexHeight;
         {
@@ -1123,7 +1123,7 @@ static void ShowDemoWindowWidgets()
                     char name[32];
                     sprintf(name, "(%.1f,%.1f)", alignment.x, alignment.y);
                     if (x > 0) GUI::SameLine();
-                    GUI::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
+                    GUI::PushStyleVar(imgui_styleVar_SelectableTextAlign, alignment);
                     GUI::Selectable(name, &selected[3 * y + x], ImGuiSelectableFlags_None, ImVec2(80, 80));
                     GUI::PopStyleVar();
                 }
@@ -1735,7 +1735,7 @@ static void ShowDemoWindowWidgets()
     if (GUI::TreeNode("Vertical Sliders"))
     {
         const float spacing = 4;
-        GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(spacing, spacing));
+        GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(spacing, spacing));
 
         static int int_value = 0;
         GUI::VSliderInt("##int", ImVec2(18, 160), &int_value, 0, 5);
@@ -1786,7 +1786,7 @@ static void ShowDemoWindowWidgets()
         {
             if (i > 0) GUI::SameLine();
             GUI::PushID(i);
-            GUI::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
+            GUI::PushStyleVar(imgui_styleVar_GrabMinSize, 40);
             GUI::VSliderFloat("##v", ImVec2(40, 160), &values[i], 0.0f, 1.0f, "%.2f\nsec");
             GUI::PopStyleVar();
             GUI::PopID();
@@ -2090,7 +2090,7 @@ static void ShowDemoWindowLayout()
                 window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
             if (!disable_menu)
                 window_flags |= ImGuiWindowFlags_MenuBar;
-            GUI::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+            GUI::PushStyleVar(imgui_styleVar_ChildRounding, 5.0f);
             GUI::BeginChild("ChildR", ImVec2(0, 260), true, window_flags);
             if (!disable_menu && GUI::BeginMenuBar())
             {
@@ -2257,7 +2257,7 @@ static void ShowDemoWindowLayout()
         // Manually wrapping
         // (we should eventually provide this as an automatic layout feature, but for now you can do it manually)
         GUI::Text("Manually wrapping:");
-        ImGuiStyle& style = GUI::GetStyle();
+        imgui_style& style = GUI::GetStyle();
         int buttons_count = 20;
         float window_visible_x2 = GUI::GetWindowPos().x + GUI::GetWindowContentRegionMax().x;
         for (int n = 0; n < buttons_count; n++)
@@ -2538,7 +2538,7 @@ static void ShowDemoWindowLayout()
         if (scroll_to_off || scroll_to_pos)
             enable_track = false;
 
-        ImGuiStyle& style = GUI::GetStyle();
+        imgui_style& style = GUI::GetStyle();
         float child_w = (GUI::GetContentRegionAvail().x - 4 * style.ItemSpacing.x) / 5;
         if (child_w < 1.0f)
             child_w = 1.0f;
@@ -2635,8 +2635,8 @@ static void ShowDemoWindowLayout()
             "You may want to also explicitly specify content width by using SetNextWindowContentWidth() before Begin().");
         static int lines = 7;
         GUI::SliderInt("Lines", &lines, 1, 15);
-        GUI::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f);
-        GUI::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2.0f, 1.0f));
+        GUI::PushStyleVar(imgui_styleVar_FrameRounding, 3.0f);
+        GUI::PushStyleVar(imgui_styleVar_FramePadding, ImVec2(2.0f, 1.0f));
         ImVec2 scrolling_child_size = ImVec2(0, GUI::GetFrameHeightWithSpacing() * 7 + 30);
         GUI::BeginChild("scrolling", scrolling_child_size, true, ImGuiWindowFlags_HorizontalScrollbar);
         for (int line = 0; line < lines; line++)
@@ -2644,7 +2644,7 @@ static void ShowDemoWindowLayout()
             // Display random stuff. For the sake of this trivial demo we are using basic Button() + SameLine()
             // If you want to create your own time line for a real application you may be better off manipulating
             // the cursor position yourself, aka using SetCursorPos/SetCursorScreenPos to position the widgets
-            // yourself. You may also want to use the lower-level ImDrawList API.
+            // yourself. You may also want to use the lower-level imgui_draw_list API.
             int num_buttons = 10 + ((line & 1) ? line * 9 : line * 3);
             for (int n = 0; n < num_buttons; n++)
             {
@@ -2704,8 +2704,8 @@ static void ShowDemoWindowLayout()
             if (explicit_content_size)
                 GUI::SetNextWindowContentSize(ImVec2(contents_size_x, 0.0f));
             GUI::Begin("Horizontal contents size demo window", &show_horizontal_contents_size_demo_window, show_h_scrollbar ? ImGuiWindowFlags_HorizontalScrollbar : 0);
-            GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 0));
-            GUI::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 0));
+            GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(2, 0));
+            GUI::PushStyleVar(imgui_styleVar_FramePadding, ImVec2(2, 0));
             HelpMarker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.");
             GUI::Checkbox("H-scrollbar", &show_h_scrollbar);
             GUI::Checkbox("Button", &show_button);            // Will grow contents size (unless explicitly overwritten)
@@ -2803,14 +2803,14 @@ static void ShowDemoWindowLayout()
             const ImVec2 p1 = GUI::GetItemRectMax();
             const char* text_str = "Line 1 hello\nLine 2 clip me!";
             const ImVec2 text_pos = ImVec2(p0.x + offset.x, p0.y + offset.y);
-            ImDrawList* draw_list = GUI::GetWindowDrawList();
+            imgui_draw_list* draw_list = GUI::GetWindowDrawList();
 
             switch (n)
             {
             case 0:
                 HelpMarker(
                     "Using GUI::PushClipRect():\n"
-                    "Will alter ImGui hit-testing logic + ImDrawList rendering.\n"
+                    "Will alter ImGui hit-testing logic + imgui_draw_list rendering.\n"
                     "(use this if you want your clipping rectangle to affect interactions)");
                 GUI::PushClipRect(p0, p1, true);
                 draw_list->AddRectFilled(p0, p1, IM_COL32(90, 90, 120, 255));
@@ -2819,9 +2819,9 @@ static void ShowDemoWindowLayout()
                 break;
             case 1:
                 HelpMarker(
-                    "Using ImDrawList::PushClipRect():\n"
-                    "Will alter ImDrawList rendering only.\n"
-                    "(use this as a shortcut if you are only using ImDrawList calls)");
+                    "Using imgui_draw_list::PushClipRect():\n"
+                    "Will alter imgui_draw_list rendering only.\n"
+                    "(use this as a shortcut if you are only using imgui_draw_list calls)");
                 draw_list->PushClipRect(p0, p1, true);
                 draw_list->AddRectFilled(p0, p1, IM_COL32(90, 90, 120, 255));
                 draw_list->AddText(text_pos, IM_COL32_WHITE, text_str);
@@ -2829,8 +2829,8 @@ static void ShowDemoWindowLayout()
                 break;
             case 2:
                 HelpMarker(
-                    "Using ImDrawList::AddText() with a fine ClipRect:\n"
-                    "Will alter only this specific ImDrawList::AddText() rendering.\n"
+                    "Using imgui_draw_list::AddText() with a fine ClipRect:\n"
+                    "Will alter only this specific imgui_draw_list::AddText() rendering.\n"
                     "(this is often used internally to avoid altering the clipping rectangle and minimize draw calls)");
                 ImVec4 clip_rect(p0.x, p0.y, p1.x, p1.y); // AddText() takes a ImVec4* here so let's convert.
                 draw_list->AddRectFilled(p0, p1, IM_COL32(90, 90, 120, 255));
@@ -3016,7 +3016,7 @@ static void ShowDemoWindowPopups()
             //GUI::Combo("Combo", &unused_i, "Delete\0Delete harder\0");
 
             static bool dont_ask_me_next_time = false;
-            GUI::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+            GUI::PushStyleVar(imgui_styleVar_FramePadding, ImVec2(0, 0));
             GUI::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
             GUI::PopStyleVar();
 
@@ -3106,7 +3106,7 @@ static void ShowDemoWindowColumns()
     GUI::SameLine();
     HelpMarker("Disable the indenting of tree nodes so demo columns can use the full window width.");
     if (disable_indent)
-        GUI::PushStyleVar(ImGuiStyleVar_IndentSpacing, 0.0f);
+        GUI::PushStyleVar(imgui_styleVar_IndentSpacing, 0.0f);
 
     // Basic columns
     if (GUI::TreeNode("Basic"))
@@ -3343,9 +3343,9 @@ static void ShowDemoWindowMisc()
 
     if (GUI::CollapsingHeader("Inputs, Navigation & Focus"))
     {
-        ImGuiIO& io = GUI::GetIO();
+        imgui_io& io = GUI::GetIO();
 
-        // Display ImGuiIO output flags
+        // Display imgui_io output flags
         GUI::Text("WantCaptureMouse: %d", io.WantCaptureMouse);
         GUI::Text("WantCaptureKeyboard: %d", io.WantCaptureKeyboard);
         GUI::Text("WantTextInput: %d", io.WantTextInput);
@@ -3473,16 +3473,16 @@ static void ShowDemoWindowMisc()
         if (GUI::TreeNode("Mouse cursors"))
         {
             const char* mouse_cursors_names[] = { "Arrow", "TextInput", "ResizeAll", "ResizeNS", "ResizeEW", "ResizeNESW", "ResizeNWSE", "Hand", "NotAllowed" };
-            IM_ASSERT(IM_ARRAYSIZE(mouse_cursors_names) == ImGuiMouseCursor_COUNT);
+            IM_ASSERT(IM_ARRAYSIZE(mouse_cursors_names) == imgui_mouse_cursor_COUNT);
 
-            ImGuiMouseCursor current = GUI::GetMouseCursor();
+            imgui_mouse_cursor current = GUI::GetMouseCursor();
             GUI::Text("Current mouse cursor = %d: %s", current, mouse_cursors_names[current]);
             GUI::Text("Hover to see mouse cursors:");
             GUI::SameLine(); HelpMarker(
                 "Your application can render a different mouse cursor based on what GUI::GetMouseCursor() returns. "
                 "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, "
                 "otherwise your backend needs to handle it.");
-            for (int i = 0; i < ImGuiMouseCursor_COUNT; i++)
+            for (int i = 0; i < imgui_mouse_cursor_COUNT; i++)
             {
                 char label[32];
                 sprintf(label, "Mouse cursor %d: %s", i, mouse_cursors_names[i]);
@@ -3516,8 +3516,8 @@ void GUI::ShowAboutWindow(bool* p_open)
     GUI::Checkbox("Config/Build Information", &show_config_info);
     if (show_config_info)
     {
-        ImGuiIO& io = GUI::GetIO();
-        ImGuiStyle& style = GUI::GetStyle();
+        imgui_io& io = GUI::GetIO();
+        imgui_style& style = GUI::GetStyle();
 
         bool copy_to_clipboard = GUI::Button("Copy to clipboard");
         ImVec2 child_size = ImVec2(0, GUI::GetTextLineHeightWithSpacing() * 18);
@@ -3685,7 +3685,7 @@ bool GUI::ShowStyleSelector(const char* label)
 // Here we use the regular BeginCombo()/EndCombo() api which is more the more flexible one.
 void GUI::ShowFontSelector(const char* label)
 {
-    ImGuiIO& io = GUI::GetIO();
+    imgui_io& io = GUI::GetIO();
     ImFont* font_current = GUI::GetFont();
     if (GUI::BeginCombo(label, font_current->GetDebugName()))
     {
@@ -3710,8 +3710,8 @@ void GUI::ShowFontSelector(const char* label)
 // [Internal] Display details for a single font, called by ShowStyleEditor().
 static void NodeFont(ImFont* font)
 {
-    ImGuiIO& io = GUI::GetIO();
-    ImGuiStyle& style = GUI::GetStyle();
+    imgui_io& io = GUI::GetIO();
+    imgui_style& style = GUI::GetStyle();
     bool font_details_opened = GUI::TreeNode(font, "Font: \"%s\"\n%.2f px, %d glyphs, %d file(s)",
         font->ConfigData ? font->ConfigData[0].Name : "", font->FontSize, font->Glyphs.Size, font->ConfigDataCount);
     GUI::SameLine(); if (GUI::SmallButton("Set as default")) { io.FontDefault = font; }
@@ -3765,7 +3765,7 @@ static void NodeFont(ImFont* font)
             float cell_size = font->FontSize * 1;
             float cell_spacing = style.ItemSpacing.y;
             ImVec2 base_pos = GUI::GetCursorScreenPos();
-            ImDrawList* draw_list = GUI::GetWindowDrawList();
+            imgui_draw_list* draw_list = GUI::GetWindowDrawList();
             for (unsigned int n = 0; n < 256; n++)
             {
                 // We use ImFont::RenderChar as a shortcut because we don't have UTF-8 conversion functions
@@ -3796,12 +3796,12 @@ static void NodeFont(ImFont* font)
     GUI::TreePop();
 }
 
-void GUI::ShowStyleEditor(ImGuiStyle* ref)
+void GUI::ShowStyleEditor(imgui_style* ref)
 {
-    // You can pass in a reference ImGuiStyle structure to compare to, revert to and save to
+    // You can pass in a reference imgui_style structure to compare to, revert to and save to
     // (without a reference style pointer, we will use one compared locally as a reference)
-    ImGuiStyle& style = GUI::GetStyle();
-    static ImGuiStyle ref_saved_style;
+    imgui_style& style = GUI::GetStyle();
+    static imgui_style ref_saved_style;
 
     // Default to using internal storage as reference
     static bool init = true;
@@ -3948,7 +3948,7 @@ void GUI::ShowStyleEditor(ImGuiStyle* ref)
 
         if (GUI::BeginTabItem("Fonts"))
         {
-            ImGuiIO& io = GUI::GetIO();
+            imgui_io& io = GUI::GetIO();
             ImFontAtlas* atlas = io.Fonts;
             HelpMarker("Read FAQ and docs/FONTS.md for details on font loading.");
             GUI::PushItemWidth(120);
@@ -3974,7 +3974,7 @@ void GUI::ShowStyleEditor(ImGuiStyle* ref)
             HelpMarker(
                 "Those are old settings provided for convenience.\n"
                 "However, the _correct_ way of scaling your UI is currently to reload your font at the designed size, "
-                "rebuild the font atlas, and call style.ScaleAllSizes() on a reference ImGuiStyle structure.\n"
+                "rebuild the font atlas, and call style.ScaleAllSizes() on a reference imgui_style structure.\n"
                 "Using those settings here will give you poor quality results.");
             static float window_scale = 1.0f;
             if (GUI::DragFloat("window scale", &window_scale, 0.005f, MIN_SCALE, MAX_SCALE, "%.2f", ImGuiSliderFlags_ClampOnInput)) // Scale only this window
@@ -4285,7 +4285,7 @@ struct ExampleAppConsole
         // If your items are of variable height:
         // - Split them into same height items would be simpler and facilitate random-seeking into your list.
         // - Consider using manual call to IsRectVisible() and skipping extraneous decoration from your items.
-        GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
+        GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
         if (copy_to_clipboard)
             GUI::LogToClipboard();
         for (int i = 0; i < Items.Size; i++)
@@ -4568,7 +4568,7 @@ struct ExampleAppLog
         if (copy)
             GUI::LogToClipboard();
 
-        GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+        GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(0, 0));
         const char* buf = Buf.begin();
         const char* buf_end = Buf.end();
         if (Filter.IsActive())
@@ -4779,7 +4779,7 @@ static void ShowExampleAppPropertyEditor(bool* p_open)
         "Remember that in many simple cases, you can use GUI::SameLine(xxx) to position\n"
         "your cursor horizontally instead of using the Columns() API.");
 
-    GUI::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+    GUI::PushStyleVar(imgui_styleVar_FramePadding, ImVec2(2, 2));
     GUI::Columns(2);
     GUI::Separator();
 
@@ -4834,7 +4834,7 @@ static void ShowExampleAppLongText(bool* p_open)
     case 1:
         {
             // Multiple calls to Text(), manually coarsely clipped - demonstrate how to use the ImGuiListClipper helper.
-            GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+            GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(0, 0));
             ImGuiListClipper clipper(lines);
             while (clipper.Step())
                 for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -4844,7 +4844,7 @@ static void ShowExampleAppLongText(bool* p_open)
         }
     case 2:
         // Multiple calls to Text(), not clipped (slow)
-        GUI::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+        GUI::PushStyleVar(imgui_styleVar_ItemSpacing, ImVec2(0, 0));
         for (int i = 0; i < lines; i++)
             GUI::Text("%i The quick brown fox jumps over the lazy dog", i);
         GUI::PopStyleVar();
@@ -4944,10 +4944,10 @@ static void ShowExampleAppSimpleOverlay(bool* p_open)
     // FIXME-VIEWPORT: Select a default viewport
     const float DISTANCE = 10.0f;
     static int corner = 0;
-    ImGuiIO& io = GUI::GetIO();
+    imgui_io& io = GUI::GetIO();
     if (corner != -1)
     {
-        ImGuiViewport* viewport = GUI::GetMainViewport();
+        imgui_viewport* viewport = GUI::GetMainViewport();
         ImVec2 work_area_pos = viewport->GetWorkPos();   // Instead of using viewport->Pos we use GetWorkPos() to avoid menu bars, if any!
         ImVec2 work_area_size = viewport->GetWorkSize();
         ImVec2 window_pos = ImVec2((corner & 1) ? (work_area_pos.x + work_area_size.x - DISTANCE) : (work_area_pos.x + DISTANCE), (corner & 2) ? (work_area_pos.y + work_area_size.y - DISTANCE) : (work_area_pos.y + DISTANCE));
@@ -5014,10 +5014,10 @@ static void ShowExampleCoreWindowTitles(bool*)
 }
 
 //-----------------------------------------------------------------------------
-// [SECTION] Example App: Custom Rendering using ImDrawList API / ShowExampleAppCustomRendering()
+// [SECTION] Example App: Custom Rendering using imgui_draw_list API / ShowExampleAppCustomRendering()
 //-----------------------------------------------------------------------------
 
-// Demonstrate using the low-level ImDrawList to draw custom shapes.
+// Demonstrate using the low-level imgui_draw_list to draw custom shapes.
 static void ShowExampleAppCustomRendering(bool* p_open)
 {
     if (!GUI::Begin("Example: Custom rendering", p_open))
@@ -5036,7 +5036,7 @@ static void ShowExampleAppCustomRendering(bool* p_open)
         if (GUI::BeginTabItem("Primitives"))
         {
             GUI::PushItemWidth(-GUI::GetFontSize() * 10);
-            ImDrawList* draw_list = GUI::GetWindowDrawList();
+            imgui_draw_list* draw_list = GUI::GetWindowDrawList();
 
             // Draw gradients
             // (note that those are currently exacerbating our sRGB/Linear issues)
@@ -5136,7 +5136,7 @@ static void ShowExampleAppCustomRendering(bool* p_open)
             // Typically you would use a BeginChild()/EndChild() pair to benefit from a clipping region + own scrolling.
             // Here we demonstrate that this can be replaced by simple offsetting + custom drawing + PushClipRect/PopClipRect() calls.
             // To use a child window instead we could use, e.g:
-            //      GUI::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));      // Disable padding
+            //      GUI::PushStyleVar(imgui_styleVar_WindowPadding, ImVec2(0, 0));      // Disable padding
             //      GUI::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(50, 50, 50, 255));  // Set a background color
             //      GUI::BeginChild("canvas", ImVec2(0.0f, 0.0f), true, ImGuiWindowFlags_NoMove);
             //      GUI::PopStyleColor();
@@ -5145,15 +5145,15 @@ static void ShowExampleAppCustomRendering(bool* p_open)
             //      GUI::EndChild();
 
             // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-            ImVec2 canvas_p0 = GUI::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
+            ImVec2 canvas_p0 = GUI::GetCursorScreenPos();      // imgui_draw_list API uses screen coordinates!
             ImVec2 canvas_sz = GUI::GetContentRegionAvail();   // Resize canvas to what's available
             if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
             if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
             ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y);
 
             // Draw border and background color
-            ImGuiIO& io = GUI::GetIO();
-            ImDrawList* draw_list = GUI::GetWindowDrawList();
+            imgui_io& io = GUI::GetIO();
+            imgui_draw_list* draw_list = GUI::GetWindowDrawList();
             draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
             draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
@@ -5261,12 +5261,12 @@ void ShowExampleAppDockSpace(bool* p_open)
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     if (opt_fullscreen)
     {
-        ImGuiViewport* viewport = GUI::GetMainViewport();
+        imgui_viewport* viewport = GUI::GetMainViewport();
         GUI::SetNextWindowPos(viewport->GetWorkPos());
         GUI::SetNextWindowSize(viewport->GetWorkSize());
         GUI::SetNextWindowViewport(viewport->ID);
-        GUI::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        GUI::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        GUI::PushStyleVar(imgui_styleVar_WindowRounding, 0.0f);
+        GUI::PushStyleVar(imgui_styleVar_WindowBorderSize, 0.0f);
         window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
     }
@@ -5286,7 +5286,7 @@ void ShowExampleAppDockSpace(bool* p_open)
     // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
     // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
     if (!opt_padding)
-        GUI::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        GUI::PushStyleVar(imgui_styleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     GUI::Begin("DockSpace Demo", p_open, window_flags);
     if (!opt_padding)
         GUI::PopStyleVar();
@@ -5295,7 +5295,7 @@ void ShowExampleAppDockSpace(bool* p_open)
         GUI::PopStyleVar(2);
 
     // DockSpace
-    ImGuiIO& io = GUI::GetIO();
+    imgui_io& io = GUI::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
         ImGuiID dockspace_id = GUI::GetID("MyDockSpace");
@@ -5693,6 +5693,6 @@ void ShowExampleAppDocuments(bool* p_open)
 void GUI::ShowAboutWindow(bool*) {}
 void GUI::ShowDemoWindow(bool*) {}
 void GUI::ShowUserGuide() {}
-void GUI::ShowStyleEditor(ImGuiStyle*) {}
+void GUI::ShowStyleEditor(imgui_style*) {}
 
 #endif

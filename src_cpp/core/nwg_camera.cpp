@@ -24,12 +24,18 @@ namespace NWG
 	void gfx_camera::set_type(gfx_cameraTypes camera_type) {
 		m_type = camera_type;
 		if (camera_type == GCT_ORTHO) {
-			near_clip = -100.0f;
-			far_clip = 100.0f;
+			near_clip = -1000.0f;
+			far_clip = +1000.0f;
+			view_scale = 1.0f;
+			view_field = 1.0f;
 		}
 		else if (camera_type == GCT_PERSPECT) {
+			m_mode = GCM_3D;
+			m_type = GCT_PERSPECT;
 			near_clip = 0.01f;
 			far_clip = 100.0f;
+			view_scale = 1.0f;
+			view_field = 45.0f;
 		}
 	}
 	// --core_methods

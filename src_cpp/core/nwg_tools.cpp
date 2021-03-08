@@ -29,10 +29,9 @@ namespace NWG
 	}
 }
 #if (NWG_GAPI & NWG_GAPI_OGL)
-#include <lib/nwg_ogl_v1.h>
-#include <lib/nwg_ogl_v2.h>
-#include <lib/nwg_ogl_v3.h>
-#include <lib/nwg_ogl_arb.h>
+#include <lib/nwg_load_base.h>
+#include <lib/nwg_load_shd.h>
+#include <lib/nwg_load_shdp.h>
 // --functions
 namespace NWG
 {
@@ -68,7 +67,7 @@ namespace NWG
 			if (success_code == false) {
 				glGetShaderiv(idx, GL_INFO_LOG_LENGTH, &log_size);
 				log_string.resize(log_size);
-				glGetshader_infoLog(idx, log_size, NULL, &log_string[0]);
+				glGetShaderInfoLog(idx, log_size, NULL, &log_string[0]);
 				throw error(&log_string[0], ERC_COMPILLATION, __FILE__, __LINE__);
 				return ERC_COMPILLATION;
 			}

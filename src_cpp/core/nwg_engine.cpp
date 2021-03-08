@@ -1,15 +1,18 @@
 #include <nwg_pch.hpp>
 #include "nwg_engine.h"
 #if (defined NWG_GAPI)
-#include <core/nwg_cmp.h>
-#include <core/nwg_drawable.h>
+#include <core/nwg_res.h>
+#include <cmp/nwg_drawable.h>
 #if (NWG_GAPI & NWG_GAPI_OGL)
-#include <lib/nwg_ogl_loader.h>
-#include <lib/nwg_ogl_v1.h>
-#include <lib/nwg_ogl_v2.h>
-#include <lib/nwg_ogl_v3.h>
-#include <lib/nwg_ogl_v4.h>
-#include <lib/nwg_ogl_arb.h>
+#include <lib/nwg_load.h>
+#include <lib/nwg_load_base.h>
+#include <lib/nwg_load_fbuf.h>
+#include <lib/nwg_load_buf.h>
+#include <lib/nwg_load_layt.h>
+#include <lib/nwg_load_txr.h>
+#include <lib/nwg_load_smp.h>
+#include <lib/nwg_load_shd.h>
+#include <lib/nwg_load_shdp.h>
 namespace NWG
 {
 	gfx_engine::gfx_engine(gfx_window& wnd) :
@@ -18,7 +21,6 @@ namespace NWG
 		m_device(nullptr), m_context(nullptr)
 	{
 		if (m_wnd == nullptr) { throw error("not correct window handle"); return; }
-		OglOpen();
 		// get device context of the window;
 		// get default device context;
 		// only one devic context can be used in a single thread at one time;
@@ -49,11 +51,20 @@ namespace NWG
 		// create opengl context and associate that with the device context;
 		// it will be attached to the current thread and dc;
 		// this is only one current context we can use;
-		m_context = OglNewContext(m_device);
-		OglMakeContextCurr(m_device, m_context);
-		OglClose();
+		if (!ogl_open()) { throw error("failed to open graphics library"); return; }
+		if (!ogl_load_wgl()) { throw error("windows graphics library is not loaded"); return; }
+		m_context = wglCreateContext(m_device);
+		wglMakeContextCurrent(m_device, m_context);
+		if (!ogl_load_base()) { throw error("problems with loading of base library"); return; }
+		if (!ogl_load_fbuf()) { throw error("problems with loading of framebuffers"); return; }
+		if (!ogl_load_buf()) { throw error("problems with loading of buffers"); return; }
+		if (!ogl_load_varr()) { throw error("problems with loading of layouts"); return; }
+		if (!ogl_load_txr()) { throw error("problems with loading of textures"); return; }
+		if (!ogl_load_smp()) { throw error("problems with loading of samplers"); return; }
+		if (!ogl_load_shd()) { throw error("problems with loading of shaders"); return; }
+		if (!ogl_load_shdp()) { throw error("problems with loading of shader programs"); return; }
+		if (!ogl_close()) { throw error("problems with closing"); return; }
 
-		if (!OglInit()) { throw error("failed to load graphics library!"); return; }
 		strcpy(&m_info.renderer[0], &((cstring)glGetString(GL_RENDERER))[0]);
 		strcpy(&m_info.version[0], &((cstring)glGetString(GL_VERSION))[0]);
 		strcpy(&m_info.vendor[0], &((cstring)glGetString(GL_VENDOR))[0]);
@@ -66,13 +77,13 @@ namespace NWG
 	gfx_engine::~gfx_engine()
 	{
 		// break the connection between our thread and the rendering context;
-		OglMakeContextCurr(NULL, NULL);
+		wglMakeContextCurrent(NULL, NULL);
 		// release the associated dc and delete the rendering context;
 		ReleaseDC(m_wnd, m_device);
 		// before delete - we need to release that;
 		// DeleteDC(m_context);	// delete only created device context;
 		// before this call device context must be released or deleted;
-		OglDelContext(m_context);
+		wglDeleteContext(m_context);
 	}
 	// --setters
 	void gfx_engine::set_primitive(gfx_primitives primitive_topology) {
@@ -88,23 +99,17 @@ namespace NWG
 	// --==<core_methods>==--
 	void gfx_engine::update()
 	{
-		SwapBuffers(m_device);
+		::SwapBuffers(m_device);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(
 			m_config.clear_color[0], m_config.clear_color[1],
 			m_config.clear_color[2], m_config.clear_color[3]);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-	void gfx_engine::begin_draw()
-	{
-	}
-	void gfx_engine::end_draw()
-	{
-	}
 
-	void gfx_engine::del_cmp(ui32 type_id, ui32 cmp_id)
+	void gfx_engine::del_res(ui32 type_id, ui32 cmp_id)
 	{
-		if (!has_cmp(type_id, cmp_id)) { return; }
+		if (!has_res(type_id, cmp_id)) { return; }
 		m_reg[type_id].erase(cmp_id);
 	}
 	// --==</core_methods>==--

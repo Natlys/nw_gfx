@@ -27,9 +27,14 @@ namespace NWG
 		FB_COLOR = 1, FB_DEPTH = 2, FB_STENCIL = 3,
 		FB_DEPTH_STENCIL,
 	};
-}
-namespace NWG
-{
+	enum gfx_cameraTypes : si32 {
+		GCT_DEFAULT = 0,
+		GCT_ORTHO = 1, GCT_PERSPECT = 2,
+	};
+	enum gfx_cameraModes : si32 {
+		GCM_DEFAULT = 0,
+		GCM_2D = 2, GCM_3D = 3,
+	};
 	enum gfx_primitives : si32 {
 		GPT_DEFAULT = 0,
 		GPT_POINTS = 1,
@@ -69,9 +74,6 @@ namespace NWG
 		STC_INCR = 0, STC_DECR = 1,
 		STC_KEEP, STC_ZERO, STC_REPLACE, STC_INVERT,
 	};
-}
-namespace NWG
-{
 	enum texture_types : ui32 {
 		TXT_DEFAULT = 0,
 		TXT_1D = 1, TXT_2D = 2, TXT_3D = 3,

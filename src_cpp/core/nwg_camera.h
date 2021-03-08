@@ -1,17 +1,8 @@
 #ifndef NWG_CAMERA_H
 #define NWG_CAMERA_H
 #include <nwg_core.hpp>
-namespace NWG
-{
-	enum gfx_cameraTypes : si32 {
-		GCT_DEFAULT = 0,
-		GCT_ORTHO = 1, GCT_PERSPECT = 2,
-	};
-	enum gfx_cameraModes : si32 {
-		GCM_DEFAULT = 0,
-		GCM_2D = 2, GCM_3D = 3,
-	};
-}
+#if (defined NWG_GAPI)
+#include <core/nwg_switch.h>
 namespace NWG
 {
 	/// graphics_camera struct
@@ -54,4 +45,5 @@ namespace NWG
 		gfx_cameraModes m_mode;
 	};
 }
+#endif	// NWG_GAPI
 #endif // NWG_CAMERA_H

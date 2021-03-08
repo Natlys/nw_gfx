@@ -16,11 +16,16 @@
 #define NWG_GAPI_DX		1 << 2
 #define NWG_GAPI		NWG_GAPI_OGL
 
+#define NWG_OS_WIN		1 << 1
+#define NWG_OS			NWG_OS_WIN
+
 #if (NWG_GAPI & NWG_GAPI_OGL)
+#	if (NWG_OS & NWG_OS_WIN)
 using gfx_device = HDC;
 using gfx_window = HWND;
 using gfx_context = HGLRC;
 using gfx_lib = HMODULE;
+#	endif	// NWG_OS
 using GLuint = unsigned int;
 #endif	// NWG_GAPI
 #if (NWG_GAPI & NWG_GAPI_DX)
@@ -35,7 +40,7 @@ namespace NWG
 	class NWG_API gfx_engine;
 	class NWG_API gfx_camera_lad;
 
-	class NWG_API a_gfx_cmp;
+	class NWG_API a_gfx_res;
 	class NWG_API a_drawable;
 	class NWG_API drawable_vtx;
 	class NWG_API drawable_idx;

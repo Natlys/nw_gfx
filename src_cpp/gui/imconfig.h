@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // COMPILE-TIME OPTIONS FOR DEAR IMGUI
-// Runtime options (clipboard callbacks, enabling various features, etc.) can generally be set via the ImGuiIO structure.
+// Runtime options (clipboard callbacks, enabling various features, etc.) can generally be set via the imgui_io structure.
 // You can use GUI::SetAllocatorFunctions() before calling GUI::CreateContext() to rewire memory allocation functions.
 //-----------------------------------------------------------------------------
 // A) You may edit imconfig.h (and not overwrite it when updating Dear ImGui, or maintain a patch/branch with your modifications to imconfig.h)
@@ -76,14 +76,14 @@
 
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
 // Your renderer back-end will need to support it (most example renderer back-ends support both 16/32-bit indices).
-// Another way to allow large meshes while keeping 16-bit indices is to handle ImDrawCmd::VtxOffset in your renderer.
+// Another way to allow large meshes while keeping 16-bit indices is to handle imgui_draw_cmd::VtxOffset in your renderer.
 // Read about ImGuiBackendFlags_RendererHasVtxOffset for details.
 //#define ImDrawIdx unsigned int
 
 //---- Override ImDrawCallback signature (will need to modify renderer back-ends accordingly)
-//struct ImDrawList;
-//struct ImDrawCmd;
-//typedef void (*MyImDrawCallback)(const ImDrawList* draw_list, const ImDrawCmd* cmd, void* my_renderer_user_data);
+//struct imgui_draw_list;
+//struct imgui_draw_cmd;
+//typedef void (*MyImDrawCallback)(const imgui_draw_list* draw_list, const imgui_draw_cmd* cmd, void* my_renderer_user_data);
 //#define ImDrawCallback MyImDrawCallback
 
 //---- Debug Tools: Macro to break in Debugger
