@@ -11,8 +11,8 @@ layout(std140)uniform unf_transform{mat4 unf_model;mat4 unf_view;mat4 unf_proj;}
 void main()
 {
 	gl_Position =
-		unf_proj *
-		unf_view *
+		//unf_proj *
+		//unf_view *
 		//unf_model *
 		vec4(atb_vtx_crd.x, atb_vtx_crd.y, atb_vtx_crd.z, 1.0f);
 

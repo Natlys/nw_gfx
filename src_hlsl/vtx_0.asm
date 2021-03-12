@@ -45,13 +45,13 @@ dcl_output_siv o1.xyzw, position
 dcl_temps 3
 //
 // Initial variable locations:
-//   v0.x <- atb_vtx_crd.x; v0.y <- atb_vtx_crd.y; v0.z <- atb_vtx_crd.z; 
-//   o1.x <- <main return value>.vtx_crd.x; o1.y <- <main return value>.vtx_crd.y; o1.z <- <main return value>.vtx_crd.z; o1.w <- <main return value>.vtx_crd.w; 
-//   o0.x <- <main return value>.vtx_clr.x; o0.y <- <main return value>.vtx_clr.y; o0.z <- <main return value>.vtx_clr.z
+//   v0.x <- atb_vtxCrd.x; v0.y <- atb_vtxCrd.y; v0.z <- atb_vtxCrd.z; 
+//   o1.x <- <main return value>.vtxCrd.x; o1.y <- <main return value>.vtxCrd.y; o1.z <- <main return value>.vtxCrd.z; o1.w <- <main return value>.vtxCrd.w; 
+//   o0.x <- <main return value>.vtxClr.x; o0.y <- <main return value>.vtxClr.y; o0.z <- <main return value>.vtxClr.z
 //
-#line 15 "D:\dev\native_world\nw_gfx\src_hlsl\vtx_0.hlsl"
-mov r0.xyz, v0.xyzx  // r0.x <- vso.vtx_crd.x; r0.y <- vso.vtx_crd.y; r0.z <- vso.vtx_crd.z
-mov r0.w, l(1.000000)  // r0.w <- vso.vtx_crd.w
+#line 15 "F:\projects\native_world\nw_gfx\src_hlsl\vtx_0.hlsl"
+mov r0.xyz, v0.xyzx  // r0.x <- vso.vtxCrd.x; r0.y <- vso.vtxCrd.y; r0.z <- vso.vtxCrd.z
+mov r0.w, l(1.000000)  // r0.w <- vso.vtxCrd.w
 
 #line 16
 mul r1.xyzw, r0.xxxx, cb0[0].xyzw
@@ -60,7 +60,7 @@ add r1.xyzw, r1.xyzw, r2.xyzw
 mul r2.xyzw, r0.zzzz, cb0[2].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw
 mul r0.xyzw, r0.wwww, cb0[3].xyzw
-add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtx_crd.x; r0.y <- vso.vtx_crd.y; r0.z <- vso.vtx_crd.z; r0.w <- vso.vtx_crd.w
+add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtxCrd.x; r0.y <- vso.vtxCrd.y; r0.z <- vso.vtxCrd.z; r0.w <- vso.vtxCrd.w
 
 #line 17
 mul r1.xyzw, r0.xxxx, cb0[4].xyzw
@@ -69,7 +69,7 @@ add r1.xyzw, r1.xyzw, r2.xyzw
 mul r2.xyzw, r0.zzzz, cb0[6].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw
 mul r0.xyzw, r0.wwww, cb0[7].xyzw
-add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtx_crd.x; r0.y <- vso.vtx_crd.y; r0.z <- vso.vtx_crd.z; r0.w <- vso.vtx_crd.w
+add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtxCrd.x; r0.y <- vso.vtxCrd.y; r0.z <- vso.vtxCrd.z; r0.w <- vso.vtxCrd.w
 
 #line 18
 mul r1.xyzw, r0.xxxx, cb0[8].xyzw
@@ -78,10 +78,10 @@ add r1.xyzw, r1.xyzw, r2.xyzw
 mul r2.xyzw, r0.zzzz, cb0[10].xyzw
 add r1.xyzw, r1.xyzw, r2.xyzw
 mul r0.xyzw, r0.wwww, cb0[11].xyzw
-add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtx_crd.x; r0.y <- vso.vtx_crd.y; r0.z <- vso.vtx_crd.z; r0.w <- vso.vtx_crd.w
+add r0.xyzw, r0.xyzw, r1.xyzw  // r0.x <- vso.vtxCrd.x; r0.y <- vso.vtxCrd.y; r0.z <- vso.vtxCrd.z; r0.w <- vso.vtxCrd.w
 
 #line 19
-mov r1.xyz, v0.xyzx  // r1.x <- vso.vtx_clr.x; r1.y <- vso.vtx_clr.y; r1.z <- vso.vtx_clr.z
+mov r1.xyz, v0.xyzx  // r1.x <- vso.vtxClr.x; r1.y <- vso.vtxClr.y; r1.z <- vso.vtxClr.z
 
 #line 20
 mov o1.xyzw, r0.xyzw

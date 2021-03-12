@@ -1,8 +1,8 @@
 #include <nwg_pch.hpp>
 #include "nwg_tools.h"
 #pragma warning (disable: 4312)
-#if (defined NWG_GAPI)
-namespace NWG
+#if (defined NW_GAPI)
+namespace NW
 {
 	gfx_context_info::gfx_context_info(cstring str_renderer, cstring str_version,
 		cstring str_vendor, cstring str_shader_lang) :
@@ -24,20 +24,19 @@ namespace NWG
 			"--==</graphics_info>==--" << std::endl;
 	}
 	in_stream& gfx_context_info::operator>>(in_stream& stm) {
-		return stm >>
-			version >> renderer >> version >> vendor >> shader_language;
+		return stm >> version >> renderer >> version >> vendor >> shader_language;
 	}
 }
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_base.h>
 #include <lib/nwg_load_shd.h>
-#include <lib/nwg_load_shdp.h>
+#include <lib/nwg_load_mtl.h>
 // --functions
-namespace NWG
+namespace NW
 {
 	// glGetError gets last message and clears errorLog
 	void ogl_clear_err() { while (glGetError() != GL_NO_ERROR); }
-	bool ogl_get_err_log(cstring strLoc, cstring strFile, int nLine)
+	bit ogl_get_err_log(cstring strLoc, cstring strFile, si32 nLine)
 	{
 		si32 err_code = 0u;
 		while ((err_code = glGetError()) != GL_NO_ERROR) {
@@ -55,38 +54,38 @@ namespace NWG
 		}
 		return true;
 	}
-	int ogl_get_err_log(shader_types shd_type, si32 idx)
+	bit ogl_get_err_log(shader_types shd_type, si32 idx)
 	{
-		if (idx == 0) { return ERC_UNKNOWN_ID; }
+		if (idx == 0) { return false; }
 		si32 success_code = 0;
 		si32 log_size = 0;
 		dstring log_string;
 		cstring type_string = convert_enum<shader_types, cstring>(shd_type);
 		if (shd_type != SHD_PROG) {
 			glGetShaderiv(idx, GL_COMPILE_STATUS, &success_code);
-			if (success_code == false) {
+			if (success_code == 0) {
 				glGetShaderiv(idx, GL_INFO_LOG_LENGTH, &log_size);
 				log_string.resize(log_size);
 				glGetShaderInfoLog(idx, log_size, NULL, &log_string[0]);
 				throw error(&log_string[0], ERC_COMPILLATION, __FILE__, __LINE__);
-				return ERC_COMPILLATION;
+				return false;
 			}
 		}
 		else {
 			glGetProgramiv(idx, GL_LINK_STATUS, &success_code);
-			if (success_code == false) {
+			if (success_code == 0) {
 				glGetProgramiv(idx, GL_INFO_LOG_LENGTH, &log_size);
 				log_string.resize(log_size);
 				glGetProgramInfoLog(idx, log_size, NULL, &log_string[0]);
 				throw error(&log_string[0], ERC_LINKAGE, __FILE__, __LINE__);
-				return ERC_LINKAGE;
+				return false;
 			}
 		}
-		return success_code;
+		return success_code == 1;
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
 template<> data_types convert_enum<cstring, data_types>(cstring type_string) {
 	if (str_is_equal(type_string, "int")) { return DT_SINT32; }
@@ -190,7 +189,7 @@ template<> D3D11_TEXTURE_ADDRESS_MODE convert_enum<texture_wraps, D3D11_TEXTURE_
 	}
 	return D3D11_TEXTURE_ADDRESS_WRAP;
 }
-namespace NWG
+namespace NW
 {
 	void DxClearErr() {
 		//
@@ -200,4 +199,4 @@ namespace NWG
 	}
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

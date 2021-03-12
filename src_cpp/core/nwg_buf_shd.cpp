@@ -1,40 +1,40 @@
 #include <nwg_pch.hpp>
-#include "nwg_shd_buf.h"
-#if (defined NWG_GAPI)
+#include "nwg_buf_shd.h"
+#if (defined NW_GAPI)
 #include <core/nwg_engine.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_buf.h>
-namespace NWG
+namespace NW
 {
 	shd_elem::shd_elem(cstring element_name, data_types data_type, si32 count) :
 		name(""), type(data_type),
 		idx(0),
 		count(count), offset_size(0) { strcpy(name, element_name); }
 }
-namespace NWG
+namespace NW
 {
-	shd_buf::shd_buf(gfx_engine& graphics) :
+	buf_shd::buf_shd(gfx_engine& graphics) :
 		a_gfx_buf(), t_gfx_res(graphics),
 		m_elems(elements()),
 		m_slot(0),
 		m_offset_size(0)
 	{
 	}
-	shd_buf::~shd_buf() { }
+	buf_shd::~buf_shd() { }
 	// --setters
-	void shd_buf::set_slot(ui8 bind_slot) { m_slot = bind_slot; }
-	void shd_buf::set_offset(size offset_size) { m_offset_size = offset_size; }
-	void shd_buf::set_data(size data_size, const ptr data_ptr, size offset_size) {
+	void buf_shd::set_slot(ui8 bind_slot) { m_slot = bind_slot; }
+	void buf_shd::set_offset(size offset_size) { m_offset_size = offset_size; }
+	void buf_shd::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		glBufferSubData(GL_UNIFORM_BUFFER, offset_size, data_size, data_ptr);
 	}
 	// --core_methods
-	void shd_buf::on_draw()
+	void buf_shd::on_draw()
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, m_ogl_id);
 		//glBindBufferBase(GL_UNIFORM_BUFFER, m_slot, m_ogl_id);
 		glBindBufferRange(GL_UNIFORM_BUFFER, m_slot, m_ogl_id, m_offset_size, m_data_size);
 	}
-	bit shd_buf::remake(const elements& elems)
+	bit buf_shd::remake(const elements& elems)
 	{
 		m_elems = elems;
 		m_data_size = 0;
@@ -53,34 +53,34 @@ namespace NWG
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
-	shd_buf::shd_buf(gfx_engine& graphics) :
+	buf_shd::buf_shd(gfx_engine& graphics) :
 		a_gfx_buf(graphics), t_cmp()
 	{
 	}
-	shd_buf::~shd_buf() { }
+	buf_shd::~buf_shd() { }
 	// --setters
-	void shd_buf::SetSubData(Size szData, const Ptr pData, Size szOffset) {
+	void buf_shd::SetSubData(Size szData, const Ptr pData, Size szOffset) {
 		D3D11_MAPPED_SUBRESOURCE msubRes{ 0 };
 		m_gfx->GetContext()->Map(m_native, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msubRes);
 		memcpy(msubRes.pData, pData, szData);
 		m_gfx->GetContext()->Unmap(m_native, 0u);
 	}
-	void shd_buf::SetLayout(ShaderLayout& refLayout) {
+	void buf_shd::SetLayout(ShaderLayout& refLayout) {
 		for (auto& rBlock : refLayout.GetBlocks()) { Bind(rBlock.unBindPoint, rBlock.szAll, rBlock.szOffset); }
 	}
 	// --core_methods
-	void shd_buf::Bind() {
+	void buf_shd::Bind() {
 		m_gfx->GetContext()->VSSetConstantBuffers(0, 1, &m_native);
 		m_gfx->GetContext()->PSSetConstantBuffers(0, 1, &m_native);
 	}
-	void shd_buf::Bind(si32 unPoint) {
+	void buf_shd::Bind(si32 unPoint) {
 	}
-	void shd_buf::Bind(si32 unPoint, Size szData, Size szOffset) { }
-	bool shd_buf::Remake(const gfx_buf_info& info) {
+	void buf_shd::Bind(si32 unPoint, Size szData, Size szOffset) { }
+	bool buf_shd::Remake(const gfx_buf_info& info) {
 		m_info = info;
 		if (m_native != nullptr) { m_native->Release(); m_native = nullptr; }
 		if (m_info.szData == 0) { return true; }
@@ -110,4 +110,4 @@ namespace NWG
 	}
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

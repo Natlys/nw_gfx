@@ -34,11 +34,11 @@ project "nw_gfx"
 	}
 	filter "system:windows"
 		systemversion "latest"
-		defines { "NWG_PLATFORM_WINDOWS" }
+		defines { "NW_PLATFORM_WINDOWS" }
 	filter "configurations:debug"
-		defines "NWG_DEBUG"
+		defines { "NW_DEBUG" }
 		symbols "on"
 	filter "configurations:release"
-		defines "NWG_RELEASE"
+		defines { "NW_RELEASE" }
 		optimize "on"
 --==</graphics_project>==--

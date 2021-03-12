@@ -1,6 +1,6 @@
 #include <nwg_pch.hpp>
 #include "nwg_camera_lad.h"
-namespace NWG
+namespace NW
 {
 	gfx_camera_lad::gfx_camera_lad() :
 		gfx_camera(),
@@ -30,12 +30,8 @@ namespace NWG
 		}
 		else if (m_mode == GCM_3D) {
 			move_delta = -move_delta;
-			if (keyboard.get_held(KC_W)) {
-				coord += front_dir * move_delta;
-			}
-			if (keyboard.get_held(KC_S)) {
-				coord -= front_dir * move_delta;
-			}
+			if (keyboard.get_held(KC_W)) { coord += glm::normalize(v3f{ front_dir.x, 0.0f, front_dir.z }) * move_delta; }
+			if (keyboard.get_held(KC_S)) { coord -= glm::normalize(v3f{ front_dir.x, 0.0f, front_dir.z }) * move_delta; }
 			if (keyboard.get_held(KC_D)) { coord += right_dir * move_delta; }
 			if (keyboard.get_held(KC_A)) { coord -= right_dir * move_delta; }
 			if (keyboard.get_held(KC_SPACE)) { coord.y -= move_delta; }

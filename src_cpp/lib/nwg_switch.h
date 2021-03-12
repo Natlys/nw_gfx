@@ -1,13 +1,13 @@
-#ifndef NWG_SWITCH_H
-#define NWG_SWITCH_H
+#ifndef NW_SWITCH_H
+#define NW_SWITCH_H
 #include <nwg_core.hpp>
-#ifdef NWG_GAPI
-namespace NWG
+#ifdef NW_GAPI
+namespace NW
 {
 	enum gfx_api_types : si32 {
-		GAPI_DEFAULT = NWG_GAPI,
-		GAPI_OPENGL = NWG_GAPI_OGL,
-		GAPI_DIRECTX = NWG_GAPI_DX,
+		GAPI_DEFAULT = NW_GAPI,
+		GAPI_OPENGL = NW_GAPI_OGL,
+		GAPI_DIRECTX = NW_GAPI_DX,
 	};
 	enum shader_types : si32 {
 		SHD_DEFAULT = 0,
@@ -18,11 +18,11 @@ namespace NWG
 		GBT_DEFAULT = 0,
 		GBT_VERTEX = 1, GBT_INDEX = 2, GBT_SHADER = 3,
 	};
-	enum frame_buf_types : si32 {
+	enum framebuf_types : si32 {
 		FBT_DEFAULT = 0,
 		FBT_IN = 1, FBT_OUT = 2, FBT_IN_OUT = 3,
 	};
-	enum frame_buf_attachments : si32 {
+	enum framebuf_attachments : si32 {
 		FB_DEFAULT = 0,
 		FB_COLOR = 1, FB_DEPTH = 2, FB_STENCIL = 3,
 		FB_DEPTH_STENCIL,
@@ -77,7 +77,8 @@ namespace NWG
 	enum texture_types : ui32 {
 		TXT_DEFAULT = 0,
 		TXT_1D = 1, TXT_2D = 2, TXT_3D = 3,
-		TXT_2D_MULTISAMPLE, TXT_3D_MULTISAMPLE
+		TXT_2D_MULTISAMPLE, TXT_3D_MULTISAMPLE,
+		TXT_CUBE
 	};
 	enum texture_wraps : ui32 {
 		TXW_DEFAULT = 0,
@@ -95,16 +96,16 @@ namespace NWG
 		TXF_DEPTH_STENCIL,
 	};
 }
-namespace NWG
+namespace NW
 {
 	template<typename in_type, typename out_type>
-	NWG_API out_type convert_enum();
+	NW_API out_type convert_enum();
 	template<typename in_type, typename out_type>
-	NWG_API out_type convert_enum(in_type input);
+	NW_API out_type convert_enum(in_type input);
 	
-	NWG_API si32 dt_get_count(data_types data_type);
-	NWG_API size dt_get_size(data_types data_type, si32 count = 1);
-	NWG_API size dt_get_aligned_size(data_types data_type, si32 count = 1);
+	NW_API si32 dt_get_count(data_types data_type);
+	NW_API size dt_get_size(data_types data_type, si32 count = 1);
+	NW_API size dt_get_aligned_size(data_types data_type, si32 count = 1);
 }
-#endif	// NWG_GAPI
-#endif	// NWG_SWITCH_H
+#endif	// NW_GAPI
+#endif	// NW_SWITCH_H

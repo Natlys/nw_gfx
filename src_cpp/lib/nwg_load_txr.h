@@ -1,14 +1,14 @@
-#ifndef NWG_LOAD_TXR_H
-#define NWG_LOAD_TXR_H
+#ifndef NW_LOAD_TXR_H
+#define NW_LOAD_TXR_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load_base.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	extern bit ogl_load_txr();
 }
-namespace NWG
+namespace NW
 {
 	// general
 	typedef void (APIENTRYP pfn_ogl_txr_gen)(GLsizei count, GLuint* txr_ids);
@@ -29,7 +29,7 @@ namespace NWG
 	// other
 	typedef void (APIENTRYP pfn_ogl_txr_img_clear)(GLuint txr_id, GLint lvl, GLenum pxl_fmt, GLenum data_type, const GLvoid* params);
 }
-namespace NWG
+namespace NW
 {
 	// general
 	extern pfn_ogl_txr_gen ogl_txr_gen;
@@ -88,6 +88,15 @@ namespace NWG
 #define GL_TEXTURE_BINDING_2D_MULTISAMPLE 0x9104
 #define GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY 0x9103
 #define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY 0x9105
+#define GL_TEXTURE_CUBE_MAP               0x8513
+#define GL_TEXTURE_BINDING_CUBE_MAP       0x8514
+#define GL_PROXY_TEXTURE_CUBE_MAP         0x851B
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_X    0x8515
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X    0x8516
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y    0x8517
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y    0x8518
+#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z    0x8519
+#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    0x851A
 #define GL_TEXTURE_SAMPLES                0x9106
 #define GL_TEXTURE_1D_ARRAY               0x8C18
 #define GL_PROXY_TEXTURE_1D_ARRAY         0x8C19
@@ -231,6 +240,7 @@ namespace NWG
 #define GL_TEXTURE_WRAP_T                 0x2803
 #define GL_TEXTURE_WRAP_R                 0x8072
 #define GL_CLAMP_TO_BORDER                0x812D
+#define GL_CLAMP_TO_EDGE                  0x812F
 #define GL_CLAMP                          0x2900
 #define GL_REPEAT                         0x2901
 // cubemap
@@ -262,10 +272,10 @@ namespace NWG
 #define GL_MAX_INTEGER_SAMPLES            0x9110
 #endif	// __gl_h__
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 }
 #endif
-#endif	// NWG_GAPI
-#endif	// NWG_LOAD_TXR_H
+#endif	// NW_GAPI
+#endif	// NW_LOAD_TXR_H

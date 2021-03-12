@@ -1,13 +1,13 @@
-#ifndef NWG_LOAD_LIB_H
-#define NWG_LOAD_LIB_H
+#ifndef NW_LOAD_LIB_H
+#define NW_LOAD_LIB_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (defined NW_GAPI)
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	extern bit ogl_load_base();
 }
-namespace NWG
+namespace NW
 {
 	typedef signed char GLbyte;
 	typedef char GLchar;
@@ -29,7 +29,7 @@ namespace NWG
 	typedef ptrdiff_t GLintptr;
 	typedef ptrdiff_t GLsizeiptr;
 }
-namespace NWG
+namespace NW
 {
 	// getters
 	typedef void (APIENTRYP pfn_ogl_get_int_v)(GLenum info, GLint* param);
@@ -38,7 +38,8 @@ namespace NWG
 	// predicates
 	typedef GLboolean (APIENTRYP pfn_ogl_is_enabled)(GLenum what);
 	// drawing
-	typedef void (APIENTRYP pfn_ogl_draw_elements)(GLenum primitive, GLsizei count, GLenum data_type, cptr index_data);
+	typedef void (APIENTRYP pfn_ogl_draw_vtx)(GLenum primitive, GLint first, GLsizei count);
+	typedef void (APIENTRYP pfn_ogl_draw_idx)(GLenum primitive, GLsizei count, GLenum data_type, cptr index_data);
 	// configs
 	typedef void (APIENTRYP pfn_ogl_viewport)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
 	typedef void (APIENTRYP pfn_ogl_scissor)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
@@ -52,7 +53,7 @@ namespace NWG
 	// other
 	typedef void (APIENTRYP pfn_ogl_clear_error)(void);
 }
-namespace NWG
+namespace NW
 {
 	// getters
 	extern pfn_ogl_get_int_v ogl_get_int_v;
@@ -61,7 +62,8 @@ namespace NWG
 	// predicates
 	extern pfn_ogl_is_enabled ogl_is_enabled;
 	// drawing
-	extern pfn_ogl_draw_elements ogl_draw_indexed;
+	extern pfn_ogl_draw_vtx ogl_draw_vtx;
+	extern pfn_ogl_draw_idx ogl_draw_idx;
 	// configs
 	extern pfn_ogl_viewport ogl_viewport;
 	extern pfn_ogl_scissor ogl_scissor;
@@ -82,7 +84,8 @@ namespace NWG
 // predicates
 #define glIsEnabled ogl_is_enabled
 // drawing
-#define glDrawElements ogl_draw_indexed
+#define glDrawArrays ogl_draw_vtx
+#define glDrawElements ogl_draw_idx
 // configs
 #define glViewport ogl_viewport
 #define glScissor ogl_scissor
@@ -267,10 +270,10 @@ namespace NWG
 #endif	// __gl_h__
 #endif
 
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 }
 #endif
-#endif	// NWG_GAPI
-#endif	// NWG_LOAD_LIB_H
+#endif	// NW_GAPI
+#endif	// NW_LOAD_LIB_H

@@ -1,12 +1,12 @@
-#ifndef NWG_SHADER_BUFFER_H
-#define NWG_SHADER_BUFFER_H
+#ifndef NW_SHADER_BUFFER_H
+#define NW_SHADER_BUFFER_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <core/nwg_buf.h>
-namespace NWG
+namespace NW
 {
 	/// shader_input_element struct
-	struct NWG_API shd_elem
+	struct NW_API shd_elem
 	{
 	public:
 		schar name[128] = "default";
@@ -18,17 +18,17 @@ namespace NWG
 		shd_elem(cstring name = "default", data_types dataType = DT_DEFAULT, si32 count = 1);
 	};
 }
-namespace NWG
+namespace NW
 {
 	/// shader_buffer class
 	/// description:
 	/// --it is used by shaders as opengl uniform buffer, or as directx constant buffer;
-	class NWG_API shd_buf : public a_gfx_buf, public t_gfx_res<shd_buf>
+	class NW_API buf_shd : public a_gfx_buf, public t_gfx_res<buf_shd>
 	{
 		using elements = darray<shd_elem>;
 	public:
-		shd_buf(gfx_engine& graphics);
-		virtual ~shd_buf();
+		buf_shd(gfx_engine& graphics);
+		virtual ~buf_shd();
 		// --getters
 		inline ui8 get_slot() const				{ return m_slot; }
 		inline elements& get_elems()			{ return m_elems; }
@@ -46,5 +46,5 @@ namespace NWG
 		elements m_elems;
 	};
 }
-#endif	// NWG_GAPI
-#endif	// NWG_BUFFER_H
+#endif	// NW_GAPI
+#endif	// NW_SHADER_BUFFER_H

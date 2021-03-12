@@ -1,108 +1,30 @@
 #include <nwg_pch.hpp>
 #include "nwg_texture.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <core/nwg_engine.h>
-namespace NWG
-{
-	// --operators
-	texture_info& texture_info::operator=(const image_bmp_info& info) {
-		image_info::operator=(info);
-		return *this;
-	}
-	texture_info& texture_info::operator=(const image_png_info& info) {
-		image_info::operator=(info);
-		return *this;
-	}
-	texture_info& texture_info::operator=(const image_info& info) {
-		image_info::operator=(info);
-		return *this;
-	}
-	out_stream& texture_info::operator<<(out_stream& stm) const { return stm; }
-	in_stream& texture_info::operator>>(in_stream& stm) { return image_info::operator>>(stm); }
-}
-#if (NWG_GAPI & NWG_GAPI_OGL)
 #include <lib/nwg_load_txr.h>
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
-	a_texture::a_texture(cstring name, texture_types txr_type) :
-		a_data_res(name),
-		m_info(texture_info()), m_slot(0),
-		m_ogl_id(0) { if (m_ogl_id != 0) { glDeleteTextures(1, &m_ogl_id); m_ogl_id = 0; } }
-	a_texture::~a_texture() { }
+	a_texture::a_texture(cstring name) :
+		a_image(name),
+		m_slot(0u),
+		m_samples(1u),
+		m_txr_fmt(TXF_RGBA),
+		m_ogl_id(0u)
+	{
+	}
+	a_texture::~a_texture() { if (m_ogl_id != 0) { glDeleteTextures(1, &m_ogl_id); m_ogl_id = 0; } }
 	// --setters
-	void a_texture::set_txr_slot(ui8 texture_slot) { m_slot = texture_slot; }
-}
-namespace NWG
-{
-	texture2d::texture2d(gfx_engine& graphics, cstring name) :
-		a_texture(name, TXT_2D), t_gfx_res(graphics)
-	{
-	}
-	texture2d::~texture2d() { }
-	// --==<core_methods>==--
-	void texture2d::on_draw()
-	{
-		glActiveTexture(GL_TEXTURE0 + m_slot);
-		glBindTexture(GL_TEXTURE_2D, m_ogl_id);
-	}
-	bit texture2d::remake(const texture_info& info)
-	{
-		if (m_ogl_id != 0) { glDeleteTextures(1, &m_ogl_id); m_ogl_id = 0; }
-		if (m_info.nof_samples == 0) { return false; }
-		if (m_info.size_x <= 0 || m_info.size_y <= 0 || m_info.nof_channels <= 0) { return false; }
-		glGenTextures(1, &m_ogl_id);
-		glBindTexture(GL_TEXTURE_2D, m_ogl_id);
-
-		if (m_info.nof_samples == 1) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, convert_enum<texture_filters, GLenum>(m_info.filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, convert_enum<texture_filters, GLenum>(m_info.filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, convert_enum<texture_wraps, GLenum>(m_info.wrap_s));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, convert_enum<texture_wraps, GLenum>(m_info.wrap_t));
-			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &m_info.border_color[0]);
-			glTexImage2D(GL_TEXTURE_2D, 0, convert_enum<texture_formats, GLenum>(m_info.txr_format),
-				m_info.size_x, m_info.size_y, 0,
-				convert_enum<texture_formats, GLenum>(m_info.txr_format), GL_UNSIGNED_BYTE, &m_info.pxl_data[0]);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else if (m_info.nof_samples > 1) {
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_info.nof_samples,
-				convert_enum<pixel_formats, GLenum>(m_info.pxl_format),
-				m_info.size_x, m_info.size_y, false);
-		}
-		return true;
-	}
-	void texture2d::clear(ptr value) {
-		glClearTexImage(m_ogl_id, 0,
-			convert_enum<pixel_formats, GLenum>(m_info.pxl_format),
-			convert_enum<pixel_formats, GLenum>(m_info.pxl_format), value);
-	}
-	// --==</core_methods>==--
-	// --==<data_methods>==--
-	bit texture2d::save_file(cstring file_path) { return true; }
-	bit texture2d::load_file(cstring file_path)
-	{
-		cstring file_format = str_part_left(&file_path[0], '.');
-		if (str_is_equal(file_format, ".txr")) {
-			if (!data_sys::load_file(file_path, m_info)) { return false; }
-		}
-		else if (str_is_equal(file_format, ".bmp")) {
-			image_bmp_info bmpInfo;
-			if (!data_sys::load_file(file_path, bmpInfo)) { return false; }
-			m_info = bmpInfo;
-		}
-		else if (str_is_equal(file_format, ".png")) {
-		}
-		return remake(m_info);
-	}
-	// --==</data_methods>==--
+	void a_texture::set_slot(ui8 texture_slot) { m_slot = texture_slot; }
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
 	a_texture::a_texture(gfx_engine& graphics, const char* name, texture_types txr_type) :
-		a_gfx_res(graphics), a_data_res(name),
+		a_gfx_rsc(graphics), a_data_rsc(name),
 		m_info(texture_info()), m_unSlot(0),
 		m_pRes(nullptr), m_pSampler(nullptr)
 	{
@@ -114,11 +36,11 @@ namespace NWG
 	// --setters
 	void a_texture::SetSlot(ui8 unSlot) { m_unSlot = unSlot; }
 }
-namespace NWG
+namespace NW
 {
-	Texture2d::Texture2d(gfx_engine& graphics, const char* name) :
+	texture_2d::texture_2d(gfx_engine& graphics, const char* name) :
 		a_texture(graphics, name, TXT_2D) { }
-	Texture2d::~Texture2d() { }
+	texture_2d::~texture_2d() { }
 	// --==<core_methods>==--
 	void Texture2d::Bind()
 	{
@@ -206,7 +128,7 @@ namespace NWG
 				return false;
 			}
 			else {
-				str_stream stm_file(strFile);
+				io_stream_str stm_file(strFile);
 				stm_file >> m_info;
 				imgInfo.width= m_info.width;
 				imgInfo.height = m_info.height;
@@ -221,4 +143,4 @@ namespace NWG
 	// --==</data_methods>==--
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

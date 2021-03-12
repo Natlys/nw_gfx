@@ -3540,7 +3540,7 @@ static void AddDrawListToDrawData(ImVector<imgui_draw_list*>* out_list, imgui_dr
     //       Some graphics API such as GL ES 1/2 don't have a way to offset the starting vertex so it is not supported for them.
     //   (B) Or handle 32-bit indices in your renderer back-end, and uncomment '#define ImDrawIdx unsigned int' line in imconfig.h.
     //       Most example back-ends already support this. For example, the OpenGL example code detect index size at compile-time:
-    //         glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, idx_buffer_offset);
+    //         glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, buf_idxfer_offset);
     //       Your own engine or render API may use different parameters or function calls to specify index sizes.
     //       2 and 4 bytes indices are generally supported by most graphics API.
     // - If for some reason neither of those solutions works for you, a workaround is to call BeginChild()/EndChild() before reaching
@@ -14723,7 +14723,7 @@ void GUI::ShowMetricsWindow(bool* p_open)
         static void NodeDrawCmdShowMeshAndBoundingBox(imgui_draw_list* fg_draw_list, const imgui_draw_list* draw_list, const imgui_draw_cmd* draw_cmd, int elem_offset, bool show_mesh, bool show_aabb)
         {
             IM_ASSERT(show_mesh || show_aabb);
-            ImDrawIdx* idx_buffer = (draw_list->IdxBuffer.Size > 0) ? draw_list->IdxBuffer.Data : NULL;
+            ImDrawIdx* buf_idxfer = (draw_list->IdxBuffer.Size > 0) ? draw_list->IdxBuffer.Data : NULL;
 
             // Draw wire-frame version of all triangles
             ImRect clip_rect = draw_cmd->ClipRect;
@@ -14735,7 +14735,7 @@ void GUI::ShowMetricsWindow(bool* p_open)
                 ImVec2 triangle[3];
                 for (int n = 0; n < 3; n++)
                 {
-                    ImVec2 p = draw_list->VtxBuffer[idx_buffer ? idx_buffer[base_idx + n] : (base_idx + n)].pos;
+                    ImVec2 p = draw_list->VtxBuffer[buf_idxfer ? buf_idxfer[base_idx + n] : (base_idx + n)].pos;
                     triangle[n] = p;
                     vtxs_rect.Add(p);
                 }
@@ -14783,7 +14783,7 @@ void GUI::ShowMetricsWindow(bool* p_open)
                     continue;
                 }
 
-                ImDrawIdx* idx_buffer = (draw_list->IdxBuffer.Size > 0) ? draw_list->IdxBuffer.Data : NULL;
+                ImDrawIdx* buf_idxfer = (draw_list->IdxBuffer.Size > 0) ? draw_list->IdxBuffer.Data : NULL;
                 char buf[300];
                 ImFormatString(buf, IM_ARRAYSIZE(buf), "DrawCmd:%5d triangles, Tex 0x%p, ClipRect (%4.0f,%4.0f)-(%4.0f,%4.0f)",
                     pcmd->ElemCount / 3, (void*)(intptr_t)pcmd->TextureId,
@@ -14801,7 +14801,7 @@ void GUI::ShowMetricsWindow(bool* p_open)
                 {
                     ImVec2 triangle[3];
                     for (int n = 0; n < 3; n++)
-                        triangle[n] = draw_list->VtxBuffer[idx_buffer ? idx_buffer[base_idx + n] : (base_idx + n)].pos;
+                        triangle[n] = draw_list->VtxBuffer[buf_idxfer ? buf_idxfer[base_idx + n] : (base_idx + n)].pos;
                     total_area += ImTriangleArea(triangle[0], triangle[1], triangle[2]);
                 }
 
@@ -14820,7 +14820,7 @@ void GUI::ShowMetricsWindow(bool* p_open)
                         ImVec2 triangle[3];
                         for (int n = 0; n < 3; n++, idx_i++)
                         {
-                            ImDrawVert& v = draw_list->VtxBuffer[idx_buffer ? idx_buffer[idx_i] : idx_i];
+                            ImDrawVert& v = draw_list->VtxBuffer[buf_idxfer ? buf_idxfer[idx_i] : idx_i];
                             triangle[n] = v.pos;
                             buf_p += ImFormatString(buf_p, buf_end - buf_p, "%s %04d: pos (%8.2f,%8.2f), uv (%.6f,%.6f), col %08X\n",
                                 (n == 0) ? "Vert:" : "     ", idx_i, v.pos.x, v.pos.y, v.uv.x, v.uv.y, v.col);

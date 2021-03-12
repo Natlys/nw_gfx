@@ -1,8 +1,8 @@
 #include <nwg_pch.hpp>
 #include "nwg_imgui.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "imgui_core.hpp"
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_base.h>
 #include <lib/nwg_load_wgl.h>
 #include <lib/nwg_load_txr.h>
@@ -11,12 +11,12 @@
 #include <lib/nwg_load_buf.h>
 #include <lib/nwg_load_layt.h>
 #include <lib/nwg_load_shd.h>
-#include <lib/nwg_load_shdp.h>
-namespace NWG
+#include <lib/nwg_load_mtl.h>
+namespace NW
 {
     // data
-    static gfx_device* s_device = NULL;
-    static gfx_context* s_context = NULL;
+    static device_handle* s_device = NULL;
+    static context_handle* s_context = NULL;
     static GLuint s_txr_font = 0;
     static GLuint s_shd_prog = 0, s_shd_vtx = 0, s_shd_pxl = 0;
     static GLint s_unf_loc_txr = 0, s_unf_loc_proj = 0;
@@ -50,9 +50,9 @@ namespace NWG
     extern void drawer_create_resources();
     extern void drawer_delete_resources();
 }
-namespace NWG
+namespace NW
 {
-    bit drawer_init(gfx_device* device, gfx_context* context)
+    bit drawer_init(device_handle* device, context_handle* context)
     {
         s_device = device;
         s_context = context;
@@ -304,7 +304,7 @@ namespace NWG
     }
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include "../imgui_core.hpp"
 #include <lib/nwg_dx_loader.h>
 namespace GUI
@@ -938,11 +938,11 @@ namespace GUI
     }
     static void Dx11ShutdownPlatformInterface() { GUI::DestroyPlatformWindows(); }
 }
-#endif  // NWG_GAPI
-#endif  // NWG_GAPI
-#if (defined NWG_OS)
-#if (NWG_OS & NWG_OS_WIN)
-namespace NWG
+#endif  // NW_GAPI
+#endif  // NW_GAPI
+#if (defined NW_OS)
+#if (NW_OS & NW_OS_WIN)
+namespace NW
 {
     // helper structure we store in the void*
     // RenderUserData field of each imgui_viewport
@@ -958,13 +958,13 @@ namespace NWG
         ~win32_viewport_data() { IM_ASSERT(Hwnd == NULL); }
     };
     // data
-    static gfx_window* s_window = NULL;
+    static window_handle* s_window = NULL;
     static imgui_mouse_cursor s_last_crs = imgui_mouse_cursor_COUNT;
     static si64 s_time = 0;
     static si64 s_ticks_per_sec = 0;
     static bit s_update_monitors = true;
     // functions
-    extern bit platform_init(gfx_window* window);
+    extern bit platform_init(window_handle* window);
     extern void platform_quit();
     extern void platform_update();
     extern void win32_create_wnd(imgui_viewport* viewport);
@@ -975,7 +975,7 @@ namespace NWG
     extern bit win32_update_mouse_cursor();
     extern bit win32_update_mouse_coord();
 }
-namespace NWG
+namespace NW
 {
     BOOL __stdcall win32_update_monitors_enum(HMONITOR monitor, HDC device, LPRECT rect, LPARAM lparam)
     {
@@ -1265,9 +1265,9 @@ namespace NWG
         return true;
     }
 }
-namespace NWG
+namespace NW
 {
-    bit platform_init(gfx_window* window) {
+    bit platform_init(window_handle* window) {
         if (s_imgui_io == nullptr) { return false; }
         if (!::QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&s_ticks_per_sec))) { return false; }
         if (!::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&s_time))) { return false; }
@@ -1389,13 +1389,13 @@ namespace NWG
     }
 }
 #endif
-namespace NWG
+namespace NW
 {
     // data
     imgui_io* s_imgui_io = NULL;
     imgui_style* s_imgui_style = NULL;
     // functions
-    bit imgui_init(gfx_window* window, gfx_device* device, gfx_context* context)
+    bit imgui_init(window_handle* window, device_handle* device, context_handle* context)
     {
         IMGUI_CHECKVERSION();
         GUI::CreateContext();
@@ -1536,4 +1536,4 @@ namespace NWG
         return 0;
     }
 }
-#endif  // NWG_OS
+#endif  // NW_OS

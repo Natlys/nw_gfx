@@ -1,16 +1,16 @@
-#ifndef NWG_VERTEX_BUFFER_H
-#define NWG_VERTEX_BUFFER_H
+#ifndef NW_VERTEX_BUFFER_H
+#define NW_VERTEX_BUFFER_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <core/nwg_buf.h>
-namespace NWG
+namespace NW
 {
-	/// vtx_buf class
-	class NWG_API vtx_buf : public a_gfx_buf, public t_gfx_res<vtx_buf>
+	/// buf_vtx class
+	class NW_API buf_vtx : public a_gfx_buf, public t_gfx_res<buf_vtx>
 	{
 	public:
-		vtx_buf(gfx_engine& graphics);
-		virtual ~vtx_buf();
+		buf_vtx(gfx_engine& graphics);
+		virtual ~buf_vtx();
 		// --getters
 		inline size get_stride() const		{ return m_stride_size; }
 		inline size get_data_count() const	{ return m_data_size / m_stride_size; }
@@ -25,9 +25,9 @@ namespace NWG
 		ui32 m_stride_size = 0;
 	};
 	template<typename vtype>
-	bit vtx_buf::remake(si32 data_count, vtype* data_ptr) {
+	bit buf_vtx::remake(si32 data_count, vtype* data_ptr) {
 		return remake(data_count * sizeof(vtype), data_ptr, sizeof(vtype));
 	}
 }
-#endif	// NWG_GAPI
-#endif	// NWG_VERTEX_BUFFER_H
+#endif	// NW_GAPI
+#endif	// NW_VERTEX_BUFFER_H

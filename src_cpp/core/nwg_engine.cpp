@@ -1,9 +1,9 @@
 #include <nwg_pch.hpp>
 #include "nwg_engine.h"
-#if (defined NWG_GAPI)
-#include <core/nwg_res.h>
+#if (defined NW_GAPI)
+#include <core/nwg_rsc.h>
 #include <cmp/nwg_drawable.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load.h>
 #include <lib/nwg_load_base.h>
 #include <lib/nwg_load_fbuf.h>
@@ -12,10 +12,10 @@
 #include <lib/nwg_load_txr.h>
 #include <lib/nwg_load_smp.h>
 #include <lib/nwg_load_shd.h>
-#include <lib/nwg_load_shdp.h>
-namespace NWG
+#include <lib/nwg_load_mtl.h>
+namespace NW
 {
-	gfx_engine::gfx_engine(gfx_window& wnd) :
+	gfx_engine::gfx_engine(window_handle& wnd) :
 		m_info(gfx_context_info()), m_config(gfx_config()),
 		m_wnd(wnd),
 		m_device(nullptr), m_context(nullptr)
@@ -44,9 +44,9 @@ namespace NWG
 		pxf_desc.dwVisibleMask = 0; pxf_desc.dwLayerMask = 0; pxf_desc.dwDamageMask = 0;
 		// get the best availabple pixel format for device context;
 		si32 pxl_format = ::ChoosePixelFormat(m_device, &pxf_desc);
-		if (pxl_format == 0) { NWL_ERR("Failed to get a pixel format"); return; }
+		if (pxl_format == 0) { NW_ERR("Failed to get a pixel format"); return; }
 		// Pixel format can be set to some window only once
-		if (!::SetPixelFormat(m_device, pxl_format, &pxf_desc)) { NWL_ERR("Failed to set a pixel format"); return; }
+		if (!::SetPixelFormat(m_device, pxl_format, &pxf_desc)) { NW_ERR("Failed to set a pixel format"); return; }
 		::DescribePixelFormat(m_device, pxl_format, pxf_desc.nSize, &pxf_desc);
 		// create opengl context and associate that with the device context;
 		// it will be attached to the current thread and dc;
@@ -59,10 +59,10 @@ namespace NWG
 		if (!ogl_load_fbuf()) { throw error("problems with loading of framebuffers"); return; }
 		if (!ogl_load_buf()) { throw error("problems with loading of buffers"); return; }
 		if (!ogl_load_varr()) { throw error("problems with loading of layouts"); return; }
-		if (!ogl_load_txr()) { throw error("problems with loading of textures"); return; }
+		if (!ogl_load_txr()) { throw error("problems with loading of textursc"); return; }
 		if (!ogl_load_smp()) { throw error("problems with loading of samplers"); return; }
 		if (!ogl_load_shd()) { throw error("problems with loading of shaders"); return; }
-		if (!ogl_load_shdp()) { throw error("problems with loading of shader programs"); return; }
+		if (!ogl_load_mtl()) { throw error("problems with loading of shader programs"); return; }
 		if (!ogl_close()) { throw error("problems with closing"); return; }
 
 		strcpy(&m_info.renderer[0], &((cstring)glGetString(GL_RENDERER))[0]);
@@ -70,9 +70,13 @@ namespace NWG
 		strcpy(&m_info.vendor[0], &((cstring)glGetString(GL_VENDOR))[0]);
 		strcpy(&m_info.shader_language[0], &((cstring)glGetString(GL_SHADING_LANGUAGE_VERSION))[0]);
 		std::cout << m_info;
+		// also add "GL_MAX_COMBINED_IMAGE_UNITS"
 
 		set_primitive(GPT_TRIANGLES);
 		set_viewport(0, 0, 800, 600);
+
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
 	}
 	gfx_engine::~gfx_engine()
 	{
@@ -107,30 +111,30 @@ namespace NWG
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void gfx_engine::del_res(ui32 type_id, ui32 cmp_id)
+	void gfx_engine::del_rsc(ui32 type_id, ui32 cmp_id)
 	{
-		if (!has_res(type_id, cmp_id)) { return; }
+		if (!has_rsc(type_id, cmp_id)) { return; }
 		m_reg[type_id].erase(cmp_id);
 	}
 	// --==</core_methods>==--
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
 	gfx_engine::gfx_engine(HWND pWindow) :
 		m_pWindow(pWindow),
 		m_device(nullptr), m_context(nullptr), m_pSwap(nullptr), m_pTarget(nullptr)
 	{
-		if (m_pWindow == nullptr) { NWL_ERR("The window handler is not correct"); return; }
+		if (m_pWindow == nullptr) { NW_ERR("The window handler is not correct"); return; }
 		DXGI_SWAP_CHAIN_DESC swapDesc{ 0 };
 		swapDesc.BufferDesc.Width = 0;
 		swapDesc.BufferDesc.Height = 0;
 		//swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 		swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapDesc.BufferDesc.RefreshRate.Numerator = 0;
-		swapDesc.BufferDesc.RefreshRate.Denominator = 0;
+		swapDesc.BufferDesc.RefrschRate.Numerator = 0;
+		swapDesc.BufferDesc.RefrschRate.Denominator = 0;
 		swapDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 		swapDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 		swapDesc.SampleDesc.Count = 1;
@@ -225,7 +229,7 @@ namespace NWG
 		HRESULT hRes;
 		const Float32 rgbaClear[] = { sinf(TimeSys::GetCurr(0.1)), sinf(TimeSys::GetCurr(0.5)), cosf(TimeSys::GetCurr(0.3)), 1.0f };
 		
-		if ((hRes = m_pSwap->Present(m_config.General.unSwapInterval, 0u)) < 0) { throw(error("something went wrong")); }
+		if ((hRes = m_pSwap->Prscent(m_config.General.unSwapInterval, 0u)) < 0) { throw(error("something went wrong")); }
 		m_context->ClearRenderTargetView(m_pTarget, rgbaClear);
 	}
 	void gfx_engine::BeginDraw()
@@ -250,4 +254,4 @@ namespace NWG
 	// --==</core_methods>==--
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

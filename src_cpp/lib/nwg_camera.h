@@ -1,9 +1,9 @@
-#ifndef NWG_CAMERA_H
-#define NWG_CAMERA_H
+#ifndef NW_CAMERA_H
+#define NW_CAMERA_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
-#include <core/nwg_switch.h>
-namespace NWG
+#if (defined NW_GAPI)
+#include <lib/nwg_switch.h>
+namespace NW
 {
 	/// graphics_camera struct
 	/// description:
@@ -13,7 +13,7 @@ namespace NWG
 	/// ->config Frustrum, tarGet, 
 	/// ->set coordinates and rotation
 	/// ->get transform matricies: proj and view
-	struct NWG_API gfx_camera
+	struct NW_API gfx_camera
 	{
 	public:
 		v3f
@@ -45,5 +45,5 @@ namespace NWG
 		gfx_cameraModes m_mode;
 	};
 }
-#endif	// NWG_GAPI
-#endif // NWG_CAMERA_H
+#endif	// NW_GAPI
+#endif // NW_CAMERA_H

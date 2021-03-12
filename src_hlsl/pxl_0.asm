@@ -22,10 +22,10 @@ dcl_input_ps linear v0.xyz
 dcl_output o0.xyzw
 //
 // Initial variable locations:
-//   v0.x <- vtx_clr.x; v0.y <- vtx_clr.y; v0.z <- vtx_clr.z; 
+//   v0.x <- vtxClr.x; v0.y <- vtxClr.y; v0.z <- vtxClr.z; 
 //   o0.x <- <main return value>.x; o0.y <- <main return value>.y; o0.z <- <main return value>.z; o0.w <- <main return value>.w
 //
-#line 3 "D:\dev\native_world\nw_gfx\src_hlsl\pxl_0.hlsl"
+#line 3 "F:\projects\native_world\nw_gfx\src_hlsl\pxl_0.hlsl"
 mov o0.xyz, v0.xyzx
 mov o0.w, l(1.000000)
 ret 

@@ -1,9 +1,9 @@
 #include <nwg_pch.hpp>
 #include "nwg_load_buf.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	bit ogl_load_buf() {
 		// general
@@ -19,7 +19,7 @@ namespace NWG
 		return true;
 	}
 }
-namespace NWG
+namespace NW
 {
 	// general
 	pfn_ogl_buf_gen glGenBuffers= NULL;
@@ -33,10 +33,10 @@ namespace NWG
 	pfn_ogl_buf_sub_data glBufferSubData = NULL;
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 	//
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

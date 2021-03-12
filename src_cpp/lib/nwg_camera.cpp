@@ -1,7 +1,7 @@
 #include <nwg_pch.hpp>
 #include "nwg_camera.h"
 #include <math/math_transform.h>
-namespace NWG
+namespace NW
 {
 	gfx_camera::gfx_camera() :
 		coord{ 0.0f, 0.0f, 1.0f }, rotation{ 0.0f, 0.0f, 0.0f },

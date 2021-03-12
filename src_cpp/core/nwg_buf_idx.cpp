@@ -1,27 +1,27 @@
 #include <nwg_pch.hpp>
-#include "nwg_idx_buf.h"
-#if (defined NWG_GAPI)
+#include "nwg_buf_idx.h"
+#if (defined NW_GAPI)
 #include <core/nwg_engine.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_buf.h>
-namespace NWG
+namespace NW
 {
-	idx_buf::idx_buf(gfx_engine& graphics) :
+	buf_idx::buf_idx(gfx_engine& graphics) :
 		a_gfx_buf(), t_gfx_res(graphics),
 		m_data_type(DT_DEFAULT)
 	{
 	}
-	idx_buf::~idx_buf() { }
+	buf_idx::~buf_idx() { }
 	// --setters
-	void idx_buf::set_data(size data_size, const ptr data_ptr, size offset_size) {
+	void buf_idx::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset_size, data_size, data_ptr);
 	}
 	// --core_methods
-	void idx_buf::on_draw()
+	void buf_idx::on_draw()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ogl_id);
 	}
-	bit idx_buf::remake(size data_size, const ptr data_ptr, data_types data_type)
+	bit buf_idx::remake(size data_size, const ptr data_ptr, data_types data_type)
 	{
 		m_data_size = data_size;
 		m_data_type = data_type;
@@ -34,27 +34,27 @@ namespace NWG
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
-	idx_buf::idx_buf(gfx_engine& graphics) :
+	buf_idx::buf_idx(gfx_engine& graphics) :
 		a_gfx_buf(graphics), t_cmp()
 	{
 	}
-	idx_buf::~idx_buf() { }
+	buf_idx::~buf_idx() { }
 	// --setters
-	void idx_buf::SetSubData(Size szData, const Ptr pData, Size szOffset) {
+	void buf_idx::SetSubData(Size szData, const Ptr pData, Size szOffset) {
 		D3D11_MAPPED_SUBRESOURCE msubRes{ 0 };
 		m_gfx->GetContext()->Map(m_native, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msubRes);
 		memcpy(msubRes.pData, pData, szData);
 		m_gfx->GetContext()->Unmap(m_native, 0u);
 	}
 	// --core_methods
-	void idx_buf::on_draw() {
+	void buf_idx::on_draw() {
 		m_gfx->GetContext()->IASetIndexBuffer(m_native, convert_enum<data_types, DXGI_FORMAT>(m_info.sdType), 0);
 	}
-	bool idx_buf::remake(const gfx_buf_info& info) {
+	bool buf_idx::remake(const gfx_buf_info& info) {
 		m_info = info;
 		if (m_native != nullptr) { m_native->Release(); m_native = nullptr; }
 		if (m_info.szData == 0) { return false; }
@@ -84,4 +84,4 @@ namespace NWG
 	}
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

@@ -433,8 +433,8 @@ void imgui_draw_list::AddCallback(ImDrawCallback callback, void* callback_data)
 
 // Compare ClipRect, TextureId and VtxOffset with a single memcmp()
 #define imgui_draw_cmd_HeaderSize                        (IM_OFFSETOF(imgui_draw_cmd, VtxOffset) + sizeof(unsigned int))
-#define imgui_draw_cmd_HeaderCompare(NWC_LHS, NWC_RHS)   (memcmp(NWC_LHS, NWC_RHS, imgui_draw_cmd_HeaderSize))    // Compare ClipRect, TextureId, VtxOffset
-#define imgui_draw_cmd_HeaderCopy(NWC_DST, NWC_SRC)      (memcpy(NWC_DST, NWC_SRC, imgui_draw_cmd_HeaderSize))    // Copy ClipRect, TextureId, VtxOffset
+#define imgui_draw_cmd_HeaderCompare(NW_LHS, NW_RHS)   (memcmp(NW_LHS, NW_RHS, imgui_draw_cmd_HeaderSize))    // Compare ClipRect, TextureId, VtxOffset
+#define imgui_draw_cmd_HeaderCopy(NW_DST, NW_SRC)      (memcpy(NW_DST, NW_SRC, imgui_draw_cmd_HeaderSize))    // Copy ClipRect, TextureId, VtxOffset
 
 // Our scheme may appears a bit unusual, basically we want the most-common calls AddLine AddRect etc. to not have to perform any check so we always have a command ready in the stack.
 // The cost of figuring out if a new command has to be added or if we can merge is paid in those Update** functions only.
@@ -562,13 +562,13 @@ void imgui_draw_list::PrimReserve(int idx_count, int vtx_count)
     imgui_draw_cmd* draw_cmd = &CmdBuffer.Data[CmdBuffer.Size - 1];
     draw_cmd->ElemCount += idx_count;
 
-    int vtx_buffer_old_size = VtxBuffer.Size;
-    VtxBuffer.resize(vtx_buffer_old_size + vtx_count);
-    _VtxWritePtr = VtxBuffer.Data + vtx_buffer_old_size;
+    int buf_vtxfer_old_size = VtxBuffer.Size;
+    VtxBuffer.resize(buf_vtxfer_old_size + vtx_count);
+    _VtxWritePtr = VtxBuffer.Data + buf_vtxfer_old_size;
 
-    int idx_buffer_old_size = IdxBuffer.Size;
-    IdxBuffer.resize(idx_buffer_old_size + idx_count);
-    _IdxWritePtr = IdxBuffer.Data + idx_buffer_old_size;
+    int buf_idxfer_old_size = IdxBuffer.Size;
+    IdxBuffer.resize(buf_idxfer_old_size + idx_count);
+    _IdxWritePtr = IdxBuffer.Data + buf_idxfer_old_size;
 }
 
 // Release the a number of reserved vertices/indices from the end of the last reservation made with PrimReserve().
@@ -1437,7 +1437,7 @@ void imgui_draw_listSplitter::Merge(imgui_draw_list* draw_list)
 
     // Calculate our final buffer sizes. Also fix the incorrect IdxOffset values in each command.
     int new_cmd_buffer_count = 0;
-    int new_idx_buffer_count = 0;
+    int new_buf_idxfer_count = 0;
     imgui_draw_cmd* last_cmd = (_Count > 0 && draw_list->CmdBuffer.Size > 0) ? &draw_list->CmdBuffer.back() : NULL;
     int idx_offset = last_cmd ? last_cmd->IdxOffset + last_cmd->ElemCount : 0;
     for (int i = 1; i < _Count; i++)
@@ -1462,7 +1462,7 @@ void imgui_draw_listSplitter::Merge(imgui_draw_list* draw_list)
         if (ch._CmdBuffer.Size > 0)
             last_cmd = &ch._CmdBuffer.back();
         new_cmd_buffer_count += ch._CmdBuffer.Size;
-        new_idx_buffer_count += ch._IdxBuffer.Size;
+        new_buf_idxfer_count += ch._IdxBuffer.Size;
         for (int cmd_n = 0; cmd_n < ch._CmdBuffer.Size; cmd_n++)
         {
             ch._CmdBuffer.Data[cmd_n].IdxOffset = idx_offset;
@@ -1470,11 +1470,11 @@ void imgui_draw_listSplitter::Merge(imgui_draw_list* draw_list)
         }
     }
     draw_list->CmdBuffer.resize(draw_list->CmdBuffer.Size + new_cmd_buffer_count);
-    draw_list->IdxBuffer.resize(draw_list->IdxBuffer.Size + new_idx_buffer_count);
+    draw_list->IdxBuffer.resize(draw_list->IdxBuffer.Size + new_buf_idxfer_count);
 
     // Write commands and indices in order (they are fairly small structures, we don't copy vertices only indices)
     imgui_draw_cmd* cmd_write = draw_list->CmdBuffer.Data + draw_list->CmdBuffer.Size - new_cmd_buffer_count;
-    ImDrawIdx* idx_write = draw_list->IdxBuffer.Data + draw_list->IdxBuffer.Size - new_idx_buffer_count;
+    ImDrawIdx* idx_write = draw_list->IdxBuffer.Data + draw_list->IdxBuffer.Size - new_buf_idxfer_count;
     for (int i = 1; i < _Count; i++)
     {
         ImDrawChannel& ch = _Channels[i];
@@ -1526,17 +1526,17 @@ void imgui_draw_listSplitter::SetCurrentChannel(imgui_draw_list* draw_list, int 
 // For backward compatibility: convert all buffers from indexed to de-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!
 void imgui_draw_data::DeIndexAllBuffers()
 {
-    ImVector<ImDrawVert> new_vtx_buffer;
+    ImVector<ImDrawVert> new_buf_vtxfer;
     TotalVtxCount = TotalIdxCount = 0;
     for (int i = 0; i < CmdListsCount; i++)
     {
         imgui_draw_list* cmd_list = CmdLists[i];
         if (cmd_list->IdxBuffer.empty())
             continue;
-        new_vtx_buffer.resize(cmd_list->IdxBuffer.Size);
+        new_buf_vtxfer.resize(cmd_list->IdxBuffer.Size);
         for (int j = 0; j < cmd_list->IdxBuffer.Size; j++)
-            new_vtx_buffer[j] = cmd_list->VtxBuffer[cmd_list->IdxBuffer[j]];
-        cmd_list->VtxBuffer.swap(new_vtx_buffer);
+            new_buf_vtxfer[j] = cmd_list->VtxBuffer[cmd_list->IdxBuffer[j]];
+        cmd_list->VtxBuffer.swap(new_buf_vtxfer);
         cmd_list->IdxBuffer.resize(0);
         TotalVtxCount += cmd_list->VtxBuffer.Size;
     }

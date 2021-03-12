@@ -1,20 +1,20 @@
 #include <nwg_pch.hpp>
 #include "nwg_state.h"
-#if (defined NWG_GAPI)
-namespace NWG
+#if (defined NW_GAPI)
+namespace NW
 {
 }
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_base.h>
-namespace NWG
+namespace NW
 {
 	//
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 	//
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

@@ -1,16 +1,16 @@
-#ifndef NWG_INDEX_BUFFER_H
-#define NWG_INDEX_BUFFER_H
+#ifndef NW_INDEX_BUFFER_H
+#define NW_INDEX_BUFFER_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <core/nwg_buf.h>
-namespace NWG
+namespace NW
 {
-	/// idx_buf class
-	class NWG_API idx_buf : public a_gfx_buf, public t_gfx_res<idx_buf>
+	/// buf_idx class
+	class NW_API buf_idx : public a_gfx_buf, public t_gfx_res<buf_idx>
 	{
 	public:
-		idx_buf(gfx_engine& graphics);
-		virtual ~idx_buf();
+		buf_idx(gfx_engine& graphics);
+		virtual ~buf_idx();
 		// --getters
 		inline data_types get_data_type() const	{ return m_data_type; }
 		inline size get_data_count() const		{ return m_data_size / dt_get_size(m_data_type); }
@@ -25,9 +25,9 @@ namespace NWG
 		data_types m_data_type = DT_DEFAULT;
 	};
 	template<typename itype>
-	bit idx_buf::remake(ui32 data_count, itype* data_ptr) {
+	bit buf_idx::remake(ui32 data_count, itype* data_ptr) {
 		return remake(data_count * sizeof(itype), data_ptr, convert_enum<itype, data_types>());
 	}
 }
-#endif	// NWG_GAPI
-#endif	// NWG_INDEX_BUFFER_H
+#endif	// NW_GAPI
+#endif	// NW_INDEX_BUFFER_H

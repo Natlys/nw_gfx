@@ -1,30 +1,30 @@
 #include <nwg_pch.hpp>
-#include "nwg_frame_buf.h"
-#if (defined NWG_GAPI)
+#include "nwg_framebuf.h"
+#if (defined NW_GAPI)
 #include <core/nwg_texture.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL & false)
 #include <lib/nwg_load_fbuf.h>
 #include <lib/nwg_load_txr.h>
-namespace NWG
+namespace NW
 {
-	frame_buf::frame_buf(gfx_engine& graphics, cstring name) :
-		t_gfx_res(graphics), a_data_res(name),
-		m_info(frame_buf_info()),
+	framebuf::framebuf(gfx_engine& graphics, cstring name) :
+		t_gfx_res(graphics), a_data_rsc(name),
+		m_info(framebuf_info()),
 		m_ogl_id(0)
 	{
 	}
-	frame_buf::~frame_buf() { if (m_ogl_id != 0) { glDeleteFramebuffers(1, &m_ogl_id); m_ogl_id = 0; } }
+	framebuf::~framebuf() { if (m_ogl_id != 0) { glDeleteFramebuffers(1, &m_ogl_id); m_ogl_id = 0; } }
 	// --setters
-	void frame_buf::set_viewport(const v4si& viewport_rect) { m_info.viewport = viewport_rect; }
-	void frame_buf::set_clear_color(const v4f& clear_color) { m_info.clear_color = clear_color; }
-	void frame_buf::attach(mem_ref<a_texture>& ref) { m_atchs.push_back(ref); }
-	void frame_buf::detach(ui8 idx) { m_atchs.erase(m_atchs.begin() + idx); }
+	void framebuf::set_viewport(const v4si& viewport_rect) { m_info.viewport = viewport_rect; }
+	void framebuf::set_clear_color(const v4f& clear_color) { m_info.clear_color = clear_color; }
+	void framebuf::attach(mem_ref<a_texture>& ref) { m_atchs.push_back(ref); }
+	void framebuf::detach(ui8 idx) { m_atchs.erase(m_atchs.begin() + idx); }
 	// --==<core_methods>==--
-	void frame_buf::on_draw() {
+	void framebuf::on_draw() {
 		glBindFramebuffer(GL_FRAMEBUFFER, m_ogl_id);
 		glViewport(0, 0, get_size_x(), get_size_y());
 	}
-	void frame_buf::remake(const frame_buf_info& info)
+	void framebuf::remake(const framebuf_info& info)
 	{
 		if (m_ogl_id != 0) { glDeleteFramebuffers(1, &m_ogl_id); m_ogl_id = 0; }
 		if (get_size_x() < 1 || get_size_y() < 1) { return; }
@@ -39,7 +39,7 @@ namespace NWG
 		for (si32 txi = 0; txi < m_atchs.size(); txi++) {
 			if (!m_atchs[txi].is_valid()) { throw error("null attachment!"); detach(txi); }
 			auto& atch = *m_atchs[txi];
-			texture_info txr_info = atch.get_info();
+			a_texture_info txr_info = atch.get_info();
 			txr_info.size_x = get_size_x();
 			txr_info.size_y = get_size_y();
 			atch.remake(txr_info);
@@ -71,9 +71,9 @@ namespace NWG
 		else { glDrawBuffer(GL_NONE); }
 
 		bool bIsCompleted = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
-		NWL_ASSERT(bIsCompleted, "framebufOgl is not created!");
+		NW_ASSERT(bIsCompleted, "framebufOgl is not created!");
 	}
-	void frame_buf::clear() {
+	void framebuf::clear() {
 		ui32 mask = 0;
 		mask |= m_info.color_ids.size() > 0 ? GL_COLOR_BUFFER_BIT : 0u;
 		mask |= m_info.has_depth ? GL_DEPTH_BUFFER_BIT : 0u;
@@ -82,7 +82,7 @@ namespace NWG
 		glClear(mask);
 	}
 
-	void frame_buf::read_pixels(ptr data_ptr, ui8 attach_idx, const v4si& read_rect)
+	void framebuf::read_pixels(ptr data_ptr, ui8 attach_idx, const v4si& read_rect)
 	{
 		const texture_info& txr_info = get_attachment(attach_idx)->get_info();
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attach_idx);
@@ -91,7 +91,7 @@ namespace NWG
 			convert_enum<pixel_formats, ui32>(txr_info.pxl_format),
 			convert_enum<pixel_formats, si32>(txr_info.pxl_format), data_ptr);
 	}
-	void frame_buf::draw_pixels(ptr data_ptr, ui8 attach_idx, const v4si& draw_rect)
+	void framebuf::draw_pixels(ptr data_ptr, ui8 attach_idx, const v4si& draw_rect)
 	{
 		const texture_info& txr_info = get_attachment()->get_info();
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + attach_idx);
@@ -101,17 +101,17 @@ namespace NWG
 	}
 	// --==</core_methods>==--
 	// --==<data_methods>==--
-	bit frame_buf::save_file(cstring file_path) { return true; }
-	bit frame_buf::load_file(cstring file_path) { return true; }
+	bit framebuf::save_file(cstring file_path) { return true; }
+	bit framebuf::load_file(cstring file_path) { return true; }
 	// --==</data_methods>==--
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
 	framebuf::framebuf(gfx_engine& graphics, const char* name, const framebufInfo& info) :
-		a_gfx_res(graphics), a_data_res(name),
+		a_gfx_rsc(graphics), a_data_rsc(name),
 		m_info(info),
 		m_rgbaClear{ 0.5f, 0.5f, 0.5f, 1.0f } { }
 	framebuf::~framebuf() { }
@@ -142,4 +142,4 @@ namespace NWG
 	// --==</data_methods>==--
 }
 #endif
-#endif // NWG_GAPI
+#endif // NW_GAPI

@@ -1,11 +1,11 @@
-#ifndef NWG_CAMERA_LAD_H
-#define NWG_CAMERA_LAD_H
+#ifndef NW_CAMERA_LAD_H
+#define NW_CAMERA_LAD_H
 #include <nwg_core.hpp>
 #include "nwg_camera.h"
-namespace NWG
+namespace NW
 {
 	/// graphics_camera_lad class
-	class NWG_API gfx_camera_lad : public gfx_camera
+	class NW_API gfx_camera_lad : public gfx_camera
 	{
 	public: // configurable Attributes
 		f32 rotation_speed = 0.0, move_speed = 0.0, zoom_speed = 0.0;
@@ -19,4 +19,4 @@ namespace NWG
 	};
 }
 
-#endif	// NWG_CAMERA_LAD_H
+#endif	// NW_CAMERA_LAD_H

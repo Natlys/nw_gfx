@@ -1,9 +1,9 @@
 #include <nwg_pch.hpp>
 #include "nwg_load_base.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	bit ogl_load_base() {
 		// getters
@@ -13,7 +13,8 @@ namespace NWG
 		// predicates
 		glIsEnabled = (pfn_ogl_is_enabled)(ogl_get_proc("glIsEnabled"));
 		// drawing
-		glDrawElements = (pfn_ogl_draw_elements)(ogl_get_proc("glDrawElements"));
+		glDrawArrays = (pfn_ogl_draw_vtx)(ogl_get_proc("glDrawArrays"));
+		glDrawElements = (pfn_ogl_draw_idx)(ogl_get_proc("glDrawElements"));
 		// configs
 		glViewport = (pfn_ogl_viewport)(ogl_get_proc("glViewport"));
 		glScissor = (pfn_ogl_scissor)(ogl_get_proc("glScissor"));
@@ -30,7 +31,7 @@ namespace NWG
 		return true;
 	}
 }
-namespace NWG
+namespace NW
 {
 	// getters
 	pfn_ogl_get_int_v glGetIntegerv = NULL;
@@ -39,7 +40,8 @@ namespace NWG
 	// predicates
 	pfn_ogl_is_enabled glIsEnabled = NULL;
 	// drawing
-	pfn_ogl_draw_elements glDrawElements = NULL;
+	pfn_ogl_draw_vtx glDrawArrays = NULL;
+	pfn_ogl_draw_idx glDrawElements = NULL;
 	// configs
 	pfn_ogl_viewport glViewport = NULL;
 	pfn_ogl_scissor glScissor = NULL;
@@ -54,10 +56,10 @@ namespace NWG
 	pfn_ogl_clear_error glClearError = NULL;
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 	//
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

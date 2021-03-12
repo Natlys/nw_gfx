@@ -51,40 +51,40 @@ dcl_output_siv o2.xyzw, position
 dcl_temps 4
 //
 // Initial variable locations:
-//   v0.x <- atb_vtx_crd.x; v0.y <- atb_vtx_crd.y; v0.z <- atb_vtx_crd.z; 
-//   v1.x <- atb_tex_crd.x; v1.y <- atb_tex_crd.y; 
-//   v2.x <- atb_nrm_crd.x; v2.y <- atb_nrm_crd.y; v2.z <- atb_nrm_crd.z; 
-//   o2.x <- <main return value>.vtx_crd.x; o2.y <- <main return value>.vtx_crd.y; o2.z <- <main return value>.vtx_crd.z; o2.w <- <main return value>.vtx_crd.w; 
-//   o1.x <- <main return value>.nrm_crd.x; o1.y <- <main return value>.nrm_crd.y; o1.z <- <main return value>.nrm_crd.z; 
-//   o0.x <- <main return value>.tex_crd.x; o0.y <- <main return value>.tex_crd.y
+//   v0.x <- atb_vtxCrd.x; v0.y <- atb_vtxCrd.y; v0.z <- atb_vtxCrd.z; 
+//   v1.x <- atb_texCrd.x; v1.y <- atb_texCrd.y; 
+//   v2.x <- atb_nrmCrd.x; v2.y <- atb_nrmCrd.y; v2.z <- atb_nrmCrd.z; 
+//   o2.x <- <main return value>.vtxCrd.x; o2.y <- <main return value>.vtxCrd.y; o2.z <- <main return value>.vtxCrd.z; o2.w <- <main return value>.vtxCrd.w; 
+//   o1.x <- <main return value>.nrmCrd.x; o1.y <- <main return value>.nrmCrd.y; o1.z <- <main return value>.nrmCrd.z; 
+//   o0.x <- <main return value>.texCrd.x; o0.y <- <main return value>.texCrd.y
 //
-#line 15 "D:\dev\native_world\nw_gfx\src_hlsl\vtx_3d_default.hlsl"
-mov r0.xy, v1.xyxx  // r0.x <- vso.tex_crd.x; r0.y <- vso.tex_crd.y
+#line 15 "F:\projects\native_world\nw_gfx\src_hlsl\vtx_3d_default.hlsl"
+mov r0.xy, v1.xyxx  // r0.x <- vso.texCrd.x; r0.y <- vso.texCrd.y
 
 #line 16
-mov r1.xyz, v2.xyzx  // r1.x <- vso.nrm_crd.x; r1.y <- vso.nrm_crd.y; r1.z <- vso.nrm_crd.z
+mov r1.xyz, v2.xyzx  // r1.x <- vso.nrmCrd.x; r1.y <- vso.nrmCrd.y; r1.z <- vso.nrmCrd.z
 
 #line 17
-mov r2.xyz, v0.xyzx  // r2.x <- vso.vtx_crd.x; r2.y <- vso.vtx_crd.y; r2.z <- vso.vtx_crd.z
-mov r2.w, l(1.000000)  // r2.w <- vso.vtx_crd.w
+mov r2.xyz, v0.xyzx  // r2.x <- vso.vtxCrd.x; r2.y <- vso.vtxCrd.y; r2.z <- vso.vtxCrd.z
+mov r2.w, l(1.000000)  // r2.w <- vso.vtxCrd.w
 
 #line 18
-dp4 r3.x, r2.xyzw, cb0[0].xyzw  // r3.x <- vso.vtx_crd.x
-dp4 r3.y, r2.xyzw, cb0[1].xyzw  // r3.y <- vso.vtx_crd.y
-dp4 r3.z, r2.xyzw, cb0[2].xyzw  // r3.z <- vso.vtx_crd.z
-dp4 r3.w, r2.xyzw, cb0[3].xyzw  // r3.w <- vso.vtx_crd.w
+dp4 r3.x, r2.xyzw, cb0[0].xyzw  // r3.x <- vso.vtxCrd.x
+dp4 r3.y, r2.xyzw, cb0[1].xyzw  // r3.y <- vso.vtxCrd.y
+dp4 r3.z, r2.xyzw, cb0[2].xyzw  // r3.z <- vso.vtxCrd.z
+dp4 r3.w, r2.xyzw, cb0[3].xyzw  // r3.w <- vso.vtxCrd.w
 
 #line 19
-dp4 r2.x, r3.xyzw, cb0[4].xyzw  // r2.x <- vso.vtx_crd.x
-dp4 r2.y, r3.xyzw, cb0[5].xyzw  // r2.y <- vso.vtx_crd.y
-dp4 r2.z, r3.xyzw, cb0[6].xyzw  // r2.z <- vso.vtx_crd.z
-dp4 r2.w, r3.xyzw, cb0[7].xyzw  // r2.w <- vso.vtx_crd.w
+dp4 r2.x, r3.xyzw, cb0[4].xyzw  // r2.x <- vso.vtxCrd.x
+dp4 r2.y, r3.xyzw, cb0[5].xyzw  // r2.y <- vso.vtxCrd.y
+dp4 r2.z, r3.xyzw, cb0[6].xyzw  // r2.z <- vso.vtxCrd.z
+dp4 r2.w, r3.xyzw, cb0[7].xyzw  // r2.w <- vso.vtxCrd.w
 
 #line 20
-dp4 r3.x, r2.xyzw, cb0[8].xyzw  // r3.x <- vso.vtx_crd.x
-dp4 r3.y, r2.xyzw, cb0[9].xyzw  // r3.y <- vso.vtx_crd.y
-dp4 r3.z, r2.xyzw, cb0[10].xyzw  // r3.z <- vso.vtx_crd.z
-dp4 r3.w, r2.xyzw, cb0[11].xyzw  // r3.w <- vso.vtx_crd.w
+dp4 r3.x, r2.xyzw, cb0[8].xyzw  // r3.x <- vso.vtxCrd.x
+dp4 r3.y, r2.xyzw, cb0[9].xyzw  // r3.y <- vso.vtxCrd.y
+dp4 r3.z, r2.xyzw, cb0[10].xyzw  // r3.z <- vso.vtxCrd.z
+dp4 r3.w, r2.xyzw, cb0[11].xyzw  // r3.w <- vso.vtxCrd.w
 
 #line 21
 mov o2.xyzw, r3.xyzw

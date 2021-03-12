@@ -1,28 +1,28 @@
 #include <nwg_pch.hpp>
-#include "nwg_vtx_buf.h"
-#if (defined NWG_GAPI)
+#include "nwg_buf_vtx.h"
+#if (defined NW_GAPI)
 #include <core/nwg_engine.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_buf.h>
-namespace NWG
+namespace NW
 {
-	vtx_buf::vtx_buf(gfx_engine& graphics) :
+	buf_vtx::buf_vtx(gfx_engine& graphics) :
 		a_gfx_buf(), t_gfx_res(graphics),
 		m_stride_size(0)
 	{
 	}
-	vtx_buf::~vtx_buf() { }
+	buf_vtx::~buf_vtx() { }
 	// --setters
-	void vtx_buf::set_data(size data_size, const ptr data_ptr, size offset_size)
+	void buf_vtx::set_data(size data_size, const ptr data_ptr, size offset_size)
 	{
 		glBufferSubData(GL_ARRAY_BUFFER, offset_size, data_size, data_ptr);
 	}
 	// --core_methods
-	void vtx_buf::on_draw()
+	void buf_vtx::on_draw()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_ogl_id);
 	}
-	bit vtx_buf::remake(size data_size, const ptr data_ptr, size stride_size)
+	bit buf_vtx::remake(size data_size, const ptr data_ptr, size stride_size)
 	{
 		m_data_size = data_size;
 		m_stride_size = stride_size;
@@ -35,26 +35,26 @@ namespace NWG
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
-	vtx_buf::vtx_buf(gfx_engine& graphics) :
+	buf_vtx::buf_vtx(gfx_engine& graphics) :
 		a_gfx_buf(graphics), t_cmp()
 		m_stride_size(0)
 	{
 	}
-	vtx_buf::~vtx_buf() { }
+	buf_vtx::~buf_vtx() { }
 	// --setters
-	void vtx_buf::SetSubData(Size szData, const Ptr pData, Size szOffset) {
+	void buf_vtx::SetSubData(Size szData, const Ptr pData, Size szOffset) {
 		D3D11_MAPPED_SUBRESOURCE msubRes{ 0 };
 		m_gfx->GetContext()->Map(m_native, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msubRes);
 		memcpy(msubRes.pData, pData, szData);
 		m_gfx->GetContext()->Unmap(m_native, 0u);
 	}
 	// --core_methods
-	void vtx_buf::Bind() { m_gfx->GetContext()->IASetVertexBuffers(0, 1, &m_native, &m_info.szStride, &m_info.szOffset); }
-	bool vtx_buf::Remake(const gfx_buf_info& info) {
+	void buf_vtx::Bind() { m_gfx->GetContext()->IASetVertexBuffers(0, 1, &m_native, &m_info.szStride, &m_info.szOffset); }
+	bool buf_vtx::Remake(const gfx_buf_info& info) {
 		m_info = info;
 		if (m_native != nullptr) { m_native->Release(); m_native = nullptr; }
 		if (m_info.szData == 0) { return false; }
@@ -84,4 +84,4 @@ namespace NWG
 	}
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

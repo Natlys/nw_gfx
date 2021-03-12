@@ -1,92 +1,55 @@
-#ifndef NWG_TEXTURE_H
-#define NWG_TEXTURE_H
+#ifndef NW_TEXTURE_H
+#define NW_TEXTURE_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
-#include <core/nwg_res.h>
-#include <core/nwg_tools.h>
-namespace NWG
+#if (defined NW_GAPI)
+#include <core/nwg_rsc.h>
+#include <lib/nwg_tools.h>
+#include <lib/nwg_image.h>
+namespace NW
 {
-	struct NWG_API texture_info : public image_info
-	{
-	public:
-		gfx_api_types gapi_type = GAPI_DEFAULT;
-		dstring name = "default";
-		ui8 nof_samples = 1;
-		texture_types txr_type = TXT_2D;
-		texture_formats txr_format = TXF_RGBA;
-		texture_wraps wrap_s = TXW_BORDER;
-		texture_wraps wrap_t = TXW_BORDER;
-		texture_wraps wrap_r = TXW_BORDER;
-		texture_filters filter = TXFL_NEAREST;
-		v4f border_color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	public:
-		// --operators
-		texture_info& operator=(const image_bmp_info& info);
-		texture_info& operator=(const image_png_info& info);
-		texture_info& operator=(const image_info& info);
-		virtual out_stream& operator<<(out_stream& stm) const override;
-		virtual in_stream& operator>>(in_stream& stm) override;
-	};
-}
-namespace NWG
-{
-	/// a_texture class
+	/// abstarct texture class
 	/// description:
-	class NWG_API a_texture : public a_data_res
+	class NW_API a_texture : public a_image
 	{
 	public:
-		a_texture(cstring name, texture_types txr_types);
+		using txr_fmt = texture_formats;
+		using data = darray<ubyte>;
+#if (NW_GAPI & NW_GAPI_DX)
+		using dx_rsc_view = ID3D11ShaderResourceView;
+#endif		
+	public:
+		a_texture(cstring name);
 		virtual ~a_texture();
 		// --getters
-		inline ui8 get_txr_slot() const				{ return m_slot; }
-		inline texture_types get_txr_type() const	{ return m_info.txr_type; }
-		inline const texture_info& get_info() const	{ return m_info; }
-#if (NWG_GAPI & NWG_GAPI_OGL)
-		inline GLuint get_ogl_id() const			{ return m_ogl_id; }
+		inline ui8 get_slot() const				{ return m_slot; }
+		inline ui8 get_samples() const			{ return m_samples; }
+		inline txr_fmt get_txr_fmt() const		{ return m_txr_fmt; }
+#if (NW_GAPI & NW_GAPI_OGL)
+		inline GLuint get_ogl_id() const		{ return m_ogl_id; }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-		inline ID3D11ShaderResourceView* get_view()	{ return m_view; }
+#if (NW_GAPI & NW_GAPI_DX)
+		inline dx_rsc_view* get_dx_view()		{ return m_dx_view; }
 #endif
 		// --setters
-		void set_txr_slot(ui8 texture_slot);
+		void set_slot(ui8 texture_slot);
+		// --operators
+		virtual out_stream& operator<<(out_stream& stm) const = 0;
+		virtual in_stream& operator>>(in_stream& stm) = 0;
 		// --core_methods
-		virtual void on_draw() = 0;
-		virtual bool remake(const texture_info& info) = 0;
+		virtual bit remake(const a_image& img) = 0;
 		virtual void clear(ptr value) = 0;
-		// --data_methods
-		virtual bit save_file(cstring file_path) = 0;
-		virtual bit load_file(cstring file_path) = 0;
+		virtual void on_draw() = 0;
 	protected:
-		texture_info m_info;
 		ui8 m_slot;
-#if (NWG_GAPI & NWG_GAPI_OGL)
+		ui8 m_samples;
+		txr_fmt m_txr_fmt;
+#if (NW_GAPI & NW_GAPI_OGL)
 		GLuint m_ogl_id;
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-		ID3D11ShaderResourceView* m_view;
-		ID3D11SamplerState* m_sampler;
+#if (NW_GAPI & NW_GAPI_DX)
+		dx_rsc_view* m_dx_view;
 #endif
 	};
 }
-namespace NWG
-{
-	class NWG_API texture2d : public a_texture, public t_gfx_res<texture2d>
-	{
-	public:
-		texture2d(gfx_engine& graphics, cstring name);
-		~texture2d();
-		// --core_methods
-		virtual void on_draw() override;
-		virtual bool remake(const texture_info& info) override;
-		virtual void clear(ptr value) override;
-		// --data_methods
-		virtual bit save_file(cstring file_path) override;
-		virtual bit load_file(cstring file_path) override;
-	private:
-#if (NWG_GAPI & NWG_GAPI_DX)
-		ID3D11Texture2D* m_native;
-#endif
-	};
-}
-#endif	// NWG_GAPI
+#endif	// NW_GAPI
 #endif // GFX_TEXTURE_H

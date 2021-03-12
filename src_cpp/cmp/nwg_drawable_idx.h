@@ -1,17 +1,18 @@
-#ifndef NWG_DRAWABLE_IDX_H
-#define NWG_DRAWABLE_IDX_H
+#ifndef NW_DRAWABLE_IDX_H
+#define NW_DRAWABLE_IDX_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <cmp/nwg_drawable.h>
-namespace NWG
+#include <core/nwg_buf_idx.h>
+namespace NW
 {
 	/// indexed drawable class
-	class NWG_API idx_drawable : public a_drawable, public t_gfx_res<idx_drawable>
+	class NW_API drawable_idx : public a_drawable, public t_gfx_res<drawable_idx>
 	{
-		using buffer = mem_ref<idx_buf>;
+		using buffer = mem_ref<buf_idx>;
 	public:
-		idx_drawable(gfx_engine& graphics);
-		virtual ~idx_drawable();
+		drawable_idx(gfx_engine& graphics);
+		virtual ~drawable_idx();
 		// --getters
 		buffer& get_buf() { return m_ibuf; }
 		// --setters
@@ -22,5 +23,5 @@ namespace NWG
 	};
 }
 
-#endif	// NWG_GAPI
-#endif	// NWG_DRAWABLE_IDX_H
+#endif	// NW_GAPI
+#endif	// NW_DRAWABLE_IDX_H

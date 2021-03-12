@@ -1,57 +1,57 @@
-#ifndef NWG_MESH_H
-#define NWG_MESH_H
+#ifndef NW_DATA_H
+#define NW_DATA_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
-#include <core/nwg_switch.h>
-namespace NWG
+#if (defined NW_GAPI)
+#include <lib/nwg_switch.h>
+namespace NW
 {
-	struct NWG_API vtx_2f
+	struct NW_API vtx_2f
 	{
 		v2f vtx_crd = { 0.0f, 0.0f };
 	};
-	struct NWG_API vtx_2f2f
+	struct NW_API vtx_v2f2f
 	{
 		v2f vtx_crd = { 0.0f, 0.0f };
 		v2f tex_crd = { 0.0f, 0.0f };
 	};
-	struct NWG_API vtx_2f2f4u8
+	struct NW_API vtx_2f2f4ui8
 	{
 		v2f vtx_crd = { 0.0f, 0.0f };
 		v2f tex_crd = { 0.0f, 0.0f };
 		v4ui8 vtx_clr = { 0u, 0u, 0u, 0u };
 	};
-	struct NWG_API vtx_3f
+	struct NW_API vtx_3f
 	{
 		v3f vtx_crd = { 0.0f, 0.0f, 0.0f };
 	};
-	struct NWG_API vtx_3f2f
+	struct NW_API vtx_3f2f
 	{
 		v3f vtx_crd = { 0.0f, 0.0f, 0.0f };
 		v2f txr_crd = { 0.0f, 0.0f };
 	};
-	struct NWG_API vtx_3f2f3f
+	struct NW_API vtx_3f2f3f
 	{
 		v3f vtx_crd = { 0.0f, 0.0f, 0.0f };
 		v2f tex_crd = { 0.0f, 0.0f };
 		v3f nrm_crd = { 0.0f, 0.0f, 0.0f };
 	};
 }
-namespace NWG
+namespace NW
 {
-	struct NWG_API buf_m4f {
+	struct NW_API buf_16f {
 		m4f model = m4f32(1.0f);
 	};
-	struct NWG_API buf_m4fm4f {
+	struct NW_API buf_16f16f {
 		m4f view = m4f32(1.0f);
 		m4f proj = m4f32(1.0f);
 	};
-	struct NWG_API buf_m4fm4fm4f {
+	struct NW_API buf_16f16f16f {
 		m4f model = m4f32(1.0f);
 		m4f view = m4f32(1.0f);
 		m4f proj = m4f32(1.0f);
 	};
 }
-namespace NWG
+namespace NW
 {
 	/// graphics mesh data class
 	/// description:
@@ -61,7 +61,7 @@ namespace NWG
 	/// --update_idx_data for required topology;
 	/// --use index and vertex data for drawing;
 	template<typename vtype, typename itype = ui32>
-	class NWG_API gfx_mesh_data
+	class NW_API gfx_mesh_data
 	{
 		using vertices = darray<vtype>;
 		using indices = darray<itype>;
@@ -137,16 +137,5 @@ namespace NWG
 		ui32 m_iter;
 	};
 }
-namespace NWG
-{
-	class NWG_API gfx_mesh_info : public a_info
-	{
-	public:
-		gfx_mesh_info();
-		// --operators
-		virtual std::ostream& operator<<(std::ostream& stm) const override;
-		virtual std::istream& operator>>(std::istream& stm) override;
-	};
-}
-#endif	// NWG_GAPI
-#endif	// NWG_MESH_H
+#endif	// NW_GAPI
+#endif	// NW_DATA_H

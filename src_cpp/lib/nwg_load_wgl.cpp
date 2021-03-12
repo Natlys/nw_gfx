@@ -1,12 +1,12 @@
 #include <nwg_pch.hpp>
 #include "nwg_load_wgl.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	bit ogl_load_wgl() {
-		gfx_lib graphics_library = ogl_get_lib();
+		library_handle graphics_library = ogl_get_lib();
 		// context
 		wglCreateContext = (pfn_ogl_new_context)(::GetProcAddress(graphics_library, "wglCreateContext"));
 		wglDeleteContext = (pfn_ogl_del_context)(::GetProcAddress(graphics_library, "wglDeleteContext"));
@@ -20,7 +20,7 @@ namespace NWG
 		return true;
 	}
 }
-namespace NWG
+namespace NW
 {
 	// context
 	pfn_ogl_new_context wglCreateContext = NULL;
@@ -33,6 +33,6 @@ namespace NWG
 	pfn_ogl_get_proc wglGetProcAddress = NULL;
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

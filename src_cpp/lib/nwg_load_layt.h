@@ -1,15 +1,15 @@
-#ifndef NWG_LOAD_LAYT_H
-#define NWG_LOAD_LAYT_H
+#ifndef NW_LOAD_LAYT_H
+#define NW_LOAD_LAYT_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load_base.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	/// load opengl layout - vertex array
 	extern bit ogl_load_varr();
 }
-namespace NWG
+namespace NW
 {
 	// general
 	typedef void (APIENTRYP pfn_ogl_varr_gen)(GLsizei count, GLuint* vtx_arr_ids);
@@ -20,7 +20,7 @@ namespace NWG
 	typedef void (APIENTRYP pfn_ogl_varr_disable_atb)(GLuint vtx_atb_idx);
 	typedef void (APIENTRYP pfn_ogl_varr_set_atb)(GLuint vtx_atb_idx, GLint count, GLenum data_type, GLboolean is_normalized, GLsizei stride_size, const GLvoid* offset);
 }
-namespace NWG
+namespace NW
 {
 	// general
 	extern pfn_ogl_varr_gen ogl_varr_gen;
@@ -49,7 +49,7 @@ namespace NWG
 #define GL_MAX_VERTEX_ATTRIBS             0x8869
 #endif	// __gl_h__
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #endif
-#endif	// NWG_GAPI
-#endif	// NWG_LOAD_BUF_H
+#endif	// NW_GAPI
+#endif	// NW_LOAD_BUF_H

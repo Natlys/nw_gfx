@@ -1,25 +1,25 @@
-#ifndef NWG_WGL_LOADER_H
-#define NWG_WGL_LOADER_H
+#ifndef NW_WGL_LOADER_H
+#define NW_WGL_LOADER_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (defined NW_GAPI)
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	extern bit ogl_load_wgl();
 }
-namespace NWG
+namespace NW
 {
 	// context
-	typedef gfx_context(__stdcall* pfn_ogl_new_context)(gfx_device device);
-	typedef si32(__stdcall* pfn_ogl_del_context)(gfx_context context);
-	typedef gfx_context(__stdcall* pfn_ogl_get_context)();
-	typedef si32(__stdcall* pfn_ogl_set_context)(gfx_device device, gfx_context context);
+	typedef context_handle(__stdcall* pfn_ogl_new_context)(device_handle device);
+	typedef si32(__stdcall* pfn_ogl_del_context)(context_handle context);
+	typedef context_handle(__stdcall* pfn_ogl_get_context)();
+	typedef si32(__stdcall* pfn_ogl_set_context)(device_handle device, context_handle context);
 	// device
-	typedef gfx_device(__stdcall* pfn_ogl_get_device)();
+	typedef device_handle(__stdcall* pfn_ogl_get_device)();
 	// other
 	typedef ptr(__stdcall* pfn_ogl_get_proc)(cstring name);
 }
-namespace NWG
+namespace NW
 {
 	// context
 	extern pfn_ogl_new_context ogl_new_context;
@@ -41,7 +41,7 @@ namespace NWG
 // other
 #define wglGetProcAddress ogl_get_proc_address
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #endif
-#endif	// NWG_GAPI
-#endif	// NWG_WGL_LOADER_H
+#endif	// NW_GAPI
+#endif	// NW_WGL_LOADER_H

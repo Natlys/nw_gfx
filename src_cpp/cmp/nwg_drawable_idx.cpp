@@ -1,18 +1,18 @@
 #include <nwg_pch.hpp>
 #include "nwg_drawable_idx.h"
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include <core/nwg_engine.h>
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_base.h>
-namespace NWG
+namespace NW
 {
-	idx_drawable::idx_drawable(gfx_engine& graphics) :
+	drawable_idx::drawable_idx(gfx_engine& graphics) :
 		a_drawable(), t_gfx_res(graphics)
 	{
 	}
-	idx_drawable::~idx_drawable() { }
+	drawable_idx::~drawable_idx() { }
 	// --==<core_methods>==--
-	void idx_drawable::on_draw()
+	void drawable_idx::on_draw()
 	{
 		for (auto irsc : m_rscs) {
 			irsc->on_draw();
@@ -23,6 +23,6 @@ namespace NWG
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

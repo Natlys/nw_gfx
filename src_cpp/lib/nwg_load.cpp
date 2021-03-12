@@ -4,7 +4,7 @@
 #include "nwg_load_fbuf.h"
 #include "nwg_load_txr.h"
 #include "nwg_load_shd.h"
-namespace NWG
+namespace NW
 {
 	struct ogl_version
 	{
@@ -18,10 +18,10 @@ namespace NWG
 		}
 	};
 
-	static gfx_lib s_ogl_lib = NULL;
+	static library_handle s_ogl_lib = NULL;
 	static ogl_version s_version{ 0 };
 }
-namespace NWG
+namespace NW
 {
 	// --getters
 	ptr ogl_get_proc(cstring name) {
@@ -32,7 +32,7 @@ namespace NWG
 
 		return resource;
 	}
-	gfx_lib ogl_get_lib() { return s_ogl_lib; }
+	library_handle ogl_get_lib() { return s_ogl_lib; }
 	// --==<core_methods>==--
 	bit ogl_init() {
 		if (ogl_open() == FALSE) { return FALSE; }

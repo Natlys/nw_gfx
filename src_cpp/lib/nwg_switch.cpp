@@ -1,7 +1,7 @@
 #include <nwg_pch.hpp>
 #include "nwg_switch.h"
-#ifdef NWG_GAPI
-namespace NWG
+#ifdef NW_GAPI
+namespace NW
 {
 	template<> cstring convert_enum<data_types, cstring>(data_types data_type) {
 		switch (data_type) {
@@ -77,7 +77,7 @@ namespace NWG
 		return "SHD_DEFAULT";
 	}
 }
-namespace NWG
+namespace NW
 {
 	template<>data_types convert_enum<si8, data_types>() { return DT_SINT8; }
 	template<>data_types convert_enum<v2si8, data_types>() { return DT_VEC2_SINT8; }
@@ -117,14 +117,14 @@ namespace NWG
 	template<>data_types convert_enum<m3f32, data_types>() { return DT_MAT3_FLOAT32; }
 	template<>data_types convert_enum<m4f32, data_types>() { return DT_MAT4_FLOAT32; }
 }
-#if (NWG_GAPI & NWG_GAPI_OGL)
+#if (NW_GAPI & NW_GAPI_OGL)
 #include <lib/nwg_load_base.h>
 #include <lib/nwg_load_txr.h>
 #include <lib/nwg_load_buf.h>
 #include <lib/nwg_load_fbuf.h>
 #include <lib/nwg_load_shd.h>
 #include <gl/GL.h>
-namespace NWG
+namespace NW
 {
 	template<> data_types convert_enum<const GLchar*, data_types>(const GLchar* type_string) {
 		if (str_is_equal(type_string, "bool")) { return DT_BOOL; }
@@ -333,7 +333,7 @@ namespace NWG
 		return TXW_DEFAULT;
 	}
 }
-namespace NWG
+namespace NW
 {
 	si32 dt_get_count(data_types data_type) {
 		switch (data_type) {
@@ -442,9 +442,9 @@ namespace NWG
 	}
 }
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
+#if (NW_GAPI & NW_GAPI_DX)
 #include <lib/nwg_dx_loader.h>
-namespace NWG
+namespace NW
 {
 template<> data_types convert_enum<cstring, data_types>(cstring type_string) {
 	if (str_is_equal(type_string, "int")) { return DT_SINT32; }
@@ -550,4 +550,4 @@ template<> D3D11_TEXTURE_ADDRESS_MODE convert_enum<texture_wraps, D3D11_TEXTURE_
 }
 }
 #endif
-#endif	// NWG_GAPI
+#endif	// NW_GAPI

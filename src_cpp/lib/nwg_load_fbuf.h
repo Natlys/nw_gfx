@@ -1,14 +1,14 @@
-#ifndef NWG_LOAD_FBUF_H
-#define NWG_LOAD_FBUF_H
+#ifndef NW_LOAD_FBUF_H
+#define NW_LOAD_FBUF_H
 #include <nwg_core.hpp>
-#if (defined NWG_GAPI)
+#if (defined NW_GAPI)
 #include "nwg_load_base.h"
-#if (NWG_GAPI & NWG_GAPI_OGL)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_OGL)
+namespace NW
 {
 	extern bit ogl_load_fbuf();
 }
-namespace NWG
+namespace NW
 {
 	// general
 	typedef void (APIENTRYP pfn_ogl_fbuf_gen)(GLsizei count, GLuint* fbuf_ids);
@@ -30,7 +30,7 @@ namespace NWG
 	// info
 	typedef GLenum(APIENTRYP pfn_ogl_fbuf_check)(GLenum status_type);
 }
-namespace NWG
+namespace NW
 {
 	// general
 	extern pfn_ogl_fbuf_gen ogl_fbuf_gen;
@@ -184,10 +184,10 @@ namespace NWG
 #define GL_DRAW_BUFFER15                  0x8834
 #endif	// __gl_h__
 #endif
-#if (NWG_GAPI & NWG_GAPI_DX)
-namespace NWG
+#if (NW_GAPI & NW_GAPI_DX)
+namespace NW
 {
 }
 #endif
-#endif	// NWG_GAPI
-#endif	// NWG_LOAD_FBUF_H
+#endif	// NW_GAPI
+#endif	// NW_LOAD_FBUF_H
