@@ -7,7 +7,7 @@
 namespace NW
 {
 	/// framebuffer class
-	class NW_API framebuf : public t_gfx_res<framebuf>, public a_data_rsc
+	class NW_API framebuf : public t_gfx_rsc<framebuf>, public a_data_rsc
 	{
 		using depth = mem_ref<a_texture>;
 		using stencil = mem_ref<a_texture>;

@@ -49,6 +49,8 @@ namespace NW
 	typedef void (APIENTRYP pfn_ogl_blend_equation_separate)(GLenum blend_mode_rgb, GLenum blend_mode_alpha);
 	typedef void (APIENTRYP pfn_ogl_blend_function)(GLenum src_factor, GLenum dest_factor);
 	typedef void (APIENTRYP pfn_ogl_blend_function_separate)(GLenum src_factor_rgb, GLenum dest_factor_rgb, GLenum src_factor_alpha, GLenum dest_factor_alpha);
+	typedef void (APIENTRYP pfn_ogl_depth_mask)(GLboolean enable);
+	typedef void (APIENTRYP pfn_ogl_depth_func)(GLenum operation);
 	typedef void (APIENTRYP pfn_ogl_polygon_mode)(GLenum face, GLenum mode);
 	// other
 	typedef void (APIENTRYP pfn_ogl_clear_error)(void);
@@ -73,6 +75,8 @@ namespace NW
 	extern pfn_ogl_blend_equation_separate ogl_blend_equation_separate;
 	extern pfn_ogl_blend_function ogl_blend_function;
 	extern pfn_ogl_blend_function_separate ogl_blend_function_separate;
+	extern pfn_ogl_depth_mask ogl_depth_mask;
+	extern pfn_ogl_depth_func ogl_depth_func;
 	extern pfn_ogl_polygon_mode ogl_polygon_mode;
 	// other
 	extern pfn_ogl_clear_error ogl_clear_error;
@@ -95,6 +99,8 @@ namespace NW
 #define glBlendEquationSeparate ogl_blend_equation_separate
 #define glBlendFunc ogl_blend_function
 #define glBlendFuncSeparate ogl_blend_function_separate
+#define glDepthMask ogl_depth_mask
+#define glDepthFunc ogl_depth_func
 #define glPolygonMode ogl_polygon_mode
 // other
 #define glClearError ogl_clear_error

@@ -15,8 +15,14 @@ namespace NW
 	}
 	a_shader::~a_shader() { if (m_ogl_id != 0) { glDeleteShader(m_ogl_id); m_ogl_id = 0; } }
 	// --setters
-	void a_shader::set_source_code(cstring source_code) {
-		m_source_code = source_code;
+	void a_shader::set_src_code(cstring source_code) {
+		m_src_code = source_code;
+	}
+	void a_shader::add_buf(buf& ref) {
+		m_bufs.push_back(ref);
+	}
+	void a_shader::rmv_buf(ui8 idx) {
+		m_bufs.erase(m_bufs.begin() + idx % m_bufs.size());
 	}
 }
 #endif

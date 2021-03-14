@@ -7,7 +7,7 @@ namespace NW
 {
 	/// texture_1d class
 	/// description:
-	class NW_API texture_1d : public a_texture, public t_gfx_res<texture_1d>
+	class NW_API texture_1d : public a_texture, public t_gfx_rsc<texture_1d>
 	{
 	public:
 		texture_1d(gfx_engine& graphics, cstring name);

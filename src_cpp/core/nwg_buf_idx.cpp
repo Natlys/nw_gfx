@@ -7,7 +7,7 @@
 namespace NW
 {
 	buf_idx::buf_idx(gfx_engine& graphics) :
-		a_gfx_buf(), t_gfx_res(graphics),
+		a_gfx_buf(), t_gfx_rsc(graphics),
 		m_data_type(DT_DEFAULT)
 	{
 	}

@@ -41,6 +41,8 @@ namespace NW
 	// --core_methods
 	void gfx_camera::update()
 	{
+		if (aspect_ratio == 0.0f) { aspect_ratio = 0.01f; }
+
 		if (m_type == GCT_ORTHO) {
 			m_proj = mat_ortho(-view_scale * aspect_ratio,
 				view_scale * aspect_ratio, -view_scale, view_scale, near_clip, far_clip);
@@ -55,8 +57,7 @@ namespace NW
 		f32 yaw_rad = deg_to_rad(rotation.y);
 		f32 roll_rad = deg_to_rad(rotation.z);
 
-		if (m_type == GCT_PERSPECT)
-		{
+		if (m_type == GCT_PERSPECT) {
 			next_front_dir.x = sinf(yaw_rad) * cosf(pitch_rad);
 			next_front_dir.y = sinf(pitch_rad);
 			next_front_dir.z = cosf(yaw_rad) * cosf(pitch_rad);
@@ -65,16 +66,16 @@ namespace NW
 			next_front_dir.x = cosf(roll_rad);
 			next_front_dir.y = sinf(roll_rad);
 		}
-
 		front_dir = glm::normalize(next_front_dir);
 		right_dir = glm::normalize(glm::cross(front_dir, world_up_dir));
 		upper_dir = glm::normalize(glm::cross(right_dir, front_dir));
-
-		m4f transformation =
-			mat_translate(m4f(1.0f), coord) *
-			mat_rotate(m4f(1.0f), pitch_rad, v3f(1.0f, 0.0f, 0.0f)) *
+		/// i advice you not to change this order;
+		/// we were suffering two weeks with "drunk" camera because of this;
+		m_view = mat_inverse(
+			mat_move(m4f(1.0f), coord) *
 			mat_rotate(m4f(1.0f), yaw_rad, v3f(0.0f, 1.0f, 0.0f)) *
-			mat_rotate(m4f(1.0f), roll_rad, v3f(0.0f, 0.0f, 1.0f));
-		m_view = mat_inverse(transformation);
+			mat_rotate(m4f(1.0f), pitch_rad, v3f(1.0f, 0.0f, 0.0f)) *
+			mat_rotate(m4f(1.0f), roll_rad, v3f(0.0f, 0.0f, 1.0f))
+		);
 	}
 }

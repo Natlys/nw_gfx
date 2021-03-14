@@ -7,7 +7,7 @@
 namespace NW
 {
 	buf_vtx::buf_vtx(gfx_engine& graphics) :
-		a_gfx_buf(), t_gfx_res(graphics),
+		a_gfx_buf(), t_gfx_rsc(graphics),
 		m_stride_size(0)
 	{
 	}

@@ -8,7 +8,7 @@
 namespace NW
 {
 	gfx_material::gfx_material(gfx_engine& graphics, cstring name) :
-		t_gfx_res(graphics), a_data_rsc(name),
+		t_gfx_rsc(graphics), a_data_rsc(name),
 		m_ogl_id(0) { }
 	gfx_material::~gfx_material() { if (m_ogl_id != 0) { glDeleteProgram(m_ogl_id); m_ogl_id = 0; } }
 	// --setters
@@ -37,7 +37,12 @@ namespace NW
 	// --==<core_methods>==--
 	void gfx_material::on_draw() {
 		glUseProgram(m_ogl_id);
-		for (auto& ishd : m_shds) { ishd->on_draw(); }
+		for (auto& ishd : m_shds) {
+			ishd->on_draw();
+			for (auto& itxr : m_txrs) {
+				ishd->bind_txr(itxr);
+			}
+		}
 	}
 	bool gfx_material::remake()
 	{

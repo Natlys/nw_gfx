@@ -5,7 +5,7 @@
 #include <core/nwg_shader.h>
 namespace NW
 {
-	class NW_API shader_gmt : public a_shader, public t_gfx_res<shader_gmt>
+	class NW_API shader_gmt : public a_shader, public t_gfx_rsc<shader_gmt>
 	{
 	public:
 		shader_gmt(gfx_engine& graphics, cstring name);
@@ -16,7 +16,7 @@ namespace NW
 		virtual in_stream& operator>>(in_stream& stm) override;
 		// --core_methods
 		virtual bit remake(cstring source_code) override;
-		virtual void bind_texture(texture& ref) override;
+		virtual void bind_txr(txr& ref) override;
 		virtual void on_draw() override;
 	private:
 		bit code_proc();

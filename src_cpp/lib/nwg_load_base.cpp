@@ -24,6 +24,8 @@ namespace NW
 		glBlendEquationSeparate = (pfn_ogl_blend_equation_separate)(ogl_get_proc("glBlendEquationSeparate"));
 		glBlendFunc = (pfn_ogl_blend_function)(ogl_get_proc("glBlendFunc"));
 		glBlendFuncSeparate = (pfn_ogl_blend_function_separate)(ogl_get_proc("glBlendFuncSeparate"));
+		glDepthMask = (pfn_ogl_depth_mask)(ogl_get_proc("glDepthMask"));
+		glDepthFunc = (pfn_ogl_depth_func)(ogl_get_proc("glDepthFunc"));
 		glPolygonMode = (pfn_ogl_polygon_mode)(ogl_get_proc("glPolygonMode"));
 		// other
 		glClearError = (pfn_ogl_clear_error)(ogl_get_proc("glClearError"));
@@ -51,6 +53,8 @@ namespace NW
 	pfn_ogl_blend_equation_separate glBlendEquationSeparate = NULL;
 	pfn_ogl_blend_function glBlendFunc = NULL;
 	pfn_ogl_blend_function_separate glBlendFuncSeparate = NULL;
+	pfn_ogl_depth_mask glDepthMask = NULL;
+	pfn_ogl_depth_func glDepthFunc = NULL;
 	pfn_ogl_polygon_mode glPolygonMode = NULL;
 	// other
 	pfn_ogl_clear_error glClearError = NULL;

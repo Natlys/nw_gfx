@@ -11,14 +11,13 @@ namespace NW
 	/// description:
 	/// --default input assembler tool for vertex shaders;
 	/// --equivalent of the vertex array in opengl;
-	class NW_API input_layout : public t_gfx_res<input_layout>
+	class NW_API input_layout : public t_gfx_rsc<input_layout>
 	{
 		using elems = darray<shd_elem>;
 	public:
 		input_layout(gfx_engine& graphics);
 		virtual ~input_layout();
 		// --getters
-		inline shader_vtx* get_shader()			{ return m_shader; }
 		inline elems& get_elems()				{ return m_elems; }
 		inline shd_elem& get_elem(ui8 idx)		{ return m_elems[idx % m_elems.size()]; }
 #if (NW_GAPI & NW_GAPI_OGL)
@@ -28,14 +27,12 @@ namespace NW
 		inline ID3D11InputLayout* get_dx_buf()	{ return m_dx_layt; }
 #endif
 		// --setters
-		void set_shader(shader_vtx* shader);
 		void add_elem(const shd_elem& elem, si8 nof_elements = 1);
 		void rmv_elem(ui8 idx);
 		// --core_methods
 		virtual void on_draw() override;
-		bit remake(shader_vtx& ref);
+		bit remake(a_shader& ref);
 	private:
-		shader_vtx* m_shader;
 		elems m_elems;
 		darray<size> m_strides;
 #if (NW_GAPI & NW_GAPI_OGL)

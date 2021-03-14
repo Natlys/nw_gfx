@@ -7,7 +7,7 @@
 namespace NW
 {
 	/// indexed drawable class
-	class NW_API drawable_idx : public a_drawable, public t_gfx_res<drawable_idx>
+	class NW_API drawable_idx : public drawable
 	{
 		using buffer = mem_ref<buf_idx>;
 	public:

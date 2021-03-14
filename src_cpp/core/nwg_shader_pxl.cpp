@@ -9,7 +9,7 @@
 namespace NW
 {
 	shader_pxl::shader_pxl(gfx_engine& graphics, cstring name) :
-		a_shader(name), t_gfx_res(graphics)
+		a_shader(name), t_gfx_rsc(graphics)
 	{
 	}
 	shader_pxl::~shader_pxl() { }
@@ -23,14 +23,14 @@ namespace NW
 	// --==<core_methods>==--
 	bit shader_pxl::remake(cstring source_code)
 	{
-		set_source_code(source_code);
+		m_src_code = source_code;
 		m_bufs.clear();
 		//m_txrs.clear();
 		if (m_ogl_id != 0) { glDeleteShader(m_ogl_id); m_ogl_id = 0; }
 		if (!code_proc()) { return false; }
 		m_ogl_id = glCreateShader(GL_FRAGMENT_SHADER);
 		
-		cstring shader_source = &get_source_code()[0];
+		cstring shader_source = &m_src_code[0];
 		glShaderSource(m_ogl_id, 1, &shader_source, nullptr);
 		glCompileShader(m_ogl_id);
 
@@ -38,7 +38,7 @@ namespace NW
 
 		return true;
 	}
-	void shader_pxl::bind_texture(texture& ref) {
+	void shader_pxl::bind_txr(txr& ref) {
 		ref->on_draw();
 		glUniform1i(ref->get_slot(), ref->get_slot());
 	}
@@ -57,19 +57,63 @@ namespace NW
 	// --==</core_methods>==--
 	// --==<implementation_methods>==--
 	bit shader_pxl::code_proc() {
-		if (m_source_code.empty() || m_source_code == "default") { return false; }
-		io_stream_str stm_code(get_source_code());
+		if (m_src_code.empty() || m_src_code == "default") { return false; }
+		io_stream_str stm_code(m_src_code);
 		dstring str_buf = "";
 		dstring name = "";
 		si32 count = 1;
 		si32 ncurr = 0;
 
+#if false
 		while (std::getline(stm_code, str_buf, ' ')) {
 			if ((ncurr = str_buf.find("layout")) != -1) {
+				stm_code.seekg(stm_code.gcount(), stm_code.cur);
+				std::getline(stm_code, str_buf, ')');
+				if ((ncurr = str_buf.find("location")) != -1) {		// single attribute
+					shd_elem elem;
+					if ((ncurr = str_buf.find("=")) != -1) {
+						stm_code.seekg((strlen(&str_buf[0] - ncurr)), stm_code.cur);
+						stm_code >> elem.idx;
+						stm_code.get();	// get rid of ')'
+					}
+					stm_code >> str_buf;
+					if (str_buf == "in") { throw error("pixel shader must not have input layouts"); return false; }
+					else if (str_buf == "uniform") {
+					}
+				}
+				else if ((ncurr = str_buf.find("std140")) != -1) {	// uniform block
+					// read the semantic
+					stm_code >> str_buf;
+					if (str_buf == "uniform") {
+						buffer sbuf;
+						m_gfx->new_rsc<buf_shd>(sbuf);
+						// read the name
+						stm_code >> str_buf;
+						std::getline(stm_code, str_buf, '{');
+						std::getline(stm_code, str_buf, '}');
+						io_stream_str stm_buf(str_buf);
+						while (std::getline(stm_buf, str_buf, ' ')) {	// read the type
+							std::getline(stm_buf, name, ';');			// read the name
+							sbuf->add_elem(shd_elem(&name[0], convert_enum<cstring, data_types>(&str_buf[0]), count));
+						}
+						if (!sbuf->remake()) { return false; }
+						m_bufs.push_back(sbuf);
+					}
+					else { throw error("unknow syntax"); return false; }
+				}
+				else { throw error("unknown syntax"); return false; }
+#if false
 				// go back to the beginning
 				stm_code.seekg(-static_cast<si32>(strlen(&str_buf[0])), std::ios_base::cur);
 				std::getline(stm_code, str_buf, ';');
-				if ((ncurr = str_buf.find("in ")) != -1) { throw error("pixel shader should not have input layouts"); return false; }
+				if ((ncurr = str_buf.find("in ")) != -1) {
+					stm_code.seekg(-static_cast<si32>(str_buf.length()) + ncurr, std::ios_base::cur);
+					stm_code >> str_buf;	// read the token "in "
+
+					stm_code >> str_buf;	// read the type
+					std::getline(stm_code, name, ';');
+					m_layout.add_elem(shd_elem(&name[0], convert_enum<cstring, data_types>(&str_buf[0]), count));
+				}
 				else if ((ncurr = str_buf.find("uniform ")) != -1) {
 					m_bufs.push_back(mem_ref<buf_shd>());
 					m_gfx->new_rsc<buf_shd>(m_bufs.back());
@@ -88,16 +132,18 @@ namespace NW
 					// read the entire uniform block
 					std::getline(stm_code, str_buf, '{');
 					std::getline(stm_code, str_buf, '}');
-					io_stream_str stmBlock(str_buf);
-					while (stmBlock >> str_buf) {			// read element type
-						std::getline(stmBlock, name, ';');	// read element name
+					io_stream_str stm_block(str_buf);
+					while (stm_block >> str_buf) {			// read element type
+						std::getline(stm_block, name, ';');	// read element name
 						buf.get_elems().push_back(shd_elem(&name[0], convert_enum<cstring, data_types>(&str_buf[0]), count));
 					}
 					buf.remake(buf.get_elems());
 				}
+#endif
 			}
 			else if ((ncurr = str_buf.find("uniform")) != -1) { throw error("uniform layout is not specified"); return false; }
 		}
+#endif
 
 		return true;
 	}

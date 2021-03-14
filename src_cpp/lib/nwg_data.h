@@ -9,7 +9,7 @@ namespace NW
 	{
 		v2f vtx_crd = { 0.0f, 0.0f };
 	};
-	struct NW_API vtx_v2f2f
+	struct NW_API vtx_2f2f
 	{
 		v2f vtx_crd = { 0.0f, 0.0f };
 		v2f tex_crd = { 0.0f, 0.0f };

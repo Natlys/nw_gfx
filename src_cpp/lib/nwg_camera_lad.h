@@ -15,7 +15,7 @@ namespace NW
 	public:
 		gfx_camera_lad();
 		// --core_methods
-		void update(const keyboard_state& keyboard, const cursor_state& cursor, const time_state& timer);
+		void update(const keyboard_state& keyboard, const mouse_state& mouse, const time_state& timer);
 	};
 }
 

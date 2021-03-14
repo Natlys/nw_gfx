@@ -16,7 +16,7 @@ namespace NW
 		/// table for type_id - cmp_refs association;
 		using rsc_reg = dictionary<ui32, rsc_tab>;
 	public:
-		gfx_engine(window_handle& wnd);
+		gfx_engine(const window_handle& wnd);
 		gfx_engine(const gfx_engine& copy) = delete;
 		virtual ~gfx_engine();
 		// --getters

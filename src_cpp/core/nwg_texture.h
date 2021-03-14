@@ -22,7 +22,6 @@ namespace NW
 		virtual ~a_texture();
 		// --getters
 		inline ui8 get_slot() const				{ return m_slot; }
-		inline ui8 get_samples() const			{ return m_samples; }
 		inline txr_fmt get_txr_fmt() const		{ return m_txr_fmt; }
 #if (NW_GAPI & NW_GAPI_OGL)
 		inline GLuint get_ogl_id() const		{ return m_ogl_id; }
@@ -41,7 +40,6 @@ namespace NW
 		virtual void on_draw() = 0;
 	protected:
 		ui8 m_slot;
-		ui8 m_samples;
 		txr_fmt m_txr_fmt;
 #if (NW_GAPI & NW_GAPI_OGL)
 		GLuint m_ogl_id;

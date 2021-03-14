@@ -1,16 +1,16 @@
-#ifndef NW_SAMPLER_H
-#define NW_SAMPLER_H
+#ifndef NW_SAMPLER_STATE_H
+#define NW_SAMPLER_STATE_H
 #include <nwg_core.hpp>
 #if (defined NW_GAPI)
 #include <core/nwg_state.h>
 namespace NW
 {
 	/// sampler_state class
-	class NW_API sampler : public t_gfx_res<sampler>
+	class NW_API state_sampler : public a_gfx_state, public t_gfx_rsc<state_sampler>
 	{
 	public:
-		sampler(gfx_engine& graphics);
-		~sampler();
+		state_sampler(gfx_engine& graphics);
+		~state_sampler();
 		// --getters
 		inline ui8 get_txr_slot() const				{ return m_slot; }
 #if (NW_GAPI & NW_GAPI_OGL)
@@ -42,4 +42,4 @@ namespace NW
 	};
 }
 #endif	// NW_GAPI
-#endif	// NW_SAMPLER_H
+#endif	// NW_SAMPLER_STATE_H

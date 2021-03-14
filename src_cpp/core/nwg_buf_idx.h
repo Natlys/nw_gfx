@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// buf_idx class
-	class NW_API buf_idx : public a_gfx_buf, public t_gfx_res<buf_idx>
+	class NW_API buf_idx : public a_gfx_buf, public t_gfx_rsc<buf_idx>
 	{
 	public:
 		buf_idx(gfx_engine& graphics);

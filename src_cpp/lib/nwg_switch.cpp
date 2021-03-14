@@ -288,8 +288,13 @@ namespace NW
 	}
 	template<> GLenum convert_enum<depth_configs, GLenum>(depth_configs cfg) {
 		switch (cfg) {
-		case DTC_LESS: return GL_LESS; break;
+		case DTC_ALWAYS: return GL_ALWAYS; break;
+		case DTC_NEVER: return GL_NEVER; break;
+		case DTC_EQUAL: return GL_EQUAL; break;
 		case DTC_GREATER: return GL_GREATER; break;
+		case DTC_GEQUAL: return GL_GEQUAL; break;
+		case DTC_LESS: return GL_LESS; break;
+		case DTC_LEQUAL: return GL_LEQUAL; break;
 		default: throw error("invalid depth config", ERC_INVALID_ENUM); break;
 		}
 		return DTC_DEFAULT;

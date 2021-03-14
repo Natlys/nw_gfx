@@ -21,16 +21,20 @@ namespace NW
 		inline size get_data_size() const	{ return static_cast<size>(abs(m_size_x)) * static_cast<size>(abs(m_size_y)) * static_cast<size>(abs(m_channels)); }
 		inline ui64 get_pxl_size() const	{ return static_cast<size>(abs(m_size_x)) * static_cast<size>(abs(m_size_y)); }
 		inline pxl_fmt get_pxl_fmt() const	{ return m_pxl_fmt; }
-		inline data_types get_data_type() const			{ return m_data_type; }
-		inline ubyte* get_data()						{ return &m_pxl_data[0]; }
-		inline const ubyte* get_data() const			{ return &m_pxl_data[0]; }
-		inline ubyte* get_data(ui32 pxl_x, ui32 pxl_y)	{ return &m_pxl_data[NW_XY_TO_X(pxl_x * m_channels, pxl_y * m_channels, m_size_x) % get_data_size()]; }
+		inline data_types get_data_type() const						{ return m_data_type; }
+		inline ubyte* get_data()									{ return &m_pxl_data[0]; }
+		inline const ubyte* get_data() const						{ return &m_pxl_data[0]; }
+		inline ubyte* get_data(ui32 pxl_x, ui32 pxl_y)				{ return &m_pxl_data[NW_XY_TO_X(pxl_x * m_channels, pxl_y * m_channels, m_size_x) % get_data_size()]; }
+		inline const ubyte* get_data(ui32 pxl_x, ui32 pxl_y) const	{ return &m_pxl_data[NW_XY_TO_X(pxl_x * m_channels, pxl_y * m_channels, m_size_x) % get_data_size()]; }
 		// --setters
 		void set_data(const ubyte* data_ptr);
-		void set_data(const ubyte* data_ptr, si32 offset_x, si32 offset_y, si32 width, si32 height);
+		void set_data(const a_image& source);
+		void set_data(const a_image& source, si32 crd_x, si32 crd_y, si32 size_x, si32 size_y);
 		// --operators
 		virtual out_stream& operator<<(out_stream& stm) const = 0;
 		virtual in_stream& operator>>(in_stream& stm) = 0;
+		// --core_methods
+		data make_region(si32 crd_x, si32 crd_y, si32 size_x, si32 size_y) const;
 	protected:
 		si32 m_size_x;
 		si32 m_size_y;
@@ -56,7 +60,7 @@ namespace NW
 #pragma pack(push, 1) // add padding 16->14
 		struct {
 			ui16 type_code = 0x4d;		// two encoded letters;usually "bm"
-			ui32 header_size = 14;		// size of the file in bytes
+			ui32 file_size = 54;		// size of the entire file in bytes
 			ui16 reserved1 = 0;			// it is reserved, (can be used by a programmer)
 			ui16 reserved2 = 0;			// so it is always zero
 			ui32 data_offset = 54;		// offset to the pixel data

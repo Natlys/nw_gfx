@@ -1,5 +1,5 @@
-#ifndef NW_STATE_H
-#define NW_STATE_H
+#ifndef NW_GRAPHICS_STATE_H
+#define NW_GRAPHICS_STATE_H
 #include <nwg_core.hpp>
 #if (defined NW_GAPI)
 #include <core/nwg_rsc.h>
@@ -13,8 +13,12 @@ namespace NW
 		virtual ~a_gfx_state();
 		// --getters
 		// --setters
-	private:
+		void set_enabled(bit enable);
+		// --predicates
+		inline bit is_enabled() const { return m_is_enabled; }
+	protected:
+		bit m_is_enabled;
 	};
 }
 #endif	// NW_GAPI
-#endif	// NW_STATE_H
+#endif	// NW_GRAPHICS_STATE_H

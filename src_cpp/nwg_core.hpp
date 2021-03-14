@@ -9,7 +9,7 @@ namespace NW
 	class NW_API gfx_camera_lad;
 
 	class NW_API a_gfx_rsc;
-	class NW_API a_drawable;
+	class NW_API drawable;
 	class NW_API drawable_vtx;
 	class NW_API drawable_idx;
 

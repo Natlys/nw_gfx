@@ -6,6 +6,9 @@
 #include <core/nwg_engine.h>
 #include <core/nwg_rsc.h>
 #include <core/nwg_state.h>
+#include <core/nwg_state_scissor.h>
+#include <core/nwg_state_viewport.h>
+#include <core/nwg_state_depth.h>
 #include <core/nwg_state_sampler.h>
 #include <core/nwg_buf.h>
 #include <core/nwg_buf_vtx.h>

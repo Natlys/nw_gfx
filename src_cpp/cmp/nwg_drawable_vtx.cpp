@@ -7,16 +7,14 @@
 namespace NW
 {
 	drawable_vtx::drawable_vtx(gfx_engine& graphics) :
-		a_drawable(), t_gfx_res(graphics)
+		drawable(graphics)
 	{
 	}
 	drawable_vtx::~drawable_vtx() { }
 	// --==<core_methods>==--
 	void drawable_vtx::on_draw()
 	{
-		for (auto& irsc : m_rscs) {
-			irsc->on_draw();
-		}
+		drawable::on_draw();
 		ui32 vtx_count = 0;
 		for (auto& ibuf : m_vbufs) {
 			vtx_count += ibuf->get_data_count();

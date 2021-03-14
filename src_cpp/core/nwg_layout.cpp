@@ -9,14 +9,12 @@
 namespace NW
 {
 	input_layout::input_layout(gfx_engine& graphics) :
-		t_gfx_res(graphics),
-		m_shader(nullptr),
+		t_gfx_rsc(graphics),
 		m_ogl_id(0)
 	{
 	}
 	input_layout::~input_layout() { if (m_ogl_id != 0) { glDeleteVertexArrays(1, &m_ogl_id); m_ogl_id = 0; } }
 	// --setters
-	void input_layout::set_shader(shader_vtx* shader) { m_shader = shader; }
 	void input_layout::add_elem(const shd_elem& element, si8 count) {
 		while (count-- > 0) {
 			m_elems.push_back(element);
@@ -31,10 +29,8 @@ namespace NW
 	{
 		glBindVertexArray(m_ogl_id);
 	}
-	bool input_layout::remake(shader_vtx& shader)
+	bool input_layout::remake(a_shader& shader)
 	{
-		set_shader(&shader);
-		if (m_shader == nullptr) { return false; }
 		if (m_ogl_id != 0) { glDeleteVertexArrays(1, &m_ogl_id); m_ogl_id = 0; }
 		if (m_elems.size() == 0) { return false; }
 		glGenVertexArrays(1, &m_ogl_id);

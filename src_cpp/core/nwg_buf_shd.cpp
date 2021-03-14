@@ -6,15 +6,17 @@
 #include <lib/nwg_load_buf.h>
 namespace NW
 {
-	shd_elem::shd_elem(cstring element_name, data_types data_type, si32 count) :
+	shd_elem::shd_elem(cstring element_name, data_types data_type, si32 idx, si32 count) :
 		name(""), type(data_type),
-		idx(0),
-		count(count), offset_size(0) { strcpy(name, element_name); }
+		idx(idx), count(count), offset_size(0)
+	{
+		strcpy(name, element_name);
+	}
 }
 namespace NW
 {
 	buf_shd::buf_shd(gfx_engine& graphics) :
-		a_gfx_buf(), t_gfx_res(graphics),
+		a_gfx_buf(), t_gfx_rsc(graphics),
 		m_elems(elements()),
 		m_slot(0),
 		m_offset_size(0)
@@ -27,6 +29,15 @@ namespace NW
 	void buf_shd::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		glBufferSubData(GL_UNIFORM_BUFFER, offset_size, data_size, data_ptr);
 	}
+	void buf_shd::add_elem(const shd_elem& element, si8 count) {
+		while (count-- > 0) {
+			m_elems.push_back(element);
+			m_elems.back().idx = m_elems.size() - 1;
+		}
+	}
+	void buf_shd::rmv_elem(ui8 idx) {
+		m_elems.erase(m_elems.begin() + idx % m_elems.size());
+	}
 	// --core_methods
 	void buf_shd::on_draw()
 	{
@@ -34,17 +45,17 @@ namespace NW
 		//glBindBufferBase(GL_UNIFORM_BUFFER, m_slot, m_ogl_id);
 		glBindBufferRange(GL_UNIFORM_BUFFER, m_slot, m_ogl_id, m_offset_size, m_data_size);
 	}
-	bit buf_shd::remake(const elements& elems)
+	bit buf_shd::remake()
 	{
-		m_elems = elems;
+		if (m_ogl_id != 0) { glDeleteBuffers(1, &m_ogl_id); m_ogl_id = 0; }
+		if (m_elems.empty()) { return false; }
+		
 		m_data_size = 0;
 		for (auto& elem : m_elems) {
 			elem.offset_size += m_data_size;
 			m_data_size += dt_get_aligned_size(elem.type, elem.count);
 		}
 		
-		if (m_ogl_id != 0) { glDeleteBuffers(1, &m_ogl_id); m_ogl_id = 0; }
-		if (m_data_size == 0) { return false; }
 		glGenBuffers(1, &m_ogl_id);
 		glBindBuffer(GL_UNIFORM_BUFFER, m_ogl_id);
 		glBufferData(GL_UNIFORM_BUFFER, m_data_size, nullptr, GL_DYNAMIC_DRAW);

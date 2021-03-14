@@ -7,7 +7,7 @@ namespace NW
 {
 	/// texture_cube class
 	/// description:
-	class NW_API texture_cube : public a_texture, public t_gfx_res<texture_cube>
+	class NW_API texture_cube : public a_texture, public t_gfx_rsc<texture_cube>
 	{
 	public:
 		texture_cube(gfx_engine& graphics, cstring name);

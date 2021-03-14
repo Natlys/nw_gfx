@@ -6,10 +6,10 @@
 #include <lib/nwg_data.h>
 namespace NW
 {
-	class NW_API drawable_mesh : public a_drawable, public a_data_rsc, public t_gfx_res<drawable_mesh>
+	class NW_API drawable_mesh : public drawable, public a_data_rsc
 	{
 	public:
-		drawable_mesh();
+		drawable_mesh(gfx_engine& graphics);
 		~drawable_mesh();
 		// --getters
 		// --setters

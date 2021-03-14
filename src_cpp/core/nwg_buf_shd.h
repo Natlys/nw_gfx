@@ -15,7 +15,7 @@ namespace NW
 		si32 idx = 0;
 		size offset_size = 0;
 	public:
-		shd_elem(cstring name = "default", data_types dataType = DT_DEFAULT, si32 count = 1);
+		shd_elem(cstring name = "default", data_types dataType = DT_DEFAULT, si32 idx = 0, si32 count = 1);
 	};
 }
 namespace NW
@@ -23,7 +23,7 @@ namespace NW
 	/// shader_buffer class
 	/// description:
 	/// --it is used by shaders as opengl uniform buffer, or as directx constant buffer;
-	class NW_API buf_shd : public a_gfx_buf, public t_gfx_res<buf_shd>
+	class NW_API buf_shd : public a_gfx_buf, public t_gfx_rsc<buf_shd>
 	{
 		using elements = darray<shd_elem>;
 	public:
@@ -37,9 +37,11 @@ namespace NW
 		void set_slot(ui8 bind_slot);
 		void set_offset(size offset_size);
 		virtual void set_data(size data_size, const ptr data_ptr, size offset_size = 0) override;
+		void add_elem(const shd_elem& elem, si8 nof_elements = 1);
+		void rmv_elem(ui8 idx);
 		// --core_methods
+		bit remake();
 		virtual void on_draw() override;
-		bit remake(const elements& elems);
 	private:
 		ui8 m_slot;
 		size m_offset_size;

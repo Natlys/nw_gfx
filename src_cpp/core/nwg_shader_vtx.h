@@ -5,7 +5,7 @@
 #include <core/nwg_shader.h>
 namespace NW
 {
-	class NW_API shader_vtx : public a_shader, public t_gfx_res<shader_vtx>
+	class NW_API shader_vtx : public a_shader, public t_gfx_rsc<shader_vtx>
 	{
 	public:
 		shader_vtx(gfx_engine& graphics, cstring name);
@@ -17,7 +17,7 @@ namespace NW
 		virtual in_stream& operator>>(in_stream& stm) override;
 		// --core_methods
 		virtual bit remake(cstring source_code) override;
-		virtual void bind_texture(texture& ref) override;
+		virtual void bind_txr(txr& ref) override;
 		virtual void on_draw() override;
 #if(NW_GAPI & NW_GAPI_DX)
 		ID3D11VertexShader* inline get_dx_shader()	{ return m_dx_shader; }
@@ -25,7 +25,6 @@ namespace NW
 	private:
 		bit code_proc();
 	private:
-		input_layout m_layout;
 #if(NW_GAPI & NW_GAPI_DX)
 		ID3D11VertexShader* m_dx_shader;
 #endif

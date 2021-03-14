@@ -5,7 +5,7 @@
 #include <core/nwg_shader.h>
 namespace NW
 {
-	class NW_API shader_pxl : public a_shader, public t_gfx_res<shader_pxl>
+	class NW_API shader_pxl : public a_shader, public t_gfx_rsc<shader_pxl>
 	{
 	public:
 		shader_pxl(gfx_engine& graphics, cstring name);
@@ -16,7 +16,7 @@ namespace NW
 		virtual in_stream& operator>>(in_stream& stm) override;
 		// --core_methods
 		virtual bit remake(cstring source_code) override;
-		virtual void bind_texture(texture& ref) override;
+		virtual void bind_txr(txr& ref) override;
 		virtual void on_draw() override;
 #if(NW_GAPI & NW_GAPI_DX)
 		ID3D11PixelShader* inline get_dx_shader()	{ return m_dx_shader; }

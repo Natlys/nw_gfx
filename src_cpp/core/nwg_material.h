@@ -7,7 +7,7 @@
 namespace NW
 {
 	/// gfx_material class
-	class NW_API gfx_material : public t_gfx_res<gfx_material>, public a_data_rsc
+	class NW_API gfx_material : public t_gfx_rsc<gfx_material>, public a_data_rsc
 	{
 	public:
 		using shader = mem_ref<a_shader>;

@@ -1391,10 +1391,19 @@ namespace NW
 #endif
 namespace NW
 {
-    // data
+    // --data
     imgui_io* s_imgui_io = NULL;
     imgui_style* s_imgui_style = NULL;
-    // functions
+    // --setters
+    extern NW_API void imgui_set_mouse_enabled(bit is_enabled) {
+        if (is_enabled == true) {
+            s_imgui_io->ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+        }
+        if (is_enabled == false) {
+            s_imgui_io->ConfigFlags |= ImGuiConfigFlags_NoMouse;
+        }
+    }
+    // --==<core_functions>==--
     bit imgui_init(window_handle* window, device_handle* device, context_handle* context)
     {
         IMGUI_CHECKVERSION();

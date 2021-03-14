@@ -1,4 +1,4 @@
-#version 400 core
+#version 460 core
 
 out vec4 pso_pxl_clr;
 
@@ -8,11 +8,9 @@ uniform sampler2D unf_txr_idx_0;
 
 void main()
 {
-	vec4 clr_txr_0 = texture(unf_txr_idx_0, psi.txr_crd);
+	vec4 txr_clr = texture(unf_txr_idx_0, psi.txr_crd);
 	
-	if (clr_txr_0.r == 0) { discard; }
-	else if (clr_txr_0.g == 0) { discard; }
-	else if (clr_txr_0.b == 0) { discard; }
-	
-	pso_pxl_clr = clr_txr_0;
+	if (txr_clr.r == 0.0f || txr_clr.g == 0.0f || txr_clr.b == 0.0f) { discard; }
+
+	pso_pxl_clr = txr_clr;
 }

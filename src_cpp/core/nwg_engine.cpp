@@ -15,7 +15,7 @@
 #include <lib/nwg_load_mtl.h>
 namespace NW
 {
-	gfx_engine::gfx_engine(window_handle& wnd) :
+	gfx_engine::gfx_engine(const window_handle& wnd) :
 		m_info(gfx_context_info()), m_config(gfx_config()),
 		m_wnd(wnd),
 		m_device(nullptr), m_context(nullptr)
@@ -71,7 +71,7 @@ namespace NW
 		strcpy(&m_info.shader_language[0], &((cstring)glGetString(GL_SHADING_LANGUAGE_VERSION))[0]);
 		std::cout << m_info;
 		// also add "GL_MAX_COMBINED_IMAGE_UNITS"
-
+		// and "GL_POINT_SIZE_RANGE" + "GL_POINT_SIZE_GRANUALITY"
 
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);

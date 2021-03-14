@@ -7,14 +7,14 @@
 namespace NW
 {
 	/// drawable_vertex class
-	class NW_API drawable_vtx : public a_drawable, public t_gfx_res<drawable_vtx>
+	class NW_API drawable_vtx : public drawable
 	{
 		using buffers = darray<mem_ref<buf_vtx>>;
 	public:
 		drawable_vtx(gfx_engine& graphics);
 		virtual ~drawable_vtx();
 		// --getters
-		buffers& get_bufs() { return m_vbufs; }
+		buffers& get_bufs()		{ return m_vbufs; }
 		// --setters
 		// --core_methods
 		virtual void on_draw() override;

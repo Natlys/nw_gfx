@@ -19,18 +19,18 @@ namespace NW
 	};
 	/// templated graphics_resource class
 	template <class ctype>
-	class NW_API t_gfx_res : public a_gfx_rsc
+	class NW_API t_gfx_rsc : public a_gfx_rsc
 	{
 	protected:
-		t_gfx_res(gfx_engine& graphics) : m_gfx(&graphics), m_rsc_id(id_indexator::get_id<ctype>()) { }
+		t_gfx_rsc(gfx_engine& graphics) : m_gfx(&graphics), m_rsc_id(id_indexator::get_id<ctype>()) { }
 	public:
-		virtual ~t_gfx_res() { id_indexator::set_id<ctype>(m_rsc_id); };
+		virtual ~t_gfx_rsc() { id_indexator::set_id<ctype>(m_rsc_id); };
 		// --getters
 		static inline ui32 get_type_id_static()				{ return type_indexator::get_id<ctype>(); }
 		virtual inline ui32 get_type_id() const override	{ return type_indexator::get_id<ctype>(); }
 		virtual inline ui32 get_rsc_id() const override		{ return m_rsc_id; }
 		// --core_methods
-		virtual void on_draw() override { }
+		virtual void on_draw() = 0;
 	protected:
 		gfx_engine* m_gfx;
 		const ui32 m_rsc_id;

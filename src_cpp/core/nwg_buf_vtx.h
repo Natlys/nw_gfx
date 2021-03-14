@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// buf_vtx class
-	class NW_API buf_vtx : public a_gfx_buf, public t_gfx_res<buf_vtx>
+	class NW_API buf_vtx : public a_gfx_buf, public t_gfx_rsc<buf_vtx>
 	{
 	public:
 		buf_vtx(gfx_engine& graphics);

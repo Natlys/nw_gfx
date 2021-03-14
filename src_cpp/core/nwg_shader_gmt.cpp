@@ -9,7 +9,7 @@
 namespace NW
 {
 	shader_gmt::shader_gmt(gfx_engine& graphics, cstring name) :
-		a_shader(name), t_gfx_res(graphics)
+		a_shader(name), t_gfx_rsc(graphics)
 	{
 	}
 	shader_gmt::~shader_gmt() { }
@@ -24,14 +24,14 @@ namespace NW
 	// --==<core_methods>==--
 	bit shader_gmt::remake(cstring source_code)
 	{
-		set_source_code(source_code);
+		m_src_code = source_code;
 		m_bufs.clear();
 		//m_txrs.clear();
 		if (m_ogl_id != 0) { glDeleteShader(m_ogl_id); m_ogl_id = 0; }
 		if (!code_proc()) { return false; }
 		m_ogl_id = glCreateShader(GL_GEOMETRY_SHADER);
 
-		cstring shader_source = &get_source_code()[0];
+		cstring shader_source = &m_src_code[0];
 		glShaderSource(m_ogl_id, 1, &shader_source, nullptr);
 		glCompileShader(m_ogl_id);
 
@@ -39,7 +39,7 @@ namespace NW
 
 		return true;
 	}
-	void shader_gmt::bind_texture(texture& ref) {
+	void shader_gmt::bind_txr(txr& ref) {
 		ref->on_draw();
 		glUniform1i(ref->get_slot(), ref->get_slot());
 	}
@@ -57,7 +57,7 @@ namespace NW
 	// --==</core_methods>==--
 	// --==<implemetation_methods>==--
 	bit shader_gmt::code_proc() {
-		if (m_source_code.empty() || m_source_code == "default") { return false; }
+		if (m_src_code.empty() || m_src_code == "default") { return false; }
 		return true;
 	}
 	// --==</implemetation_methods>==--

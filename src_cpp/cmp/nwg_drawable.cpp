@@ -5,11 +5,21 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	a_drawable::a_drawable() { }
-	a_drawable::~a_drawable() { }
+	drawable::drawable(gfx_engine& graphics) :
+		t_gfx_rsc(graphics)
+	{
+	}
+	drawable::~drawable() { }
 	// --setters
-	void a_drawable::add_rsc(rsc_ref& ref) { m_rscs.push_back(ref); }
-	void a_drawable::rmv_rsc(ui8 idx) { m_rscs.erase(m_rscs.begin() + idx % m_rscs.size()); }
+	void drawable::add_rsc(rsc_ref& ref) { m_rscs.push_back(ref); }
+	void drawable::rmv_rsc(ui8 idx) { m_rscs.erase(m_rscs.begin() + idx % m_rscs.size()); }
+	// --operators
+	// --==<core_methods>==--
+	void drawable::on_draw() {
+		m_gmt->on_draw();
+		for (auto& irsc : m_rscs) { irsc->on_draw(); }
+	}
+	// --==</core_methods>==--
 }
 #endif
 #if (NW_GAPI & NW_GAPI_DX)

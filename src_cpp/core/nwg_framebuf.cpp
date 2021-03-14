@@ -8,7 +8,7 @@
 namespace NW
 {
 	framebuf::framebuf(gfx_engine& graphics, cstring name) :
-		t_gfx_res(graphics), a_data_rsc(name),
+		t_gfx_rsc(graphics), a_data_rsc(name),
 		m_info(framebuf_info()),
 		m_ogl_id(0)
 	{

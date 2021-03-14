@@ -9,7 +9,6 @@ namespace NW
 	a_texture::a_texture(cstring name) :
 		a_image(name),
 		m_slot(0u),
-		m_samples(1u),
 		m_txr_fmt(TXF_RGBA),
 		m_ogl_id(0u)
 	{
