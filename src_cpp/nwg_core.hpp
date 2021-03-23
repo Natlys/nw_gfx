@@ -10,9 +10,9 @@ namespace NW
 	class NW_API gfx_engine;
 	class NW_API a_gfx_cmp;
 
-	class NW_API a_drb;
-	class NW_API drb_vtx;
-	class NW_API drb_idx;
+	class NW_API a_gfx_ent;
+	class NW_API ent_vtx;
+	class NW_API ent_idx;
 
 	class NW_API gfx_mtl;
 	
@@ -27,7 +27,7 @@ namespace NW
 	class NW_API shd_pxl;
 	class NW_API shd_gmt;
 
-	class NW_API a_img;
+	class NW_API img_cmp;
 	class NW_API img_bmp;
 	class NW_API img_png;
 	class NW_API image_jpg;
@@ -71,6 +71,10 @@ struct ID3D11ShaderResource;
 struct ID3D11SamplerState;
 using ID3DBlob = ID3D10Blob;
 struct ID3D11DeviceChild;
+struct ID3D11Texture1D;
+struct ID3D11Texture2D;
+struct ID3D11Texture3D;
+struct ID3D11CubeTexture;
 #endif
 #endif	// NW_GAPI
 #endif	// NWG_CORE_HPP

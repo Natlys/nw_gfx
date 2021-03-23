@@ -4,7 +4,14 @@
 #if (defined NW_GAPI)
 namespace NW
 {
-	extern bit gfx_load_core();
+	extern NW_API bit gfx_load_core();
+	extern NW_API void gfx_clear_err();
+	extern NW_API bit gfx_get_err_log(cstr info, cstr location, si32 line);
+#	if (defined NW_DEBUG)
+#		define NW_DEBUG_CALL(code) ( gfx_clear_err(); (code) if (gfx_get_err_log(#code, __FILE__, __LINE__, "GL_ERROR: ") == false) { NW_BREAK(); } )
+#	else
+#		define NW_DEBUG_CALL(code) (code)
+#	endif
 }
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
@@ -190,6 +197,8 @@ namespace NW
 // params
 #define GL_VIEWPORT                       0x0BA2
 #define GL_POINT_SIZE                     0x0B11
+#define GL_POINT_SIZE_RANGE               0x0B12
+#define GL_POINT_SIZE_GRANULARITY         0x0B13
 #define GL_LINE_WIDTH                     0x0B21
 #define GL_POLYGON_MODE                   0x0B40
 // modes

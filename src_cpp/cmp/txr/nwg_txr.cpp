@@ -6,8 +6,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	a_txr::a_txr(gfx_engine& graphics, cstr name) :
-		t_cmp(graphics), a_img(name),
+	a_txr::a_txr(gfx_engine& graphics) :
+		img_cmp(), a_gfx_cmp(graphics),
 		m_handle(0u),
 		m_slot(0u),
 		m_txr_fmt(TXF_RGBA),
@@ -34,8 +34,8 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW
 {
-	a_txr::a_txr(gfx_engine& graphics, cstr name) :
-		t_cmp(graphics), a_img(name),
+	a_txr::a_txr(gfx_engine& graphics) :
+		img_cmp(), a_gfx_cmp(graphics),
 		m_handle(nullptr),
 		m_slot(0),
 		m_txr_fmt(TXF_RGBA),

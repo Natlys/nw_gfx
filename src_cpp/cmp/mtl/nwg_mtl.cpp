@@ -7,8 +7,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_mtl::gfx_mtl(gfx_engine& graphics, cstr name) :
-		t_cmp(graphics), a_data_rsc(name),
+	gfx_mtl::gfx_mtl(gfx_engine& graphics) :
+		t_cmp(), a_gfx_cmp(graphics), a_data_cmp(),
 		m_handle(0)
 	{
 	}
@@ -66,8 +66,8 @@ namespace NW
 #endif
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW {
-	gfx_mtl::gfx_mtl(gfx_engine& graphics, cstr name) :
-		t_cmp(graphics), a_data_rsc(name)
+	gfx_mtl::gfx_mtl(gfx_engine& graphics) :
+		t_cmp(), a_gfx_cmp(graphics), a_data_cmp()
 	{
 	}
 	gfx_mtl::~gfx_mtl() { }

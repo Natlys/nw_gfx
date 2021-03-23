@@ -6,8 +6,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	txr_2d::txr_2d(gfx_engine& graphics, cstr name) :
-		a_txr(graphics, name)
+	txr_2d::txr_2d(gfx_engine& graphics) :
+		a_txr(graphics)
 	{
 	}
 	txr_2d::~txr_2d() { }
@@ -20,7 +20,7 @@ namespace NW
 		return stm;
 	}
 	// --==<core_methods>==--
-	bit txr_2d::remake(const a_img& img)
+	bit txr_2d::remake(const img_cmp& img)
 	{
 		set_data(img);
 		if (m_handle != 0) { glDeleteTextures(1, &m_handle); m_handle = 0; }
@@ -60,8 +60,8 @@ namespace NW
 }
 namespace NW
 {
-	txr_2d_mulsmp::txr_2d_mulsmp(gfx_engine& graphics, cstr name) :
-		txr_2d(graphics, name),
+	txr_2d_mulsmp::txr_2d_mulsmp(gfx_engine& graphics) :
+		txr_2d(graphics),
 		m_samples(0)
 	{
 	}
@@ -78,7 +78,7 @@ namespace NW
 		return stm;
 	}
 	// --==<core_methods>==--
-	bit txr_2d_mulsmp::remake(const a_img& img)
+	bit txr_2d_mulsmp::remake(const img_cmp& img)
 	{
 		m_size_x = img.get_size_x();
 		m_size_y = img.get_size_y();
@@ -108,8 +108,8 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW
 {
-	txr_2d::txr_2d(gfx_engine& graphics, cstr name) :
-		a_txr(graphics, name),
+	txr_2d::txr_2d(gfx_engine& graphics) :
+		a_txr(graphics),
 		m_native(nullptr)
 	{
 	}
@@ -123,7 +123,7 @@ namespace NW
 		return stm;
 	}
 	// --==<core_methods>==--
-	bit txr_2d::remake(const a_img& source)
+	bit txr_2d::remake(const img_cmp& source)
 	{
 		set_data(source);
 		if (m_handle != nullptr) { m_handle->Release(); m_handle = nullptr; }
@@ -133,7 +133,6 @@ namespace NW
 		// create the texture itself
 		D3D11_TEXTURE2D_DESC txr_desc{ 0 };
 		txr_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		txr_desc.CPUAccessFlags = get_data() == nullptr ? D3D11_CPU_ACCESS_WRITE : 0u;
 		//txr_desc.Format = convert_enum<pixel_formats, DXGI_FORMAT>(m_pxl_fmt);
 		txr_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		txr_desc.MiscFlags = 0u;
@@ -144,11 +143,17 @@ namespace NW
 		txr_desc.SampleDesc.Count = 1;
 		txr_desc.SampleDesc.Quality = 0;
 
-		D3D11_SUBRESOURCE_DATA sub_data{ 0 };
-		sub_data.pSysMem = get_data() == nullptr ? mem_sys::get_memory().get_data() : get_data();
-		sub_data.SysMemPitch = m_size_x * m_channels;	// bytes of the entire row
-
-		m_gfx->get_device()->CreateTexture2D(&txr_desc, &sub_data, &m_native);
+		if (get_data() == nullptr) {
+			txr_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			D3D11_SUBRESOURCE_DATA sub_data{ 0 };
+			sub_data.pSysMem = get_data();
+			sub_data.SysMemPitch = m_size_x * m_channels;	// bytes of the entire row
+			m_gfx->get_dvch()->CreateTexture2D(&txr_desc, &sub_data, &m_native);
+		}
+		else {
+			txr_desc.CPUAccessFlags = 0u;
+			m_gfx->get_dvch()->CreateTexture2D(&txr_desc, nullptr, &m_native);
+		}
 		if (m_native == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 
 		// create resource view to display the texture
@@ -159,7 +164,7 @@ namespace NW
 		shd_rsc_desc.Texture2D.MostDetailedMip = 0;
 		shd_rsc_desc.Texture2D.MipLevels = 1;
 
-		m_gfx->get_device()->CreateShaderResourceView(m_native, &shd_rsc_desc, &m_handle);
+		m_gfx->get_dvch()->CreateShaderResourceView(m_native, &shd_rsc_desc, &m_handle);
 		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 
 		return true;
@@ -171,7 +176,45 @@ namespace NW
 	{
 		a_txr::on_draw();
 
-		m_gfx->get_context()->PSSetShaderResources(m_slot, 1, &m_handle);
+		m_gfx->get_ctxh()->PSSetShaderResources(m_slot, 1, &m_handle);
+	}
+	// --==</core_methods>==--
+}
+namespace NW
+{
+	txr_2d_mulsmp::txr_2d_mulsmp(gfx_engine& graphics) :
+		txr_2d(graphics),
+		m_samples(0)
+	{
+	}
+	txr_2d_mulsmp::~txr_2d_mulsmp() { if (m_native != nullptr) { m_native->Release(); m_native = nullptr; } }
+	// --setters
+	void txr_2d_mulsmp::set_samples(ui8 samples) {
+		m_samples = samples;
+	}
+	// --operators
+	stm_out& txr_2d_mulsmp::operator<<(stm_out& stm) const {
+		return stm;
+	}
+	stm_in& txr_2d_mulsmp::operator>>(stm_in& stm) {
+		return stm;
+	}
+	// --==<core_methods>==--
+	bit txr_2d_mulsmp::remake(const img_cmp& img)
+	{
+		m_size_x = img.get_size_x();
+		m_size_y = img.get_size_y();
+		m_pxl_fmt = img.get_pxl_fmt();
+		m_channels = img.get_channels();
+		if (m_handle != nullptr) { m_handle->Release(); m_handle = nullptr; }
+		if (m_native != nullptr) { m_native->Release(); m_native = nullptr; }
+		if (m_channels <= 0 || m_size_x <= 0 || m_size_y <= 0) { return false; }
+		
+		return true;
+	}
+	void txr_2d_mulsmp::on_draw()
+	{
+		a_txr::on_draw();
 	}
 	// --==</core_methods>==--
 }

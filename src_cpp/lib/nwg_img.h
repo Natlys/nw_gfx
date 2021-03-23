@@ -5,15 +5,15 @@
 namespace NW
 {
 	/// image class
-	class NW_API a_img : public a_data_rsc
+	class NW_API img_cmp : public t_cmp<img_cmp>, public a_data_cmp
 	{
 	public:
 		using pxl_fmt = pixel_formats;
 		using data = darray<ubyte>;
 	public:
-		a_img(cstr name);
-		a_img(const a_img& cpy);
-		a_img(const a_img& cpy, si32 offset_x, si32 offset_y, si32 width, si32 height);
+		img_cmp();
+		img_cmp(const img_cmp& cpy);
+		img_cmp(const img_cmp& cpy, si32 offset_x, si32 offset_y, si32 width, si32 height);
 		// --getters
 		inline si32 get_size_x() const		{ return m_size_x; }
 		inline si32 get_size_y() const		{ return m_size_y; }
@@ -28,8 +28,8 @@ namespace NW
 		inline const ubyte* get_data(ui32 pxl_x, ui32 pxl_y) const	{ return &m_pxl_data[NW_XY_TO_X(pxl_x * m_channels, pxl_y * m_channels, m_size_x) % get_data_size()]; }
 		// --setters
 		void set_data(const ubyte* data_ptr);
-		void set_data(const a_img& source);
-		void set_data(const a_img& source, si32 crd_x, si32 crd_y, si32 size_x, si32 size_y);
+		void set_data(const img_cmp& source);
+		void set_data(const img_cmp& source, si32 crd_x, si32 crd_y, si32 size_x, si32 size_y);
 		// --operators
 		virtual stm_out& operator<<(stm_out& stm) const = 0;
 		virtual stm_in& operator>>(stm_in& stm) = 0;
@@ -46,7 +46,7 @@ namespace NW
 }
 namespace NW
 {
-	struct img_bmp_info
+	struct img_bmp_info : a_info
 	{
 	public:
 #pragma pack(push, 1) // add padding 16->14
@@ -75,6 +75,10 @@ namespace NW
 			ui32 clrs_need = 0;	// required colors for bitmap
 		} data;	// data description
 #pragma pack(pop)
+	public:
+		// --operators
+		virtual stm_out& operator<<(stm_out& stm) const override;
+		virtual stm_in& operator>>(stm_in& stm) override;
 	};
 	/// img_bmp class
 	/// description:
@@ -84,10 +88,11 @@ namespace NW
 	/// ->if the image is indexed - load color pallete
 	/// ->read pixel data with offset which is defined in "file" header
 	/// ->in the case of 24bit and not multiple-of-4 sizes, we need to consider padding
-	class NW_API img_bmp : public a_img
+	class NW_API img_bmp : public img_cmp
 	{
 	public:
-		img_bmp(cstr name);
+		img_bmp();
+		~img_bmp();
 		// --operators
 		virtual stm_out& operator<<(stm_out& stm) const override;
 		virtual stm_in& operator>>(stm_in& stm) override;

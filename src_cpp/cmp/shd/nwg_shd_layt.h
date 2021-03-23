@@ -4,17 +4,14 @@
 #if (defined NW_GAPI)
 #include <core/nwg_cmp.h>
 #include <cmp/buf/nwg_buf_shd.h>
-#include <lib/nwg_tools.h>
 namespace NW
 {
 	/// shader_layout class
 	/// description:
 	/// --default input assembler tool for vertex shaders;
 	/// --equivalent of the vertex array in opengl;
-	class NW_API shd_layt : public t_cmp<shd_layt, a_gfx_cmp>
+	class NW_API shd_layt : public t_cmp<shd_layt>, public a_gfx_cmp, public data_layt
 	{
-		using elem = shd_elem;
-		using elems = darray<elem>;
 #if (NW_GAPI & NW_GAPI_DX)
 		using handle = ID3D11InputLayout*;
 #endif
@@ -26,18 +23,12 @@ namespace NW
 		virtual ~shd_layt();
 		// --getters
 		inline handle get_handle() const	{ return m_handle; }
-		inline elems& get_elems()			{ return m_elems; }
-		inline elem& get_elem(ui8 idx)		{ return m_elems[idx % m_elems.size()]; }
-		// --setters
-		void add_elem(const elem& element, si8 nof_elements = 1);
-		void rmv_elem(ui8 idx);
 		// --core_methods
 		bit remake(mem_ref<a_shd>& shader);
 		virtual void on_draw() override;
 	private:
 		handle m_handle;
-		elems m_elems;
-		darray<size> m_strides;
+		size m_stride;
 	};
 }
 #endif	// NW_GAPI

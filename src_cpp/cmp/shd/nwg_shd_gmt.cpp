@@ -7,8 +7,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	shd_gmt::shd_gmt(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name)
+	shd_gmt::shd_gmt(gfx_engine& graphics) :
+		a_shd(graphics)
 	{
 	}
 	shd_gmt::~shd_gmt() { }
@@ -54,8 +54,8 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW
 {
-	shd_gmt::shd_gmt(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name),
+	shd_gmt::shd_gmt(gfx_engine& graphics) :
+		a_shd(graphics),
 		m_native(nullptr)
 	{
 	}

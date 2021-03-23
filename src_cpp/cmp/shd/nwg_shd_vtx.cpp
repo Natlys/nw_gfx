@@ -7,8 +7,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	shd_vtx::shd_vtx(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name)
+	shd_vtx::shd_vtx(gfx_engine& graphics) :
+		a_shd(graphics)
 	{
 	}
 	shd_vtx::~shd_vtx() { }
@@ -147,8 +147,8 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW
 {
-	shd_vtx::shd_vtx(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name),
+	shd_vtx::shd_vtx(gfx_engine& graphics) :
+		a_shd(graphics),
 		m_native(nullptr)
 	{
 	}
@@ -183,17 +183,17 @@ namespace NW
 			&m_handle,			// where to store the code
 			NULL				// blob for error messages
 		)) != S_OK) { return false; }
-		if (m_bin_code == nullptr) { return false; }
-
-		m_gfx->get_device()->CreateVertexShader(m_handle->GetBufferPointer(), m_handle->GetBufferSize(), NULL, &m_native);
 		if (m_handle == nullptr) { return false; }
-		m_gfx->get_context()->VSSetShader(m_native, NULL, NULL);
+
+		m_gfx->get_dvch()->CreateVertexShader(m_handle->GetBufferPointer(), m_handle->GetBufferSize(), NULL, &m_native);
+		if (m_handle == nullptr) { return false; }
+		m_gfx->get_ctxh()->VSSetShader(m_native, NULL, NULL);
 		
 		return true;
 	}
 	void shd_vtx::on_draw()
 	{
-		m_gfx->get_context()->VSSetShader(m_native, NULL, NULL);
+		m_gfx->get_ctxh()->VSSetShader(m_native, NULL, NULL);
 		for (auto& irsc : m_rscs) {
 			irsc->on_draw();
 		}

@@ -3,14 +3,13 @@
 #include <nwg_core.hpp>
 #if (defined NW_GAPI)
 #include <core/nwg_cmp.h>
-#include <lib/nwg_tools.h>
 #include <lib/nwg_img.h>
 #include "nwg_txr_smp.h"
 namespace NW
 {
 	/// abstarct texture class
 	/// description:
-	class NW_API a_txr : public t_cmp<a_txr, a_gfx_cmp>, public a_img
+	class NW_API a_txr : public img_cmp, public a_gfx_cmp
 	{
 	public:
 		using txr_fmt = txr_formats;
@@ -22,7 +21,7 @@ namespace NW
 		using handle = ID3D11ShaderResourceView*;
 #endif
 	public:
-		a_txr(gfx_engine& graphics, cstr name);
+		a_txr(gfx_engine& graphics);
 		virtual ~a_txr();
 		// --getters
 		inline handle get_handle()			{ return m_handle; }
@@ -36,7 +35,7 @@ namespace NW
 		virtual stm_out& operator<<(stm_out& stm) const = 0;
 		virtual stm_in& operator>>(stm_in& stm) = 0;
 		// --core_methods
-		virtual bit remake(const a_img& img) = 0;
+		virtual bit remake(const img_cmp& img) = 0;
 		virtual void clear(ptr value) = 0;
 		virtual void on_draw() override;
 	protected:

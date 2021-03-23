@@ -3,21 +3,11 @@
 #if (defined NW_GAPI)
 #include <core/nwg_engine.h>
 #include <lib/nwg_load_buf.h>
-namespace NW
-{
-	shd_elem::shd_elem(cstr element_name, data_types data_type, si32 idx, si32 count) :
-		name(""), type(data_type),
-		idx(idx), count(count), offset_size(0)
-	{
-		strcpy(name, element_name);
-	}
-}
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
 	buf_shd::buf_shd(gfx_engine& graphics) :
-		t_cmp(graphics),
-		m_elems(elems()),
+		t_cmp(), a_gfx_buf(graphics), data_layt(),
 		m_slot(0),
 		m_offset_size(0)
 	{
@@ -33,15 +23,6 @@ namespace NW
 	void buf_shd::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		glBufferSubData(GL_UNIFORM_BUFFER, offset_size, data_size, data_ptr);
 	}
-	void buf_shd::add_elem(const elem& element, si8 count) {
-		while (count-- > 0) {
-			m_elems.push_back(element);
-			m_elems.back().idx = m_elems.size() - 1;
-		}
-	}
-	void buf_shd::rmv_elem(ui8 idx) {
-		m_elems.erase(m_elems.begin() + idx % m_elems.size());
-	}
 	// --==<core_methods>==--
 	bit buf_shd::remake(size data_size, const ptr data_ptr, size offset_size)
 	{
@@ -53,8 +34,8 @@ namespace NW
 		
 		size temp = 0;
 		for (auto& elem : m_elems) {
-			elem.offset_size += temp;
-			temp += dt_get_aligned_size(elem.type, elem.count);
+			elem.offset += temp;
+			temp += elem.get_aligned_size();
 		}
 		
 		glGenBuffers(1, &m_handle);
@@ -76,9 +57,8 @@ namespace NW
 namespace NW
 {
 	buf_shd::buf_shd(gfx_engine& graphics) :
-		t_cmp(graphics),
-		m_slot(0), m_offset_size(0),
-		m_elems(elems())
+		t_cmp(), a_gfx_buf(graphics), data_layt(),
+		m_slot(0), m_offset_size(0)
 	{
 	}
 	buf_shd::~buf_shd() { }
@@ -91,18 +71,9 @@ namespace NW
 	}
 	void buf_shd::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		D3D11_MAPPED_SUBRESOURCE msub_res{ 0 };
-		m_gfx->get_context()->Map(m_handle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msub_res);
+		m_gfx->get_ctxh()->Map(m_handle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msub_res);
 		memcpy(msub_res.pData, data_ptr, data_size);
-		m_gfx->get_context()->Unmap(m_handle, 0u);
-	}
-	void buf_shd::add_elem(const shd_elem& element, si8 count) {
-		while (count-- > 0) {
-			m_elems.push_back(element);
-			m_elems.back().idx = m_elems.size() - 1;
-		}
-	}
-	void buf_shd::rmv_elem(ui8 idx) {
-		m_elems.erase(m_elems.begin() + idx % m_elems.size());
+		m_gfx->get_ctxh()->Unmap(m_handle, 0u);
 	}
 	// --==<core_methods>==--
 	bit buf_shd::remake(size data_size, const ptr data_ptr, size offset_size) {
@@ -118,19 +89,25 @@ namespace NW
 		buf_desc.StructureByteStride = m_data_size;
 		buf_desc.ByteWidth = m_data_size;
 
-		buf_desc.Usage = D3D11_USAGE_DYNAMIC;
-		buf_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		if (data_ptr == nullptr) {
+			buf_desc.Usage = D3D11_USAGE_DYNAMIC;
+			buf_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			m_gfx->get_dvch()->CreateBuffer(&buf_desc, nullptr, &m_handle);
+		}
+		else {
+			buf_desc.Usage = D3D11_USAGE_DEFAULT;
+			buf_desc.CPUAccessFlags = 0u;
+			D3D11_SUBRESOURCE_DATA sub_data{ 0 };
+			sub_data.pSysMem = data_ptr;
+			m_gfx->get_dvch()->CreateBuffer(&buf_desc, &sub_data, &m_handle);
+		}
 
-		D3D11_SUBRESOURCE_DATA sub_data{ 0 };
-		sub_data.pSysMem = mem_sys::get_memory().get_data();
-
-		m_gfx->get_device()->CreateBuffer(&buf_desc, &sub_data, &m_handle);
 		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 		return true;
 	}
 	void buf_shd::on_draw() {
-		m_gfx->get_context()->VSSetConstantBuffers(m_slot, 1, &m_handle);
-		m_gfx->get_context()->PSSetConstantBuffers(m_slot, 1, &m_handle);
+		m_gfx->get_ctxh()->VSSetConstantBuffers(m_slot, 1, &m_handle);
+		m_gfx->get_ctxh()->PSSetConstantBuffers(m_slot, 1, &m_handle);
 	}
 	// --==</core_methods>==--
 }

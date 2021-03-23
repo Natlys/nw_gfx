@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// index_buffer class
-	class NW_API buf_idx : public t_cmp<buf_idx, a_gfx_buf>
+	class NW_API buf_idx : public t_cmp<buf_idx>, public a_gfx_buf
 	{
 	public:
 		buf_idx(gfx_engine& graphics);

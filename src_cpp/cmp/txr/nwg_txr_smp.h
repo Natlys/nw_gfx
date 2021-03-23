@@ -7,7 +7,7 @@
 namespace NW
 {
 	/// txr_smp class
-	class NW_API txr_smp : public t_cmp<txr_smp, a_gfx_cmp>
+	class NW_API txr_smp : public t_cmp<txr_smp>, public a_gfx_cmp
 	{
 	public:
 		using wrap = txr_wraps;

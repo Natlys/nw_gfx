@@ -7,8 +7,10 @@ namespace NW
 	/// graphics_camera_lad class
 	class NW_API camera_lad : public camera
 	{
-	public: // configurable Attributes
-		f32 rtn_speed, move_speed, zoom_speed;
+	public:
+		f32 rtn_speed;
+		f32 move_speed;
+		f32 zoom_speed;
 		v3f rtn_limit;
 	public:
 		camera_lad();

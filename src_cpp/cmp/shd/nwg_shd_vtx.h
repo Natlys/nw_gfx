@@ -8,7 +8,7 @@ namespace NW
 	class NW_API shd_vtx : public a_shd
 	{
 	public:
-		shd_vtx(gfx_engine& graphics, cstr name);
+		shd_vtx(gfx_engine& graphics);
 		virtual ~shd_vtx();
 		// --getters
 		// --operators

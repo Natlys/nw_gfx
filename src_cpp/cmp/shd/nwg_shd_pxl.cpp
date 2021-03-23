@@ -7,8 +7,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	shd_pxl::shd_pxl(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name)
+	shd_pxl::shd_pxl(gfx_engine& graphics) :
+		a_shd(graphics)
 	{
 	}
 	shd_pxl::~shd_pxl() { }
@@ -141,8 +141,8 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_DX)
 namespace NW
 {
-	shd_pxl::shd_pxl(gfx_engine& graphics, cstr name) :
-		a_shd(graphics, name),
+	shd_pxl::shd_pxl(gfx_engine& graphics) :
+		a_shd(graphics),
 		m_native(nullptr)
 	{
 	}
@@ -179,15 +179,15 @@ namespace NW
 		)) != S_OK) { return false; }
 		if (m_handle == nullptr) { return false; }
 
-		m_gfx->get_device()->CreatePixelShader(m_handle->GetBufferPointer(), m_handle->GetBufferSize(), NULL, &m_native);
+		m_gfx->get_dvch()->CreatePixelShader(m_handle->GetBufferPointer(), m_handle->GetBufferSize(), NULL, &m_native);
 		if (m_native == nullptr) { return false; }
-		m_gfx->get_context()->PSSetShader(m_native, NULL, NULL);
+		m_gfx->get_ctxh()->PSSetShader(m_native, NULL, NULL);
 		
 		return true;
 	}
 	void shd_pxl::on_draw()
 	{
-		m_gfx->get_context()->PSSetShader(m_native, NULL, NULL);
+		m_gfx->get_ctxh()->PSSetShader(m_native, NULL, NULL);
 		for (auto& irsc : m_rscs) {
 			irsc->on_draw();
 		}

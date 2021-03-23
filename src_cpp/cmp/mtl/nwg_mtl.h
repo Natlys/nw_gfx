@@ -8,7 +8,7 @@
 namespace NW
 {
 	/// material class
-	class NW_API gfx_mtl : public a_data_rsc, public t_cmp<gfx_mtl, a_gfx_cmp>
+	class NW_API gfx_mtl : public t_cmp<gfx_mtl>, public a_gfx_cmp, public a_data_cmp
 	{
 	public:
 		using shd = mem_ref<a_shd>;
@@ -22,7 +22,7 @@ namespace NW
 		using handle = ptr;
 #endif
 	public:
-		gfx_mtl(gfx_engine& graphics, cstr name);
+		gfx_mtl(gfx_engine& graphics);
 		virtual ~gfx_mtl();
 		// --getters
 		inline shd& get_shd(ui8 idx)	{ return m_shds[idx % m_shds.size()]; }

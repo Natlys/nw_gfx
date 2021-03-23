@@ -8,7 +8,7 @@
 #include <cmp/buf/nwg_buf_shd.h>
 namespace NW
 {
-	class NW_API a_shd : public t_cmp<a_shd, a_gfx_cmp>, public a_data_rsc
+	class NW_API a_shd : public t_cmp<a_shd>, public a_gfx_cmp, public a_data_cmp
 	{
 	public:
 		using rsc = mem_ref<buf_shd>;
@@ -20,7 +20,7 @@ namespace NW
 		using handle = ID3DBlob*;
 #endif
 	public:
-		a_shd(gfx_engine& graphics, cstr name);
+		a_shd(gfx_engine& graphics);
 		virtual ~a_shd();
 		// --getters
 		inline cstr get_src_code() const	{ return &m_src_code[0]; }
@@ -40,6 +40,7 @@ namespace NW
 		dstr m_src_code;
 		rscs m_rscs;
 	};
+	extern NW_API bit gfx_get_err_log(shd_types shd_type, si32 shd_id);
 }
 #endif	// NW_GAPI
 #endif // NWG_SHADER_H

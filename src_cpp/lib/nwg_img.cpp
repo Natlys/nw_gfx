@@ -5,45 +5,45 @@
 #include <lib/nwg_load_img.h>
 namespace NW
 {
-	a_img::a_img(cstr name) :
-		a_data_rsc(name),
+	img_cmp::img_cmp() :
+		t_cmp(), a_data_cmp(),
 		m_size_x(1), m_size_y(1),
 		m_channels(4),
 		m_pxl_fmt(PXF_R8G8B8A8_UINT32), m_data_type(DT_UINT8),
 		m_pxl_data{ data{ 255u, 255u, 255u, 255u } }
 	{
 	}
-	a_img::a_img(const a_img& cpy) :
-		a_data_rsc(cpy),
+	img_cmp::img_cmp(const img_cmp& cpy) :
+		t_cmp(cpy), a_data_cmp(cpy),
 		m_size_x(cpy.m_size_x), m_size_y(cpy.m_size_y),
 		m_channels(cpy.m_channels),
 		m_pxl_fmt(cpy.m_pxl_fmt),
 		m_pxl_data(cpy.m_pxl_data)
 	{
 	}
-	a_img::a_img(const a_img& cpy, si32 offset_x, si32 offset_y, si32 width, si32 height) :
-		a_data_rsc(cpy),
+	img_cmp::img_cmp(const img_cmp& cpy, si32 offset_x, si32 offset_y, si32 width, si32 height) :
+		t_cmp(cpy), a_data_cmp(cpy),
 		m_size_x(width), m_size_y(height),
 		m_pxl_fmt(cpy.m_pxl_fmt)
 	{
 		set_data(cpy, offset_x, offset_y, width, height);
 	}
 	// --setters
-	void a_img::set_data(const ubyte* data_ptr) {
+	void img_cmp::set_data(const ubyte* data_ptr) {
 		if (data_ptr == nullptr || m_size_x == 0 || m_size_y == 0 || m_channels == 0) { m_pxl_data.clear(); return; }
 		else {
 			m_pxl_data.resize(get_data_size());
 			memcpy(&m_pxl_data[0], &data_ptr[0], get_data_size());
 		}
 	}
-	void a_img::set_data(const a_img& source) {
+	void img_cmp::set_data(const img_cmp& source) {
 		m_size_x = source.get_size_x();
 		m_size_y = source.get_size_y();
 		m_pxl_fmt = source.get_pxl_fmt();
 		m_channels = source.get_channels();
 		set_data(source.get_data());
 	}
-	void a_img::set_data(const a_img& source, si32 crd_x, si32 crd_y, si32 size_x, si32 size_y) {
+	void img_cmp::set_data(const img_cmp& source, si32 crd_x, si32 crd_y, si32 size_x, si32 size_y) {
 		m_size_x = size_x;
 		m_size_y = size_y;
 		if (m_size_x == 0 || m_size_y == 0 || m_channels == 0) { m_pxl_data.clear(); return; }
@@ -81,8 +81,8 @@ namespace NW
 		}
 	}
 	// --operators
-	// --core_methods
-	a_img::data a_img::make_region(si32 crd_x, si32 crd_y, si32 size_x, si32 size_y) const {
+	// --==<core_methods>==--
+	img_cmp::data img_cmp::make_region(si32 crd_x, si32 crd_y, si32 size_x, si32 size_y) const {
 		data region;
 		if (size_x == 0 || size_y == 0) { throw run_error(__FILE__, __LINE__); return region; }
 		region.resize(std::abs(size_x) * std::abs(size_y) * m_channels);
@@ -118,21 +118,37 @@ namespace NW
 			}
 		}
 		return region;
+	// --==</core_methods>==--
 	}
 }
 namespace NW
 {
-	img_bmp::img_bmp(cstr name) :
-		a_img(name)
+	stm_out& img_bmp_info::operator<<(stm_out& stm) const {
+		stm.write(reinterpret_cast<const sbyte*>(&file), sizeof(file));
+		stm.write(reinterpret_cast<const sbyte*>(&data), sizeof(data));
+		return stm;
+	}
+	stm_in& img_bmp_info::operator>>(stm_in& stm) {
+		stm.read(reinterpret_cast<sbyte*>(&file), sizeof(file));
+		stm.read(reinterpret_cast<sbyte*>(&data), sizeof(data));
+		return stm;
+	}
+}
+namespace NW
+{
+	img_bmp::img_bmp() :
+		img_cmp()
 	{
 	}
+	img_bmp::~img_bmp() { }
 	// --operators
 	stm_out& img_bmp::operator<<(stm_out& stm) const {
+		stm << m_info;
+		stm.write(reinterpret_cast<const sbyte*>(&m_pxl_data[0]), get_data_size());
 		return stm;
 	}
 	stm_in& img_bmp::operator>>(stm_in& stm) {
-		stm.read(reinterpret_cast<sbyte*>(&m_info.file), sizeof(m_info.file));
-		stm.read(reinterpret_cast<sbyte*>(&m_info.data), sizeof(m_info.data));
+		stm >> m_info;
 		if (m_info.data.nof_pixel_bits != 8 && m_info.data.nof_pixel_bits != 16 &&
 			m_info.data.nof_pixel_bits != 24 && m_info.data.nof_pixel_bits != 32) {
 			throw load_error(__FILE__, __LINE__);

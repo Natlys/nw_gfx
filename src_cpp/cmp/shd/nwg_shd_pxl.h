@@ -8,7 +8,7 @@ namespace NW
 	class NW_API shd_pxl : public a_shd
 	{
 	public:
-		shd_pxl(gfx_engine& graphics, cstr name);
+		shd_pxl(gfx_engine& graphics);
 		~shd_pxl();
 		// --getters
 		// --setters

@@ -20,8 +20,6 @@ namespace NW
 		// --getters
 		inline size get_data_size() const	{ return m_data_size; }
 		inline handle get_handle()	const	{ return m_handle; }
-		virtual inline ui32 get_type_id() const = 0;
-		virtual inline ui32 get_cmp_id() const = 0;
 		// --setters
 		virtual void set_data(size data_size, const ptr data_ptr, size offset_size = 0) = 0;
 		// --core_methods

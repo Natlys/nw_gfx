@@ -7,7 +7,7 @@
 namespace NW
 {
 	a_gfx_stt::a_gfx_stt(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_cmp(graphics),
 		m_is_enabled(true)
 	{
 	}
@@ -22,7 +22,7 @@ namespace NW
 namespace NW
 {
 	a_gfx_stt::a_gfx_stt(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_cmp(graphics),
 		m_is_enabled(true)
 	{
 	}

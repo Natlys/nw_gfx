@@ -5,6 +5,11 @@
 
 #include "core/nwg_engine.h"
 #include "core/nwg_cmp.h"
+#include "core/nwg_ent.h"
+
+#include "ent/nwg_ent_idx.h"
+#include "ent/nwg_ent_vtx.h"
+#include "ent/nwg_ent_mesh.h"
 
 #include "cmp/mtl/nwg_mtl.h"
 
@@ -35,12 +40,6 @@
 #include "cmp/txr/nwg_txr_3d.h"
 #include "cmp/txr/nwg_txr_smp.h"
 
-#include "cmp/drb/nwg_drb.h"
-#include "cmp/drb/nwg_drb_idx.h"
-#include "cmp/drb/nwg_drb_vtx.h"
-#include "cmp/drb/nwg_drb_mesh.h"
-
-#include "lib/nwg_tools.h"
 #include "lib/nwg_img.h"
 #include "lib/nwg_cam_lad.h"
 #include "lib/nwg_cam.h"

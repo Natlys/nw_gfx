@@ -32,6 +32,25 @@ namespace NW
 
 		return true;
 	}
+	void gfx_clear_err() { while (glGetError() != GL_NO_ERROR); }
+	bit gfx_get_err_log(cstr strLoc, cstr strFile, si32 nLine)
+	{
+		si32 err_code = 0u;
+		while ((err_code = glGetError()) != GL_NO_ERROR) {
+			dstr err_comment;
+			switch (err_code) {
+			case GL_INVALID_ENUM: err_comment = "INVALID_ENUM"; break;
+			case GL_INVALID_VALUE: err_comment = "INVALID_VALUE"; break;
+			case GL_INVALID_OPERATION: err_comment = "INVALID_OPERATION"; break;
+			case GL_STACK_OVERFLOW: err_comment = "STACK_OVERFLOW"; break;
+			case GL_STACK_UNDERFLOW: err_comment = "STACK_UNDERFLOW"; break;
+			case GL_OUT_OF_MEMORY: err_comment = "OUT_OF_MEMORY"; break;
+			}
+			throw (a_error(&err_comment[0], err_code, strLoc, nLine));
+			return false;
+		}
+		return true;
+	}
 }
 namespace NW
 {
@@ -68,6 +87,12 @@ namespace NW
 		gfx_new_context_and_swap_chain = (PFN_D3D11_CREATE_DEVICE_AND_SWAP_CHAIN)gfx_get_proc("D3D11CreateDeviceAndSwapChain");
 		
 		return true;
+	}
+	void gfx_err_log() {
+		//
+	}
+	bit gfx_err_log(cstr stinfo, cstr strFile, int nLine) {
+		return false;
 	}
 }
 namespace NW

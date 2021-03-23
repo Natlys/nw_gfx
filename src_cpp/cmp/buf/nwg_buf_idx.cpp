@@ -7,7 +7,7 @@
 namespace NW
 {
 	buf_idx::buf_idx(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_buf(graphics),
 		m_data_type(DT_DEFAULT)
 	{
 	}
@@ -40,7 +40,7 @@ namespace NW
 namespace NW
 {
 	buf_idx::buf_idx(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_buf(graphics),
 		m_data_type(DT_DEFAULT)
 	{
 	}
@@ -48,13 +48,13 @@ namespace NW
 	// --setters
 	void buf_idx::set_data(size data_size, const ptr data_ptr, size offset_size) {
 		D3D11_MAPPED_SUBRESOURCE msub_rsc{ 0 };
-		m_gfx->get_context()->Map(m_handle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msub_rsc);
+		m_gfx->get_ctxh()->Map(m_handle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &msub_rsc);
 		memcpy(msub_rsc.pData, data_ptr, data_size);
-		m_gfx->get_context()->Unmap(m_handle, 0u);
+		m_gfx->get_ctxh()->Unmap(m_handle, 0u);
 	}
 	// --core_methods
 	void buf_idx::on_draw() {
-		m_gfx->get_context()->IASetIndexBuffer(m_handle, convert_enum<data_types, DXGI_FORMAT>(m_data_type), 0);
+		m_gfx->get_ctxh()->IASetIndexBuffer(m_handle, convert_enum<data_types, DXGI_FORMAT>(m_data_type), 0);
 	}
 	bit buf_idx::remake(size data_size, const ptr data_ptr, data_types data_type) {
 		m_data_size = data_size;
@@ -71,16 +71,16 @@ namespace NW
 		if (data_ptr == nullptr) {
 			buf_desc.Usage = D3D11_USAGE_DYNAMIC;
 			buf_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			m_gfx->get_dvch()->CreateBuffer(&buf_desc, nullptr, &m_handle);
 		}
 		else {
 			buf_desc.Usage = D3D11_USAGE_DEFAULT;
 			buf_desc.CPUAccessFlags = 0u;
+			D3D11_SUBRESOURCE_DATA sub_data{ 0 };
+			sub_data.pSysMem = data_ptr;
+			m_gfx->get_dvch()->CreateBuffer(&buf_desc, &sub_data, &m_handle);
 		}
 
-		D3D11_SUBRESOURCE_DATA sub_data{ 0 };
-		sub_data.pSysMem = data_ptr == nullptr ? mem_sys::get_memory().get_data() : data_ptr;
-
-		m_gfx->get_device()->CreateBuffer(&buf_desc, &sub_data, &m_handle);
 		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 		return true;
 	}

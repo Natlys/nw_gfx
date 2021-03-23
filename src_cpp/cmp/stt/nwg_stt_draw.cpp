@@ -32,13 +32,13 @@ namespace NW
 	stt_draw::~stt_draw() { }
 	// --setters
 	void stt_draw::set_primitive(gfx_primitives primitive_topology) {
-		m_prim = static_cast<primitive>(primitive_topology);
+		m_prim = static_cast<gfx_primitives>(primitive_topology);
 	}
 	// --==<core_methods>==--
 	void stt_draw::on_draw()
 	{
 		if (!m_is_enabled) { return; }
-		m_gfx->get_context()->IASetPrimitiveTopology(convert_enum<gfx_primitives, D3D11_PRIMITIVE_TOPOLOGY>(m_prim));
+		m_gfx->get_ctxh()->IASetPrimitiveTopology(convert_enum<gfx_primitives, D3D11_PRIMITIVE_TOPOLOGY>(m_prim));
 	}
 	// --==</core_methods>==--
 }

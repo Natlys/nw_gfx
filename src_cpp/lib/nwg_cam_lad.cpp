@@ -76,7 +76,7 @@ namespace NW
 				break;
 			}
 			// panning
-			if (mouse->is_held(MSC_1)) {
+			if (mouse->is_held(MSC_2)) {
 				f32 move_delta = move_speed * timer->get_delta();
 				m_crd.x -= mouse->get_move_delta_x() * move_delta * m_fov * 0.2f;
 				m_crd.y += mouse->get_move_delta_y() * move_delta * m_fov * 0.2f;

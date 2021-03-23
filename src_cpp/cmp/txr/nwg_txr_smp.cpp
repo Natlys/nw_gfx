@@ -8,7 +8,7 @@
 namespace NW
 {
 	txr_smp::txr_smp(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_cmp(graphics),
 		m_slot(0),
 		m_filter(TXFL_NEAREST),
 		m_wrap_s(TXW_REPEAT), m_wrap_t(TXW_REPEAT), m_wrap_r(TXW_REPEAT),
@@ -69,7 +69,8 @@ namespace NW
 namespace NW
 {
 	txr_smp::txr_smp(gfx_engine& graphics) :
-		t_cmp(graphics),
+		t_cmp(), a_gfx_cmp(graphics),
+		m_handle(nullptr),
 		m_slot(0),
 		m_filter(TXFL_NEAREST),
 		m_wrap_s(TXW_REPEAT), m_wrap_t(TXW_REPEAT), m_wrap_r(TXW_REPEAT),
@@ -108,8 +109,8 @@ namespace NW
 		smp_desc.MinLOD;			// minimal level of details
 		smp_desc.MaxLOD;			// maximal level of details
 		smp_desc.MipLODBias;		// level of details for mipmapping
-		m_gfx->get_device()->CreateSamplerState(&smp_desc, &m_handle);
-		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return; }
+		m_gfx->get_dvch()->CreateSamplerState(&smp_desc, &m_handle);
+		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 
 		return true;
 	}
@@ -140,14 +141,14 @@ namespace NW
 		smp_desc.MinLOD;			// minimal level of details
 		smp_desc.MaxLOD;			// maximal level of details
 		smp_desc.MipLODBias;		// level of details for mipmapping
-		m_gfx->get_device()->CreateSamplerState(&smp_desc, &m_handle);
-		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return; }
+		m_gfx->get_dvch()->CreateSamplerState(&smp_desc, &m_handle);
+		if (m_handle == nullptr) { throw init_error(__FILE__, __LINE__); return false; }
 
 		return true;
 	}
 	void txr_smp::on_draw()
 	{
-		m_gfx->get_context()->PSSetSamplers(m_slot, 1, &m_handle);
+		m_gfx->get_ctxh()->PSSetSamplers(m_slot, 1, &m_handle);
 	}
 	// --==</core_methods>==--
 }

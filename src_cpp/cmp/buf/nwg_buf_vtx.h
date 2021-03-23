@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// vertex_buffer class
-	class NW_API buf_vtx : public t_cmp<buf_vtx, a_gfx_buf>
+	class NW_API buf_vtx : public t_cmp<buf_vtx>, public a_gfx_buf
 	{
 	public:
 		buf_vtx(gfx_engine& graphics);

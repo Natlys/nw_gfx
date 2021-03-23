@@ -1,16 +1,16 @@
-#ifndef NW_DRAWABLE_MESH_H
-#define NW_DRAWABLE_MESH_H
+#ifndef NWG_MESH_ENTITY_H
+#define NWG_MESH_ENTITY_H
 #include <nwg_core.hpp>
 #if (defined NW_GAPI)
-#include "nwg_drb_idx.h"
+#include "nwg_ent_idx.h"
 #include <lib/nwg_data.h>
 namespace NW
 {
-	class NW_API drb_mesh : public drb_idx, public a_data_rsc
+	class NW_API ent_mesh : public ent_idx, public a_data_cmp
 	{
 	public:
-		drb_mesh(gfx_engine& graphics);
-		~drb_mesh();
+		ent_mesh(gfx_engine& graphics);
+		~ent_mesh();
 		// --getters
 		// --setters
 		// --operators
@@ -20,4 +20,4 @@ namespace NW
 	};
 }
 #endif	// NW_GAPI
-#endif	// NW_DRAWABLE_MESH_H
+#endif	// NWG_MESH_ENTITY_H

@@ -55,7 +55,7 @@ namespace NW
 		dx_viewport.Height = m_size[1];
 		dx_viewport.MinDepth = 0.01f;
 		dx_viewport.MaxDepth = 1.00f;
-		m_gfx->get_context()->RSSetViewports(1, &dx_viewport);
+		m_gfx->get_ctxh()->RSSetViewports(1, &dx_viewport);
 	}
 	// --==</core_methods>==--
 }

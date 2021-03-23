@@ -95,16 +95,5 @@ namespace NW
 		TXF_DEPTH_STENCIL,
 	};
 }
-namespace NW
-{
-	template<typename in_type, typename out_type>
-	NW_API out_type convert_enum();
-	template<typename in_type, typename out_type>
-	NW_API out_type convert_enum(in_type input);
-	
-	NW_API si32 dt_get_count(data_types data_type);
-	NW_API size dt_get_size(data_types data_type, si32 count = 1);
-	NW_API size dt_get_aligned_size(data_types data_type, si32 count = 1);
-}
 #endif	// NW_GAPI
 #endif	// NWG_SWITCH_H

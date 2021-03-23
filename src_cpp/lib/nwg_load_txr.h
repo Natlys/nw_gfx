@@ -104,6 +104,7 @@ namespace NW
 #define GL_PROXY_TEXTURE_2D_ARRAY         0x8C1B
 #define GL_TEXTURE_BINDING_1D_ARRAY       0x8C1C
 #define GL_TEXTURE_BINDING_2D_ARRAY       0x8C1D
+#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS 0x8B4D
 #define GL_TEXTURE0                       0x84C0
 #define GL_TEXTURE1                       0x84C1
 #define GL_TEXTURE2                       0x84C2

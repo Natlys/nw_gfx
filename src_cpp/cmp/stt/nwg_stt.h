@@ -6,7 +6,7 @@
 #include <lib/nwg_switch.h>
 namespace NW
 {
-	class NW_API a_gfx_stt : public t_cmp<a_gfx_stt, a_gfx_cmp>
+	class NW_API a_gfx_stt : public t_cmp<a_gfx_stt>, public a_gfx_cmp
 	{
 	public:
 		a_gfx_stt(gfx_engine& graphics);

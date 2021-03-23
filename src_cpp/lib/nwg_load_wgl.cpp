@@ -10,10 +10,10 @@ namespace NW
 		// context
 		wglCreateContext = (pfn_ogl_new_context)(::GetProcAddress(graphics_library, "wglCreateContext"));
 		wglDeleteContext = (pfn_ogl_del_context)(::GetProcAddress(graphics_library, "wglDeleteContext"));
-		wglGetCurrentContext = (pfn_ogl_get_context)(::GetProcAddress(graphics_library, "wglGetCurrentContext"));
+		wglGetCurrentContext = (pfn_ogl_get_ctxh)(::GetProcAddress(graphics_library, "wglGetCurrentContext"));
 		wglMakeContextCurrent = (pfn_ogl_set_context)(::GetProcAddress(graphics_library, "wglMakeCurrent"));
 		// device
-		wglGetCurrentDC = (pfn_ogl_get_device)(::GetProcAddress(graphics_library, "wglGetCurrentDC"));
+		wglGetCurrentDC = (pfn_ogl_get_dvch)(::GetProcAddress(graphics_library, "wglGetCurrentDC"));
 		// other
 		wglGetProcAddress = (pfn_gfx_get_proc)(::GetProcAddress(graphics_library, "wglGetProcAddress"));
 
@@ -25,10 +25,10 @@ namespace NW
 	// context
 	pfn_ogl_new_context wglCreateContext = NULL;
 	pfn_ogl_del_context wglDeleteContext = NULL;
-	pfn_ogl_get_context wglGetCurrentContext = NULL;
+	pfn_ogl_get_ctxh wglGetCurrentContext = NULL;
 	pfn_ogl_set_context wglMakeContextCurrent = NULL;
 	// device
-	pfn_ogl_get_device wglGetCurrentDC = NULL;
+	pfn_ogl_get_dvch wglGetCurrentDC = NULL;
 	// other
 	pfn_gfx_get_proc wglGetProcAddress = NULL;
 }

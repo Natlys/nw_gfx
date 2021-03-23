@@ -5,8 +5,8 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	txr_cube::txr_cube(gfx_engine& graphics, cstr name) :
-		a_txr(graphics, name)
+	txr_cube::txr_cube(gfx_engine& graphics) :
+		a_txr(graphics)
 	{
 	}
 	txr_cube::~txr_cube() { }
@@ -19,7 +19,7 @@ namespace NW
 		return stm;
 	}
 	// --==<core_methods>==--
-	bit txr_cube::remake(const a_img& img)
+	bit txr_cube::remake(const img_cmp& img)
 	{
 		m_channels = img.get_channels();
 		set_data(img);
@@ -40,7 +40,7 @@ namespace NW
 		GLenum ogl_inter_fmt = convert_enum<txr_formats, GLenum>(m_txr_fmt);
 		GLenum ogl_img_fmt = convert_enum<txr_formats, GLenum>(m_txr_fmt);
 		for (ui8 ifc = 0; ifc < 6; ifc++) {
-			data face_data = make_region(m_size_x / 6 * 0, m_size_y / 6 * ifc, m_size_x / 1, m_size_y / 6);
+			data face_data = make_region(m_size_x / 6 * 0, m_size_y / 6 * (5 - ifc), m_size_x / 1, m_size_y / 6);
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + ifc, 0, ogl_inter_fmt,
 				m_size_x / 1, m_size_y / 6, 0,
 				ogl_img_fmt, ogl_data_type, &face_data[0]);
