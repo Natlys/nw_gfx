@@ -24,12 +24,12 @@ namespace NW
 	class NW_API gfx_buf_idx;
 	class NW_API gfx_buf_shd;
 
-	class NW_API a_shd;
-	class NW_API shd_vtx;
-	class NW_API shd_pxl;
-	class NW_API shd_gmt;
+	class NW_API a_gfx_shd;
+	class NW_API gfx_shd_vtx;
+	class NW_API gfx_shd_pxl;
+	class NW_API gfx_shd_gmt;
 
-	class NW_API a_img_cmp;
+	class NW_API gfx_img;
 	class NW_API a_gfx_txr;
 	class NW_API gfx_txr_1d;
 	class NW_API gfx_txr_2d;
