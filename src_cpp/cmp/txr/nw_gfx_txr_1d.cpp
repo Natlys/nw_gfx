@@ -3,12 +3,12 @@
 #if (defined NW_GAPI)
 #	include "../../core/nw_gfx_engine.h"
 #	include "../../lib/nw_gfx_lib_txr.h"
-#	include "../../lib/nw_gfx_lib_info.h"
+#	include "../img/nw_gfx_img.h"
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_txr_1d::gfx_txr_1d(gfx_engine& graphics) :
-		a_gfx_txr(graphics)
+	gfx_txr_1d::gfx_txr_1d() :
+		a_gfx_txr()
 	{
 	}
 	gfx_txr_1d::~gfx_txr_1d()
@@ -16,21 +16,21 @@ namespace NW
 	}
 	// --setters
 	// --operators
-	// --operators
-	stm_out& gfx_txr_1d::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_1d::operator<<(op_stream_t& stm) const {
+		a_gfx_txr::operator<<(stm);
 		return stm;
 	}
-	stm_in& gfx_txr_1d::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_1d::operator>>(ip_stream_t& stm) {
+		a_gfx_txr::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1bit gfx_txr_1d::remake(const gfx_img& img)
+	v1bit gfx_txr_1d::remake()
 	{
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
-		if (get_count_x() <= 0) { return NW_FALSE; }
+		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(get_size() > 0, "no size!", return NW_FALSE);
 
-		glGenTextures(1, &m_handle);
-		glBindTexture(GL_TEXTURE_1D, m_handle);
+		glBindTexture(GL_TEXTURE_1D, get_handle());
 
 		v4f border_color = { 0.5f, 0.5f, 0.5f, 1.0f };
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -38,19 +38,24 @@ namespace NW
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameterfv(GL_TEXTURE_1D, GL_TEXTURE_BORDER_COLOR, &border_color[0]);
 
-		glTexImage1D(GL_TEXTURE_1D, 0, get_pxl_fmt(), get_count_x(), 0, get_pxl_fmt(), get_vtype(), get_bytes());
+		glTexImage1D(
+			GL_TEXTURE_1D, 0, get_format(),
+			get_size_x(), 0,
+			get_format(), get_pxtype(), get_data()
+		);
+		glGenerateMipmap(GL_TEXTURE_1D);
 
 		return NW_TRUE;
 	}
-	v1nil gfx_txr_1d::clear(ptr_tc buffer)
+	v1nil gfx_txr_1d::clear(ptr_tc data)
 	{
-		glClearTexImage(get_handle(), 0, get_pxl_fmt(), get_vtype(), buffer);
+		a_gfx_txr::clear(data);
 	}
 	v1nil gfx_txr_1d::on_draw()
 	{
 		a_gfx_txr::on_draw();
-		glEnable(GL_TEXTURE_1D);
-		glActiveTexture(GL_TEXTURE0 + get_slot());
+
+		// glEnable(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, get_handle());
 	}
 	// --==</core_methods>==--
@@ -67,10 +72,10 @@ namespace NW
 	// --setters
 	// --operators
 	// --operators
-	stm_out& gfx_txr_1d::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_1d::operator<<(op_stream_t& stm) const {
 		return stm;
 	}
-	stm_in& gfx_txr_1d::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_1d::operator>>(ip_stream_t& stm) {
 		return stm;
 	}
 	// --==<core_methods>==--
@@ -118,10 +123,10 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	void gfx_txr_1d::clear(ptr value)
+	v1nil gfx_txr_1d::clear(ptr value)
 	{
 	}
-	void gfx_txr_1d::on_draw()
+	v1nil gfx_txr_1d::on_draw()
 	{
 		a_gfx_txr::on_draw();
 	}

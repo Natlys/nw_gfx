@@ -10,17 +10,19 @@ namespace NW
 	class NW_API gfx_txr_2d : public a_gfx_txr
 	{
 	public:
-		gfx_txr_2d(gfx_engine& graphics);
+		gfx_txr_2d();
 		virtual ~gfx_txr_2d();
+		// --getters
 		// --setters
+		// --predicates
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const override;
-		virtual stm_in& operator>>(stm_in& stm) override;
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
-		virtual v1bit remake(img_tc& img) override;
-		virtual v1nil clear(ptr_tc buffer) override;
+		virtual v1bit remake() override;
+		virtual v1nil clear(ptr_tc data) override;
 		virtual v1nil on_draw() override;
-	private:
+	public:
 #if (NW_GAPI & NW_GAPI_D3D)
 		ID3D11Texture2D* m_native;
 #endif
@@ -29,17 +31,17 @@ namespace NW
 	class NW_API gfx_txr_2d_mulsmp : public gfx_txr_2d
 	{
 	public:
-		gfx_txr_2d_mulsmp(gfx_engine& graphics);
+		gfx_txr_2d_mulsmp();
 		~gfx_txr_2d_mulsmp();
 		// --getters
 		inline v1u get_samples() const { return m_samples; }
 		// --setters
-		void set_samples(v1u samples);
+		v1nil set_samples(v1u samples);
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const override;
-		virtual stm_in& operator>>(stm_in& stm) override;
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
-		virtual v1bit remake(img_tc& img) override;
+		virtual v1bit remake();
 		virtual v1nil on_draw() override;
 	private:
 		v1u m_samples;

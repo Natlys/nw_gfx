@@ -3,29 +3,31 @@
 #if (defined NW_GAPI)
 #	include "../../core/nw_gfx_engine.h"
 #	include "../../lib/nw_gfx_lib_txr.h"
+#	include "../img/nw_gfx_img.h"
 	#if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_txr_2d::gfx_txr_2d(gfx_engine& graphics) :
-		a_gfx_txr(graphics)
+	gfx_txr_2d::gfx_txr_2d() :
+		a_gfx_txr()
 	{
 	}
 	gfx_txr_2d::~gfx_txr_2d() { }
 	// --setters
 	// --operators
-	stm_out& gfx_txr_2d::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_2d::operator<<(op_stream_t& stm) const {
+		a_gfx_txr::operator<<(stm);
 		return stm;
 	}
-	stm_in& gfx_txr_2d::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_2d::operator>>(ip_stream_t& stm) {
+		a_gfx_txr::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1bit gfx_txr_2d::remake(img_tc& img)
+	v1bit gfx_txr_2d::remake()
 	{
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
-		if (get_count_x() <= 0 || get_count_y() <= 0) { return NW_FALSE; }
-		
-		glGenTextures(1, &m_handle);
+		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(has_size(), "no size!", return NW_FALSE);
+
 		glBindTexture(GL_TEXTURE_2D, get_handle());
 
 		v4f border_color = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -36,30 +38,33 @@ namespace NW
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &border_color[0]);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, get_pxl_fmt(), get_count_x(), get_count_y(), 0, get_pxl_fmt(), get_vtype(), get_bytes());
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, get_format(),
+			get_size_x(), get_size_y(), 0,
+			get_format(), get_pxtype(), get_data()
+		);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		return NW_TRUE;
 	}
-	v1nil gfx_txr_2d::clear(ptr_tc buffer)
+	v1nil gfx_txr_2d::clear(ptr_tc data)
 	{
-		glClearTexImage(get_handle(), 0, get_pxl_fmt(), get_vtype(), buffer);
+		a_gfx_txr::clear(data);
 	}
 	v1nil gfx_txr_2d::on_draw()
 	{
 		a_gfx_txr::on_draw();
 
-		glEnable(GL_TEXTURE_2D);
-		glActiveTexture(GL_TEXTURE0 + get_slot());
+		// glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, get_handle());
 	}
 	// --==</core_methods>==--
 }
 namespace NW
 {
-	gfx_txr_2d_mulsmp::gfx_txr_2d_mulsmp(gfx_engine& graphics) :
-		gfx_txr_2d(graphics),
-		m_samples(0)
+	gfx_txr_2d_mulsmp::gfx_txr_2d_mulsmp() :
+		gfx_txr_2d(),
+		m_samples(NW_NULL)
 	{
 	}
 	gfx_txr_2d_mulsmp::~gfx_txr_2d_mulsmp() { }
@@ -68,22 +73,23 @@ namespace NW
 		m_samples = samples;
 	}
 	// --operators
-	stm_out& gfx_txr_2d_mulsmp::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_2d_mulsmp::operator<<(op_stream_t& stm) const {
+		gfx_txr_2d::operator<<(stm);
 		return stm;
 	}
-	stm_in& gfx_txr_2d_mulsmp::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_2d_mulsmp::operator>>(ip_stream_t& stm) {
+		gfx_txr_2d::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1bit gfx_txr_2d_mulsmp::remake(img_tc& img)
+	v1bit gfx_txr_2d_mulsmp::remake()
 	{
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
-		if (get_count_x() <= 0 || get_count_y() <= 0) { return NW_FALSE; }
+		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(get_size() > 0, "no size!", return NW_FALSE);
+		NW_CHECK(get_samples() > 0, "no samples!", return NW_FALSE);
 		
-		glGenTextures(1, &m_handle);
-		glBindTexture(GL_TEXTURE_2D, m_handle);
-
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, m_samples, m_pxl_fmt, get_count_x(), get_count_y(), GL_FALSE);
+		glBindTexture(GL_TEXTURE_2D, get_handle());
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, get_samples(), get_format(), get_size_x(), get_size_y(), GL_FALSE);
 
 		return NW_TRUE;
 	}
@@ -91,9 +97,8 @@ namespace NW
 	{
 		a_gfx_txr::on_draw();
 
-		glEnable(GL_MULTISAMPLE);
-		glActiveTexture(GL_TEXTURE0 + m_slot);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_handle);
+		// glEnable(GL_MULTISAMPLE);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, get_handle());
 	}
 	// --==</core_methods>==--
 }
@@ -109,10 +114,10 @@ namespace NW
 	gfx_txr_2d::~gfx_txr_2d() { if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; } }
 	// --setters
 	// --operators
-	stm_out& gfx_txr_2d::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_2d::operator<<(op_stream_t& stm) const {
 		return stm;
 	}
-	stm_in& gfx_txr_2d::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_2d::operator>>(ip_stream_t& stm) {
 		return stm;
 	}
 	// --==<core_methods>==--
@@ -164,10 +169,10 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	void gfx_txr_2d::clear(ptr value)
+	v1nil gfx_txr_2d::clear(ptr value)
 	{
 	}
-	void gfx_txr_2d::on_draw()
+	v1nil gfx_txr_2d::on_draw()
 	{
 		a_gfx_txr::on_draw();
 	}
@@ -182,14 +187,14 @@ namespace NW
 	}
 	gfx_txr_2d_mulsmp::~gfx_txr_2d_mulsmp() { if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; } }
 	// --setters
-	void gfx_txr_2d_mulsmp::set_samples(v1u samples) {
+	v1nil gfx_txr_2d_mulsmp::set_samples(v1u samples) {
 		m_samples = samples;
 	}
 	// --operators
-	stm_out& gfx_txr_2d_mulsmp::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_txr_2d_mulsmp::operator<<(op_stream_t& stm) const {
 		return stm;
 	}
-	stm_in& gfx_txr_2d_mulsmp::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_txr_2d_mulsmp::operator>>(ip_stream_t& stm) {
 		return stm;
 	}
 	// --==<core_methods>==--
@@ -202,7 +207,7 @@ namespace NW
 		
 		return NW_TRUE;
 	}
-	void gfx_txr_2d_mulsmp::on_draw()
+	v1nil gfx_txr_2d_mulsmp::on_draw()
 	{
 		a_gfx_txr::on_draw();
 	}

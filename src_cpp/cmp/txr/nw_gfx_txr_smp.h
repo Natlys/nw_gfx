@@ -2,51 +2,54 @@
 #define NW_GFX_TEXTURE_SAMPLER_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#include "cmp/nw_gfx_cmp.h"
+#	include "../nw_gfx_cmp.h"
 namespace NW
 {
 	/// gfx_txr_smp class
 	class NW_API gfx_txr_smp : public t_cmp<gfx_txr_smp>, public a_gfx_cmp
 	{
 	public:
-#if (NW_GAPI & NW_GAPI_OGL)
-		using handle = GLuint;
-		using wrap = GLenum;
-		using filter = GLenum;
-#endif
-#if (NW_GAPI & NW_GAPI_D3D)
-		using handle = ID3D11SamplerState*;
-		using wrap = D3D11_TEXTURE_ADDRESS_MODE;
-		using filter = D3D11_FILTER;
-#endif
+#	if (NW_GAPI & NW_GAPI_OGL)
+		using handle_t = GLuint;
+		using filter_t = GLenum;
+		using border_t = GLenum;
+#	endif
+#	if (NW_GAPI & NW_GAPI_D3D)
+		using handle_t = ID3D11SamplerState*;
+		using filter_t = D3D11_FILTER;
+		using border_t = D3D11_TEXTURE_ADDRESS_MODE;
+#	endif
+		using handle_tc = const handle_t;
+		using filter_tc = const filter_t;
+		using border_tc = const border_t;
 	public:
-		gfx_txr_smp(
-			gfx_engine& graphics,
-			filter filter_mode = NW_NULL,
-			wrap wrap_mode = NW_NULL,
-			v4f border_color = v4f()
-		);
+		gfx_txr_smp();
 		~gfx_txr_smp();
 		// --getters
-		inline handle get_handle()       { return m_handle; }
-		inline v1u get_slot() const      { return m_slot; }
-		inline wrap get_wrap() const     { return m_wrap; }
-		inline filter get_filter() const { return m_filter; }
+		inline handle_t get_handle()        { return m_handle; }
+		inline handle_tc get_handle() const { return m_handle; }
+		inline cv1u get_slot() const        { return m_slot; }
+		inline filter_tc get_filter() const { return m_filter; }
+		inline border_tc get_border() const { return m_border; }
+		inline cv4f& get_color() const      { return m_color; }
 		// --setters
-		void set_slot(v1u slot);
+		v1nil set_slot(cv1u slot);
+		v1nil set_filter(filter_tc filter);
+		v1nil set_border(border_tc border);
+		v1nil set_color(cv4f& color);
 		// --core_methods
-		v1b remake(
-			filter filter_mode = NW_NULL,
-			wrap wrap_mode = NW_NULL,
-			v4f border_color = v4f()
-		);
+		v1bit remake();
+		inline v1bit remake(filter_t filter) { set_filter(filter); return remake(); }
+		inline v1bit remake(filter_t filter, border_tc border) { set_border(border); return remake(filter); }
+		inline v1bit remake(border_tc border, cv4f& color)     { set_color(color); return remake(get_filter(), border); }
+		inline v1bit remake(filter_t filter, border_tc border, cv4f& color) { set_color(color); return remake(filter, border); }
 		virtual v1nil on_draw() override;
 	private:
-		handle m_handle;
+		handle_t m_handle;
 		v1u m_slot;
-		wrap m_wrap;
-		filter m_filter;
-		v4f m_border_color;
+		filter_t m_filter;
+		border_t m_border;
+		v4f m_color;
 	};
 }
 #endif	// NW_GFX_GAPI

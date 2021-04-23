@@ -6,15 +6,15 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	a_gfx_buf::a_gfx_buf(gfx_engine& graphics) :
-		t_cmp(), a_gfx_cmp(graphics),
+	a_gfx_buf::a_gfx_buf() :
+		t_cmp(), a_gfx_cmp(),
 		m_handle(NW_NULL)
 	{
 	}
-	a_gfx_buf::a_gfx_buf(gfx_engine& graphics, cv1u stride, cv1u count, ptr_tc data) :
-		a_gfx_buf(graphics)
+	a_gfx_buf::a_gfx_buf(layt_tc& layout, cv1u count, ptr_tc data) :
+		a_gfx_buf()
 	{
-		NW_CHECK(remake(stride, count, data), "failed remake!", return);
+		NW_CHECK(mem_buf::remake(layout, count, data), "failed remake!", return);
 	}
 	a_gfx_buf::~a_gfx_buf() { if (m_handle != NW_NULL) { glDeleteBuffers(1u, &m_handle); m_handle = NW_NULL; } }
 	// --setters
@@ -22,10 +22,10 @@ namespace NW
 		mem_buf::set_data(count, data, offset);
 	}
 	// --==<core_methods>==--
-	v1bit a_gfx_buf::remake(cv1u stride, cv1u count, ptr_tc data)
+	v1bit a_gfx_buf::remake()
 	{
 		if (m_handle != NW_NULL) { glDeleteBuffers(1u, &m_handle); m_handle = NW_NULL; }
-		NW_CHECK(mem_buf::remake(stride, count, data), "failed remake!", return NW_FALSE);
+		NW_CHECK(mem_buf::remake(), "failed remake!", return NW_FALSE);
 		glGenBuffers(1u, &m_handle);
 
 		return NW_TRUE;

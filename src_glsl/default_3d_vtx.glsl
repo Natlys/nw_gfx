@@ -11,8 +11,8 @@ layout(std140)uniform cst_transform{mat4 cst_model;mat4 cst_view;mat4 cst_proj;}
 void main()
 {
 	gl_Position =
-		//cst_proj *
-		//cst_view *
+		cst_proj *
+		cst_view *
 		cst_model *
 		vec4(vsi_vtx_crd.xyz, 1.0f);
 

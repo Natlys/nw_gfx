@@ -10,15 +10,15 @@ namespace NW
 {
 	using namespace NW;
 	class NW_API gfx_engine;
+	class NW_API gfx_context;
+	class NW_API gfx_lib_loader;
+
 	class NW_API a_gfx_cmp;
-
 	class NW_API a_gfx_ent;
-	class NW_API gfx_ent_vtx;
-	class NW_API gfx_ent_idx;
-
+	
 	class NW_API gfx_mtl;
 
-	class NW_API fmbuf;
+	class NW_API gfx_fmbuf;
 
 	class NW_API gfx_buf_vtx;
 	class NW_API gfx_buf_idx;

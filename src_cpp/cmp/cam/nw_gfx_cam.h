@@ -1,14 +1,14 @@
-#ifndef NW_GFX_CAMERA_H
-#define NW_GFX_CAMERA_H
+#ifndef NW_GFX_LIB_CAMERA_H
+#define NW_GFX_LIB_CAMERA_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#include "cmp/nw_gfx_cmp.h"
-#define NW_CAMERA_2D   1 << 1
-#define NW_CAMERA_3D   1 << 2
-#define NW_CAMERA      NW_CAMERA_2D
+#	include "../nw_gfx_cmp.h"
+#	define NW_CAMERA_2D   1 << 1
+#	define NW_CAMERA_3D   1 << 2
+#	define NW_CAMERA      NW_CAMERA_2D
 namespace NW
 {
-	/// gfx_cam class
+	/// graphics_camera class
 	/// description:
 	/// --makes all relevant rotation and movement calculations
 	/// --makes projection and view-lookAt matricies
@@ -16,11 +16,11 @@ namespace NW
 	/// ->config Frustrum, tarGet, 
 	/// ->set coordinates and rotation
 	/// ->get transform matricies: proj and view
-	class NW_API gfx_cam : public t_cmp<gfx_cam>
+	class NW_API gfx_cam : public t_cmp<gfx_cam>, public a_gfx_cmp
 	{
 	public:
-		using mode = venum;
-		using cmode = const mode;
+		using mode_t = venum;
+		using mode_tc = const mode_t;
 	public:
 		gfx_cam();
 		// --getters
@@ -39,7 +39,7 @@ namespace NW
 		inline const m4f& get_proj() const  { return m_proj; }
 		inline const m4f& get_view() const  { return m_view; }
 		inline const m4f& get_tform() const { return m_tform; }
-		inline const mode& get_mode() const { return m_mode; }
+		inline mode_tc& get_mode() const { return m_mode; }
 		static inline cm4f make_ortho(cv1f znear, cv1f zfar, cv1f ratio, cv1f fov) {
 			v1f lft = -fov * ratio / 2.0f;
 			v1f rht = +fov * ratio / 2.0f;
@@ -88,16 +88,16 @@ namespace NW
 			return result;
 		}
 		// --setters
-		void set_fov(v1f field_of_view);
-		void set_ratio(v1f size_x, v1f size_y);
-		void set_ratio(v1f aspect_ratio);
-		void set_clips(cv1f near_clip, cv1f far_clip);
-		void set_clips(const v2f& near_and_far);
-		void set_crd(const v3f& coord);
-		void set_rtn(const v3f& rotation);
-		void set_mode(mode mode);
+		v1nil set_fov(cv1f field_of_view);
+		v1nil set_ratio(cv1f size_x, cv1f size_y);
+		v1nil set_ratio(cv1f aspect_ratio);
+		v1nil set_clips(cv1f near_clip, cv1f far_clip);
+		v1nil set_clips(cv2f& near_and_far);
+		v1nil set_crd(cv3f& coord);
+		v1nil set_rtn(cv3f& rotation);
+		v1nil set_mode(mode_tc mode);
 		// --core_methods
-		void update();
+		virtual v1nil on_draw() override;
 	protected:
 		v1f m_fov;
 		v1f m_ratio;
@@ -105,8 +105,32 @@ namespace NW
 		v3f m_crd, m_rtn;
 		v3f m_right, m_upper, m_front;
 		m4f m_tform, m_view, m_proj;
-		mode m_mode;
+		mode_t m_mode;
+	};
+}
+namespace NW
+{
+	/// graphics_camera_lad class
+	class NW_API gfx_cam_lad : public gfx_cam
+	{
+	public:
+		using keybod_t = iop_keybod_t;
+		using keybod_tc = const keybod_t;
+		using cursor_t = iop_cursor_t;
+		using cursor_tc = const cursor_t;
+		using timer_t = time_state;
+		using timer_tc = const timer_t;
+	public:
+		v3f m_rtn_limit;
+		v1f m_rtn_speed;
+		v1f m_move_speed;
+		v1f m_zoom_speed;
+	public:
+		gfx_cam_lad();
+		// --core_methods
+		v1nil on_draw(keybod_tc* keyboard, cursor_tc* cursor, timer_tc* timer);
+		virtual v1nil on_draw() override;
 	};
 }
 #endif	// NW_GAPI
-#endif // NW_GFX_CAMERA_H
+#endif // NW_GFX_LIB_CAMERA_H

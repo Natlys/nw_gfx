@@ -11,53 +11,58 @@ namespace NW
 	class NW_API a_gfx_txr : public t_cmp<a_gfx_txr>, public a_gfx_cmp, public gfx_img
 	{
 	public:
+		using txr_t = a_gfx_txr;
+		using txr_tc = const txr_t;
+		using img_t = gfx_img;
+		using img_tc = const img_t;
 		using smp_t = mem_ref<gfx_txr_smp>;
 		using smp_tc = const smp_t;
-#if (NW_GAPI & NW_GAPI_OGL)
+#	if (NW_GAPI & NW_GAPI_OGL)
 		using handle_t = GLuint;
-		using txr_fmt = GLenum;
-		using pxl_fmt = GLenum;
-		using vtype_t = GLenum;
-#endif
-#if (NW_GAPI & NW_GAPI_D3D)
+		using format_t = GLenum;
+		using pxtype_t = GLenum;
+#	endif
+#	if (NW_GAPI & NW_GAPI_D3D)
 		using handle_t = ID3D11ShaderResourceView*;
-		using txr_fmt = DXGI_FORMAT;
-		using pxl_fmt = DXGI_FORMAT;
-		using vtype_t = DXGI_FORMAT;
-#endif
+		using format_t = DXGI_FORMAT;
+		using pxtype_t = DXGI_FORMAT;
+#	endif
 		using handle_tc = const handle_t;
+		using format_tc = const format_t;
+		using pxtype_tc = const pxtype_t;
 	public:
-		a_gfx_txr(gfx_engine& graphics);
+		a_gfx_txr();
+		a_gfx_txr(txr_tc& copy);
+		a_gfx_txr(txr_t&& copy);
 		virtual ~a_gfx_txr();
 		// --getters
 		inline handle_t get_handle()        { return m_handle; }
 		inline handle_tc get_handle() const { return m_handle; }
-		inline cv1u get_slot() const        { return m_slot; }
-		inline txr_fmt get_txr_fmt() const  { return m_txr_fmt; }
-		inline pxl_fmt get_pxl_fmt() const  { return m_pxl_fmt; }
-		inline vtype_t get_vtype() const    { return m_vtype; }
+		inline format_tc get_format() const { return m_format; }
+		inline pxtype_tc get_pxtype() const { return m_pxtype; }
+		inline cv1u get_slot() const   { return m_slot; }
 		inline smp_t& get_smp()        { return m_smp; }
 		inline smp_tc& get_smp() const { return m_smp; }
 		// --setters
-		v1nil set_slot(v1u slot);
-		v1nil set_txr_fmt(txr_fmt format);
-		v1nil set_pxl_fmt(pxl_fmt format);
+		v1nil set_slot(cv1u slot);
 		v1nil set_smp(smp_t& ref);
+		// --predicates
+		inline v1bit has_slot(cv1u slot = NW_NULL) const { return m_slot == slot; }
+		inline v1bit has_smp() const { return m_smp.is_valid(); }
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const = 0;
-		virtual stm_in& operator>>(stm_in& stm) = 0;
+		inline v1nil operator=(txr_tc& copy);
+		inline v1nil operator=(txr_t&& copy);
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
-		v1bit load_file(cstr file_path);
-		v1bit save_file(cstr file_path);
-		virtual v1b remake(img_tc& img);
-		virtual v1nil clear(ptr_tc buffer) = 0;
+		virtual v1bit remake();
+		virtual v1nil clear(ptr_tc data);
 		virtual v1nil on_draw() override;
 	protected:
 		handle_t m_handle;
+		format_t m_format;
+		pxtype_t m_pxtype;
 		v1u m_slot;
-		txr_fmt m_txr_fmt;
-		pxl_fmt m_pxl_fmt;
-		vtype_t m_vtype;
 		smp_t m_smp;
 	};
 }

@@ -6,8 +6,13 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_buf_shd::gfx_buf_shd(gfx_engine& graphics) :
-		a_gfx_buf(graphics),
+	gfx_buf_shd::gfx_buf_shd() :
+		a_gfx_buf(),
+		m_slot(NW_NULL)
+	{
+	}
+	gfx_buf_shd::gfx_buf_shd(layt_tc& layout, cv1u count, ptr_tc data) :
+		a_gfx_buf(layout, count, data),
 		m_slot(NW_NULL)
 	{
 	}
@@ -18,27 +23,24 @@ namespace NW
 	v1nil gfx_buf_shd::set_slot(cv1u slot) {
 		m_slot = slot;
 	}
-	v1nil gfx_buf_shd::set_data(cv1u count, ptr_tc data, cv1u offset) {
-		a_gfx_buf::set_data(count, data, offset);
-		glBufferSubData(GL_UNIFORM_BUFFER, get_stride() * offset, get_stride() * count, get_byte(get_stride() * offset));
+	v1nil gfx_buf_shd::set_data(cv1u key, ptr_tc data, cv1u count) {
+		a_gfx_buf::set_data(key, data, count);
+		glBufferSubData(GL_UNIFORM_BUFFER, get_stride() * key, get_stride() * count, get_data(get_stride() * key));
 	}
 	// --==<core_methods>==--
-	v1bit gfx_buf_shd::remake(cv1u stride, cv1u count, ptr_tc data)
+	v1bit gfx_buf_shd::remake()
 	{
-		NW_CHECK(mem_layt::remake(NW_NULL, NW_NULL), "failed remake!", return NW_FALSE);
-		NW_CHECK(mem_layt::get_size() == stride, "stride has to be equal to the layout size!", return NW_FALSE);
-		NW_CHECK(a_gfx_buf::remake(stride, count, data), "failed remake!", return NW_FALSE);
-		NW_CHECK(mem_layt::remake(mem_buf::get_bytes(), NW_NULL), "failed remake!", return NW_FALSE);
-
+		NW_CHECK(a_gfx_buf::remake(), "failed remake!", return NW_FALSE);
+		
 		glBindBuffer(GL_UNIFORM_BUFFER, get_handle());
-		glBufferData(GL_UNIFORM_BUFFER, get_space(), data, data ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 		
 		return NW_TRUE;
 	}
 	v1nil gfx_buf_shd::on_draw()
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, get_handle());
-		glBindBufferRange(GL_UNIFORM_BUFFER, get_slot(), get_handle(), get_offset(), get_space());
+		glBindBufferRange(GL_UNIFORM_BUFFER, get_slot(), get_handle(), get_space_used(), get_space());
 	}
 	// --==</core_methods>==--
 }
@@ -60,13 +62,13 @@ namespace NW
 	{
 	}
 	// --setters
-	void gfx_buf_shd::set_slot(v1u bind_slot) {
+	v1nil gfx_buf_shd::set_slot(v1u bind_slot) {
 		m_slot = bind_slot;
 	}
-	void gfx_buf_shd::set_offset(size offset) {
+	v1nil gfx_buf_shd::set_offset(size offset) {
 		m_offset = offset;
 	}
-	void gfx_buf_shd::set_data_bytes(size nof_bytes, cptr buffer, size offset) {
+	v1nil gfx_buf_shd::set_data_bytes(size nof_bytes, cptr buffer, size offset) {
 		D3D11_MAPPED_SUBRESOURCE msub_res{ 0 };
 		m_gfx->get_ctxh()->Map(m_handle, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &msub_res);
 		memcpy(static_cast<ubyte*>(msub_res.pData) + m_offset + offset, buffer, nof_bytes);
@@ -104,7 +106,7 @@ namespace NW
 		if (m_handle == NW_NULL) { throw init_error(__FILE__, __LINE__); return NW_FALSE; }
 		return NW_TRUE;
 	}
-	void gfx_buf_shd::on_draw()
+	v1nil gfx_buf_shd::on_draw()
 	{
 		m_gfx->get_ctxh()->VSSetConstantBuffers(m_slot, 1u, &m_handle);
 		m_gfx->get_ctxh()->PSSetConstantBuffers(m_slot, 1u, &m_handle);

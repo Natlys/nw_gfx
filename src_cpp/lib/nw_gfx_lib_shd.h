@@ -3,39 +3,34 @@
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
 #include "nw_gfx_lib_core.h"
-namespace NW
-{
-	extern v1bit gfx_load_shd();
-	NW_API v1bit gfx_check_shader(v1u shd_id);
-}
-#if (NW_GAPI & NW_GAPI_OGL)
+#	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
 	// general
-	typedef GLuint    (NW_API_ENTRYP pfn_ogl_shd_crt)          (GLenum shd_type);
-	typedef void      (NW_API_ENTRYP pfn_ogl_shd_del)          (GLuint shd_id);
-	typedef void      (NW_API_ENTRYP pfn_ogl_shd_compile)      (GLuint shd_id);
+	typedef GLuint    (NW_API_ENTRYP pfn_gfx_shd_crt)          (GLenum shd_type);
+	typedef v1nil     (NW_API_ENTRYP pfn_gfx_shd_del)          (GLuint shd_id);
+	typedef v1nil     (NW_API_ENTRYP pfn_gfx_shd_compile)      (GLuint shd_id);
 	// getters
-	typedef void      (NW_API_ENTRYP pfn_ogl_shd_get_iv)       (GLuint shd_id, GLenum param_type, GLint* param_buf);
-	typedef void      (NW_API_ENTRYP pfn_ogl_shd_get_info_log) (GLuint shd_id, GLsizei max_length, GLsizei* length, GLchar* info_log_buf);
+	typedef v1nil     (NW_API_ENTRYP pfn_gfx_shd_get_iv)       (GLuint shd_id, GLenum param_type, GLint* param_buf);
+	typedef v1nil     (NW_API_ENTRYP pfn_gfx_shd_get_info_log) (GLuint shd_id, GLsizei max_length, GLsizei* length, GLchar* info_log_buf);
 	// setters
-	typedef void      (NW_API_ENTRYP pfn_ogl_shd_set_source)   (GLuint shd_id, GLsizei arg_count, const GLchar* const* src_string, const GLint* src_length);
+	typedef v1nil     (NW_API_ENTRYP pfn_gfx_shd_set_source)   (GLuint shd_id, GLsizei arg_count, const GLchar* const* src_string, const GLint* src_length);
 	// predicates
-	typedef GLboolean (NW_API_ENTRYP pfn_ogl_shd_is_shader)    (GLuint shd_id);
+	typedef GLboolean (NW_API_ENTRYP pfn_gfx_shd_is_shader)    (GLuint shd_id);
 }
 namespace NW
 {
 	// general
-	extern pfn_ogl_shd_crt ogl_shd_crt;
-	extern pfn_ogl_shd_del ogl_shd_del;
-	extern pfn_ogl_shd_compile ogl_shd_compile;
+	extern pfn_gfx_shd_crt ogl_shd_crt;
+	extern pfn_gfx_shd_del ogl_shd_del;
+	extern pfn_gfx_shd_compile ogl_shd_compile;
 	// getters
-	extern pfn_ogl_shd_get_iv ogl_shd_get_iv;
-	extern pfn_ogl_shd_get_info_log ogl_shd_get_info_log;
+	extern pfn_gfx_shd_get_iv ogl_shd_get_iv;
+	extern pfn_gfx_shd_get_info_log ogl_shd_get_info_log;
 	// setters
-	extern pfn_ogl_shd_set_source ogl_shd_set_source;
+	extern pfn_gfx_shd_set_source ogl_shd_set_source;
 	// predicates
-	extern pfn_ogl_shd_is_shader ogl_shd_is_shader;
+	extern pfn_gfx_shd_is_shader ogl_shd_is_shader;
 }
 // general
 #	define glCreateShader     ogl_shd_crt
@@ -70,8 +65,8 @@ namespace NW
 #define GL_COMPILE_STATUS                 0x8B81
 #define GL_LINK_STATUS                    0x8B82
 #endif	// __gl_h__
-#endif
-#if (NW_GAPI & NW_GAPI_D3D)
+#	endif	// GAPI_OGL
+#	if (NW_GAPI & NW_GAPI_D3D)
 struct ID3D10Blob;
 struct ID3D11Blob;
 using ID3DBlob = ID3D10Blob;
@@ -99,6 +94,6 @@ namespace NW
 	extern pfn_gfx_shd_compile gfx_shd_compile;
 }
 #	define D3DCompile gfx_shd_compile
-#endif
+#	endif	// GAPI_D3D
 #endif	// NW_GAPI
 #endif	// NW_GFX_LIB_SHD_H

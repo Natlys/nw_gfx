@@ -8,71 +8,133 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_cmd_buf::gfx_cmd_buf(gfx_engine& graphics) :
-		a_gfx_rsc(graphics),
+	gfx_cmd::gfx_cmd(type_tc type, prim_tc primitive) :
+		a_mem_cmp(),
+		m_type(type),
+		m_prim(primitive),
 		m_list(NW_NULL)
 	{
 	}
-	gfx_cmd_buf::~gfx_cmd_buf()
+	gfx_cmd::gfx_cmd(cmd_tc& copy) :
+		a_mem_cmp(copy),
+		m_type(copy.m_type),
+		m_prim(copy.m_prim),
+		m_list(NW_NULL)
 	{
-		while (m_list != NW_NULL) {
+		list_t* temp = copy.m_list;
+		while (temp != NW_NULL) {
+			add_cmp(temp->m_data);
+			temp = temp->m_link;
 		}
 	}
+	gfx_cmd::gfx_cmd(cmd_t&& copy) :
+		a_mem_cmp(copy),
+		m_type(copy.m_type),
+		m_prim(copy.m_prim),
+		m_list(NW_NULL)
+	{
+		list_t* temp = copy.m_list;
+		while (temp != NW_NULL) {
+			add_cmp(temp->m_data);
+			temp = copy.m_list;
+		}
+	}
+	gfx_cmd::~gfx_cmd()
+	{
+		while (m_list != NW_NULL) { rmv_cmp(NW_NULL); }
+	}
 	// --setters
-	v1nil gfx_cmd_buf::add_cmd(vcmd_tc& command) {
-		list_t* next_head = mem_sys::get().new_one<list_t>();
+	v1nil gfx_cmd::add_cmp(cmp_t* component) {
+		list_t* next_head = new list_t();
 		next_head->m_link = m_list;
-		next_head->m_data = mem_sys::get().new_one<vcmd_t>(command);
+		next_head->m_data = component;
 		m_list = next_head;
 	}
-	v1nil gfx_cmd_buf::add_cmd(icmd_tc& command) {
-		list_t* next_head = mem_sys::get().new_one<list_t>();
+	v1nil gfx_cmd::rmv_cmp(cv1u key) {
+		NW_CHECK(has_cmp(key), "index error!", return);
+		list_t* next_head = m_list->m_link;
+		delete m_list;
+		m_list = next_head;
+	}
+	// --operators
+	v1nil gfx_cmd::operator=(cmd_tc& copy) {
+		NW_ERROR("does not work for now", return);
+	}
+	v1nil gfx_cmd::operator=(cmd_t&& copy) {
+		NW_ERROR("does not work for now", return);
+	}
+	// --==<core_methods>==--
+	// --==</core_methods>==--
+}
+namespace NW
+{
+	gfx_cmd_buf::gfx_cmd_buf() :
+		a_gfx_cmp(),
+		m_list(NW_NULL)
+	{
+	}
+	gfx_cmd_buf::gfx_cmd_buf(cbuf_tc& copy) :
+		a_gfx_cmp(copy)
+	{
+		NW_ERROR("does not work for now", return);
+	}
+	gfx_cmd_buf::gfx_cmd_buf(cbuf_t&& copy) :
+		a_gfx_cmp(copy)
+	{
+		NW_ERROR("does not work for now", return);
+	}
+	gfx_cmd_buf::~gfx_cmd_buf()
+	{
+		while (m_list != NW_NULL) { rmv_cmd(NW_NULL); }
+	}
+	// --setters
+	v1nil gfx_cmd_buf::add_cmd(cmd_tc& command) {
+		list_t* next_head = new list_t();
 		next_head->m_link = m_list;
-		next_head->m_data = mem_sys::get().new_one<icmd_t>(command);
+		next_head->m_data = new cmd_t(command);
 		m_list = next_head;
 	}
 	v1nil gfx_cmd_buf::rmv_cmd(cv1u key) {
+		NW_CHECK(has_cmd(key), "index error!", return);
+		list_t* next_head = m_list->m_link;
+		delete m_list->m_data;
+		delete m_list;
+		m_list = next_head;
+	}
+	// --operators
+	v1nil gfx_cmd_buf::operator=(cbuf_tc& copy) {
+		NW_ERROR("does not work for now", return);
+	}
+	v1nil gfx_cmd_buf::operator=(cbuf_t&& copy) {
+		NW_ERROR("does not work for now", return);
 	}
 	// --==<core_methods>==--
 	v1nil gfx_cmd_buf::on_draw()
 	{
 		while (m_list != NW_NULL) {
-			switch (m_list->m_data->m_type) {
-			case NW_GFX_CMD_VTX: {
-				vcmd_t* vcmd = *m_list;
-				NW_CHECK(vcmd->m_vbuf_first && (vcmd->m_vbuf_first < vcmd->m_vbuf_last), "no vertices!", return);
-				GLuint vcount = 0u;
-				for (gfx_buf_vtx* ivbuf = vcmd->m_vbuf_first; ivbuf < vcmd->m_vbuf_last; ivbuf++) {
-					ivbuf->on_draw();
-					vcount += ivbuf->get_count();
+			auto& icmd = *m_list->m_data;
+			GLsizei vcount = NW_NULL;
+			GLsizei icount = NW_NULL;
+			GLenum itype = NW_NULL;
+			while (icmd.m_list != NW_NULL) {
+				a_gfx_buf* icmp = static_cast<a_gfx_buf*>(icmd.m_list->m_data);
+				icmp->on_draw();
+				if (gfx_buf_idx* ibuf = icmp->check_cast<gfx_buf_idx>()) {
+					icount += ibuf->get_count();
+					itype = gfx_info::get_type(ibuf->get_layt().get_vtype());
 				}
-				glDrawArrays(vcmd->m_prim, NW_NULL, vcount);
-				mem_sys::get().del_one<vcmd_t>(vcmd);
-				break;
-			}
-			case NW_GFX_CMD_IDX: {
-				icmd_t* icmd = *m_list;
-				NW_CHECK(icmd->m_vbuf_first && (icmd->m_vbuf_first < icmd->m_vbuf_last), "no vertices!", return);
-				NW_CHECK(icmd->m_ibuf, "no indicies!", return);
-				for (gfx_buf_vtx* ivbuf = icmd->m_vbuf_first; ivbuf < icmd->m_vbuf_last; ivbuf++) {
-					ivbuf->on_draw();
+				if (gfx_buf_vtx* vbuf = icmp->check_cast<gfx_buf_vtx>()) {
+					vcount += vbuf->get_count();
 				}
-				gfx_buf_idx* ibuf = icmd->m_ibuf;
-				ibuf->on_draw();
-				const GLuint icount = ibuf->get_count();
-				const GLenum itype =
-					ibuf->get_stride() == 1u ? GL_UNSIGNED_BYTE :
-					ibuf->get_stride() == 2u ? GL_UNSIGNED_SHORT :
-					GL_UNSIGNED_INT;
-				glDrawElements(icmd->m_prim, icount, itype, NW_NULL);
-				mem_sys::get().del_one<icmd_t>(icmd);
-				break;
+				icmd.rmv_cmp(NW_NULL);
 			}
-			default: NW_ERROR("undefined command!", return); break;
+			if (icmd.m_type == NW_GFX_CMD_VTX) {
+				glDrawArrays(icmd.m_prim, NW_NULL, vcount);
 			}
-			list_t* next_head = m_list->m_link;
-			mem_sys::get().del_one<list_t>(m_list);
-			m_list = next_head;
+			if (icmd.m_type == NW_GFX_CMD_IDX) {
+				glDrawElements(icmd.m_prim, icount, itype, NW_NULL);
+			}
+			rmv_cmd(NW_NULL);
 		}
 	}
 	// --==</core_methods>==--

@@ -2,7 +2,6 @@
 #define NW_GFX_CMD_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#	include "nw_gfx_rsc.h"
 #	include "../lib/nw_gfx_lib_info.h"
 #	include "../cmp/buf/nw_gfx_buf_vtx.h"
 #	include "../cmp/buf/nw_gfx_buf_idx.h"
@@ -18,6 +17,10 @@ namespace NW
 		using cmd_tc = const cmd_t;
 		using type_t = v1u;
 		using type_tc = const type_t;
+		using cmp_t = a_gfx_cmp;
+		using cmp_tc = const cmp_t;
+		using list_t = t_mem_link<cmp_t>;
+		using list_tc = const list_t;
 #	if (NW_GAPI & NW_GAPI_OGL)
 		using prim_t = GLenum;
 #	endif	// GAPI_OGL
@@ -26,67 +29,63 @@ namespace NW
 #	endif	// GAPI_D3D
 		using prim_tc = const prim_t;
 	public:
-		gfx_cmd(type_tc type, prim_tc primitive) :
-			a_mem_cmp(),
-			m_type(type),
-			m_prim(primitive)
-		{
+		gfx_cmd(type_tc type, prim_tc primitive);
+		template<size_tc count>
+		gfx_cmd(type_tc type, prim_tc primitive, t_sarray<cmp_t*, count>& cmps) :
+			gfx_cmd(type, primitive) { for (auto& icmp : cmps) { add_cmp(icmp); } }
+		gfx_cmd(cmd_tc& copy);
+		gfx_cmd(cmd_t&& copy);
+		~gfx_cmd();
+		// --getters
+		inline cv1u get_cmp_count() const {
+			v1u count = NW_NULL;
+			list_t* temp = m_list;
+			while (temp != NW_NULL) { count++; temp = temp->m_link; }
+			return count;
 		}
-		virtual ~gfx_cmd() = default;
+		// --setters
+		v1nil add_cmp(cmp_t* component);
+		v1nil rmv_cmp(cv1u key = NW_NULL);
+		// --predicates
+		inline v1bit has_cmp(cv1u key = NW_NULL) const { return get_cmp_count() > key; }
+		// --operators
+		v1nil operator=(cmd_tc& copy);
+		v1nil operator=(cmd_t&& copy);
 	public:
 		type_t m_type;
 		prim_t m_prim;
-	};
-	/// graphics_command_vtx struct
-	struct NW_API gfx_cmd_vtx : public gfx_cmd
-	{
-	public:
-		gfx_cmd_vtx(gfx_buf_vtx* vbuf_array, cv1u vbuf_count = 1u, prim_tc primitive = NW_PRIM_TRIANGLES) :
-			gfx_cmd(NW_GFX_CMD_VTX, primitive),
-			m_vbuf_first(vbuf_array),
-			m_vbuf_last(vbuf_array + vbuf_count)
-		{
-		}
-	public:
-		gfx_buf_vtx* m_vbuf_first;
-		gfx_buf_vtx* m_vbuf_last;
-	};
-	/// graphics_command_idx struct
-	struct NW_API gfx_cmd_idx : public gfx_cmd
-	{
-	public:
-		gfx_cmd_idx(gfx_buf_idx* ibuf, gfx_buf_vtx* vbuf_array, cv1u vbuf_count = 1u, prim_tc primitive = NW_PRIM_TRIANGLES) :
-			gfx_cmd(NW_GFX_CMD_IDX, primitive),
-			m_ibuf(ibuf),
-			m_vbuf_first(vbuf_array),
-			m_vbuf_last(vbuf_array + vbuf_count)
-		{
-		}
-	public:
-		gfx_buf_idx* m_ibuf;
-		gfx_buf_vtx* m_vbuf_first;
-		gfx_buf_vtx* m_vbuf_last;
+		list_t* m_list;
 	};
 	/// graphics_command_buffer class
-	class NW_API gfx_cmd_buf : public a_gfx_rsc
+	class NW_API gfx_cmd_buf : public a_gfx_cmp
 	{
 	public:
 		using cmd_t = gfx_cmd;
 		using cmd_tc = const cmd_t;
-		using vcmd_t = gfx_cmd_vtx;
-		using vcmd_tc = const vcmd_t;
-		using icmd_t = gfx_cmd_idx;
-		using icmd_tc = const icmd_t;
+		using cbuf_t = gfx_cmd_buf;
+		using cbuf_tc = const cbuf_t;
 		using list_t = t_mem_link<cmd_t>;
 		using list_tc = const list_t;
 	public:
-		gfx_cmd_buf(gfx_engine& graphics);
+		gfx_cmd_buf();
+		gfx_cmd_buf(cbuf_tc& copy);
+		gfx_cmd_buf(cbuf_t&& copy);
 		~gfx_cmd_buf();
 		// --getters
+		inline cv1u get_cmd_count() const {
+			v1u count = NW_NULL;
+			list_t* temp = m_list;
+			while (temp != NW_NULL) { count++; temp = m_list->m_link; }
+			return count;
+		}
 		// --setters
-		v1nil add_cmd(vcmd_tc& command);
-		v1nil add_cmd(icmd_tc& command);
-		v1nil rmv_cmd(cv1u key);
+		v1nil add_cmd(cmd_tc& command);
+		v1nil rmv_cmd(cv1u key = NW_NULL);
+		// --predicates
+		inline v1bit has_cmd(cv1u key = NW_NULL) const { return get_cmd_count() > key; }
+		// --operators
+		v1nil operator=(cbuf_tc& copy);
+		v1nil operator=(cbuf_t&& copy);
 		// --core_methods
 		virtual v1nil on_draw() override;
 	private:

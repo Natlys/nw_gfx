@@ -2,69 +2,58 @@
 #define NW_GFX_LIB_CORE_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-namespace NW
-{
-	extern NW_API v1bit gfx_load_core();
-	extern NW_API void gfx_clear_err();
-	extern NW_API v1bit gfx_get_err_log(cstr info, cstr location, v1u line);
-#	if (defined NW_DEBUG)
-#		define NW_DEBUG_CALL(code) ( gfx_clear_err(); (code) if (gfx_get_err_log(#code, __FILE__, __LINE__, "GL_ERROR: ") == NW_FALSE) { NW_BREAK(); } )
-#	else
-#		define NW_DEBUG_CALL(code) NW_VOID
-#	endif
-}
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
 	// getters
-	typedef void (NW_API_ENTRYP pfn_ogl_get_int_v)(GLenum info, GLint* param);
-	typedef const GLubyte* (NW_API_ENTRYP pfn_ogl_get_string)(GLenum info);
-	typedef GLenum (NW_API_ENTRYP pfn_ogl_get_error)(void);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_get_int_v)(GLenum info, GLint* param);
+	typedef const GLubyte* (NW_API_ENTRYP pfn_gfx_get_string)(GLenum info);
+	typedef GLenum (NW_API_ENTRYP pfn_gfx_get_error)(void);
 	// predicates
-	typedef GLboolean (NW_API_ENTRYP pfn_ogl_is_enabled)(GLenum what);
+	typedef GLboolean (NW_API_ENTRYP pfn_gfx_is_enabled)(GLenum what);
 	// drawing
-	typedef void (NW_API_ENTRYP pfn_ogl_draw_vtx)(GLenum primitive, GLint first, GLsizei count);
-	typedef void (NW_API_ENTRYP pfn_ogl_draw_idx)(GLenum primitive, GLsizei count, GLenum data_type, const GLvoid* index_data);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_draw_vtx)(GLenum primitive, GLint first, GLsizei count);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_draw_idx)(GLenum primitive, GLsizei count, GLenum data_type, const GLvoid* index_data);
 	// configs
-	typedef void (NW_API_ENTRYP pfn_ogl_viewport)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
-	typedef void (NW_API_ENTRYP pfn_ogl_scissor)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
-	typedef void (NW_API_ENTRYP pfn_ogl_enable)(GLenum mode_to_enable);
-	typedef void (NW_API_ENTRYP pfn_ogl_disable)(GLenum mode_to_disable);
-	typedef void (NW_API_ENTRYP pfn_ogl_blend_equation)(GLenum blend_mode);
-	typedef void (NW_API_ENTRYP pfn_ogl_blend_equation_separate)(GLenum blend_mode_rgb, GLenum blend_mode_alpha);
-	typedef void (NW_API_ENTRYP pfn_ogl_blend_function)(GLenum src_factor, GLenum dest_factor);
-	typedef void (NW_API_ENTRYP pfn_ogl_blend_function_separate)(GLenum src_factor_rgb, GLenum dest_factor_rgb, GLenum src_factor_alpha, GLenum dest_factor_alpha);
-	typedef void (NW_API_ENTRYP pfn_ogl_depth_mask)(GLboolean enable);
-	typedef void (NW_API_ENTRYP pfn_ogl_depth_func)(GLenum operation);
-	typedef void (NW_API_ENTRYP pfn_ogl_polygon_mode)(GLenum face, GLenum mode);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_viewport)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_scissor)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_enable)(GLenum mode_to_enable);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_disable)(GLenum mode_to_disable);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_blend_equation)(GLenum blend_mode);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_blend_equation_separate)(GLenum blend_mode_rgb, GLenum blend_mode_alpha);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_blend_function)(GLenum src_factor, GLenum dest_factor);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_blend_function_separate)(GLenum src_factor_rgb, GLenum dest_factor_rgb, GLenum src_factor_alpha, GLenum dest_factor_alpha);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_depth_mask)(GLboolean enable);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_depth_func)(GLenum operation);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_polygon_mode)(GLenum face, GLenum mode);
 	// other
-	typedef void (NW_API_ENTRYP pfn_ogl_clear_error)(void);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_clear_error)(void);
 }
 namespace NW
 {
 	// getters
-	extern pfn_ogl_get_int_v ogl_get_int_v;
-	extern pfn_ogl_get_string ogl_get_string;
-	extern pfn_ogl_get_error ogl_get_error;
+	extern pfn_gfx_get_int_v ogl_get_int_v;
+	extern pfn_gfx_get_string ogl_get_string;
+	extern pfn_gfx_get_error ogl_get_error;
 	// predicates
-	extern pfn_ogl_is_enabled ogl_is_enabled;
+	extern pfn_gfx_is_enabled ogl_is_enabled;
 	// drawing
-	extern pfn_ogl_draw_vtx ogl_draw_vtx;
-	extern pfn_ogl_draw_idx ogl_draw_idx;
+	extern pfn_gfx_draw_vtx ogl_draw_vtx;
+	extern pfn_gfx_draw_idx ogl_draw_idx;
 	// configs
-	extern pfn_ogl_viewport ogl_viewport;
-	extern pfn_ogl_scissor ogl_scissor;
-	extern pfn_ogl_enable ogl_enable;
-	extern pfn_ogl_disable ogl_disable;
-	extern pfn_ogl_blend_equation ogl_blend_equation;
-	extern pfn_ogl_blend_equation_separate ogl_blend_equation_separate;
-	extern pfn_ogl_blend_function ogl_blend_function;
-	extern pfn_ogl_blend_function_separate ogl_blend_function_separate;
-	extern pfn_ogl_depth_mask ogl_depth_mask;
-	extern pfn_ogl_depth_func ogl_depth_func;
-	extern pfn_ogl_polygon_mode ogl_polygon_mode;
+	extern pfn_gfx_viewport ogl_viewport;
+	extern pfn_gfx_scissor ogl_scissor;
+	extern pfn_gfx_enable ogl_enable;
+	extern pfn_gfx_disable ogl_disable;
+	extern pfn_gfx_blend_equation ogl_blend_equation;
+	extern pfn_gfx_blend_equation_separate ogl_blend_equation_separate;
+	extern pfn_gfx_blend_function ogl_blend_function;
+	extern pfn_gfx_blend_function_separate ogl_blend_function_separate;
+	extern pfn_gfx_depth_mask ogl_depth_mask;
+	extern pfn_gfx_depth_func ogl_depth_func;
+	extern pfn_gfx_polygon_mode ogl_polygon_mode;
 	// other
-	extern pfn_ogl_clear_error ogl_clear_error;
+	extern pfn_gfx_clear_error ogl_clear_error;
 }
 // getters
 #define glGetIntegerv            ogl_get_int_v
@@ -253,8 +242,6 @@ namespace NW
 #		define GL_RENDERER                       0x1F01
 #		define GL_VERSION                        0x1F02
 #		define GL_EXTENSIONS                     0x1F03
-		// formats
-#		define GL_UNSIGNED_INT_24_8              0x84FA
 		// error codes
 #		define GL_NO_ERROR                       0
 #		define GL_INVALID_ENUM                   0x0500
@@ -357,100 +344,102 @@ namespace NW
 #	endif	// NW_GFX_VAL_H
 #	ifndef NW_GFX_MACRO_H
 #		define NW_GFX_MACRO_H
-// // faces_sides_directions
-#		define NW_FACE_LFT     GL_LEFT
-#		define NW_FACE_RHT     GL_RIGHT
-#		define NW_FACE_LFT_RHT 0x0001 // none
-#		define NW_FACE_BOT     0x0003 // none
-#		define NW_FACE_TOP     0x0002 // none
-#		define NW_FACE_BOT_TOP 0x0004 // none
-#		define NW_FACE_BCK     GL_BACK
-#		define NW_FACE_FRT     GL_FRONT
-#		define NW_FACE_BCK_FRT GL_FRONT_AND_BACK 
-#		define NW_FACE_BCK_LFT GL_BACK_LEFT
-#		define NW_FACE_BCK_RHT GL_BACK_RIGHT
-#		define NW_FACE_FRT_LFT GL_FRONT_LEFT
-#		define NW_FACE_FRT_RHT GL_FRONT_RIGHT
-// // operators
-#		define NW_LOGIC_ALWAYS  GL_ALWAYS
-#		define NW_LOGIC_NEVER   GL_NEVER
-#		define NW_LOGIC_GREATER GL_GREATER
-#		define NW_LOGIC_LESSER  GL_LESS
-#		define NW_LOGIC_EQUAL   GL_EQUAL
-#		define NW_LOGIC_NEQUAL  GL_NOTEQUAL
-#		define NW_LOGIC_GEQUAL  GL_GEQUAL
-#		define NW_LOGIC_LEQUAL  GL_LEQUAL
-#		define NW_LOGIC_AND     GL_AND
-#		define NW_LOGIC_AND_REV GL_AND_REVERSE
-#		define NW_LOGIC_AND_INV GL_AND_INVERTED
-#		define NW_LOGIC_OR      GL_OR
-#		define NW_LOGIC_OR_NOT  GL_NOR 
-#		define NW_LOGIC_OR_EXC  GL_XOR
-#		define NW_LOGIC_NO_OPER GL_NOOP
-// // stencil testing
-#		define NW_STENCIL_DECR GL_DECR
-#		define NW_STENCIL_INCR GL_INCR
-#		define NW_STENCIL_KEEP GL_KEEP
-#		define NW_STENCIL_ZERO GL_ZERO
-#		define NW_STENCIL_REPL GL_REPLACE
-#		define NW_STENCIL_INVT GL_INVERT
-// // color blending
-#		define NW_BLEND_SRC_ALPHA		    GL_SRC_ALPHA
-#		define NW_BLEND_DST_ALPHA		    GL_DST_ALPHA
-#		define NW_BLEND_SRC_COLOR		    GL_SRC_COLOR
-#		define NW_BLEND_DST_COLOR		    GL_DST_COLOR
-#		define NW_BLEND_ONE_MINUS_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
-#		define NW_BLEND_ONE_MUNUS_DST_ALPHA GL_ONE_MUNUS_DST_ALPHA 
-#		define NW_BLEND_ONE_MINUS_SRC_COLOR GL_ONE_MINUS_SRC_COLOR
-#		define NW_BLEND_ONE_MINUS_DST_COLOR GL_ONE_MINUS_DST_COLOR
-// // face culling
-#		define NW_CULL_CLOCK  GL_CW
-#		define NW_CULL_COUNT  GL_CCW
-// // geometry filling
-#		define NW_FILL_LINE   GL_LINE
-#		define NW_FILL_FACE   GL_FILL
-// // primitives
-#		define NW_PRIM_POINTS         GL_POINTS
-#		define NW_PRIM_LINES          GL_LINES
-#		define NW_PRIM_LINE_LOOP      GL_LINE_LOOP
-#		define NW_PRIM_LINE_STRIP     GL_LINE_STRIP
-#		define NW_PRIM_TRIANGLES      GL_TRIANGLES
-#		define NW_PRIM_TRIANGLE_STRIP GL_TRIANGLE_STRIP
-#		define NW_PRIM_TRIANGLE_FAN   GL_TRIANGLE_FAN
-// // texture wraps
-#		define NW_WRAP_REPEAT  0x2901 // GL_REPEAT
-#		define NW_WRAP_CLAMP   0x812F // GL_CLAMP_TO_EDGE
-#		define NW_WRAP_BORDER  0x812D // GL_CLAMP_TO_BORDER
-// // texture filters
-#		define NW_FILTER_LINEAR  0x2601 // GL_LINEAR
-#		define NW_FILTER_NEAREST 0x2600 // GL_NEAREST
-// // texture formats
-#		define NW_FMT_RGB   0x1907 // GL_RGB
-#		define NW_FMT_RGBA  0x1908 // GL_RGBA
-#		define NW_FMT_IDX   0x1903 // GL_RED
-#		define NW_FMT_MONO  0x1903 // GL_RED
-// // pixel formats
-#		define NW_FMT_R8_S8        0x8231 // GL_R8I
-#		define NW_FMT_R8_U8        0x8232 // GL_R8UI
-#		define NW_FMT_R16_S16      0x8233 // GL_R16I
-#		define NW_FMT_R16_U16      0x8234 // GL_R16UI
-#		define NW_FMT_R32_S32      0x8235 // GL_R32I
-#		define NW_FMT_R8G8_U16     0x8236 // GL_RG8UI
-#		define NW_FMT_R8G8_S16     0x8237 // GL_RG8I
-#		define NW_FMT_R16G16_S32   0x0000 // none
-#		define NW_FMT_R8G8B8_S32   0x0001 // none
-#		define NW_FMT_R8G8B8A8_S32 0x0002 // none
-#		define NW_FMT_R32_U32      0x8236 // GL_R32UI
-#		define NW_FMT_R16G16_U32   0x0003 // none
-#		define NW_FMT_R8G8B8_U32   0x0004 // none
-#		define NW_FMT_R8G8B8A8_U32 0x0005 // none
-#		define NW_FMT_S8_S8        0x0006 // none
-#		define NW_FMT_D32_S32      0x0007 // none
-#		define NW_FMT_S8_U8        0x0008 // none
-#		define NW_FMT_D32_U32      GL_UNSIGNED_INT_24_8
-#		define NW_FMT_D24S8_S32    GL_UNSIGNED_INT_24_8
-#		define NW_FMT_D24S8_U32    GL_UNSIGNED_INT_24_8
-
+		// faces sides directions
+#		define NW_GFX_FACE_LFT     GL_LEFT
+#		define NW_GFX_FACE_RHT     GL_RIGHT
+#		define NW_GFX_FACE_LFT_RHT 0x0001 // none
+#		define NW_GFX_FACE_BOT     0x0003 // none
+#		define NW_GFX_FACE_TOP     0x0002 // none
+#		define NW_GFX_FACE_BOT_TOP 0x0004 // none
+#		define NW_GFX_FACE_BCK     GL_BACK
+#		define NW_GFX_FACE_FRT     GL_FRONT
+#		define NW_GFX_FACE_BCK_FRT GL_FRONT_AND_BACK 
+#		define NW_GFX_FACE_BCK_LFT GL_BACK_LEFT
+#		define NW_GFX_FACE_BCK_RHT GL_BACK_RIGHT
+#		define NW_GFX_FACE_FRT_LFT GL_FRONT_LEFT
+#		define NW_GFX_FACE_FRT_RHT GL_FRONT_RIGHT
+		// operators
+#		define NW_GFX_LOGIC_ALWAYS  GL_ALWAYS
+#		define NW_GFX_LOGIC_NEVER   GL_NEVER
+#		define NW_GFX_LOGIC_GREATER GL_GREATER
+#		define NW_GFX_LOGIC_LESSER  GL_LESS
+#		define NW_GFX_LOGIC_EQUAL   GL_EQUAL
+#		define NW_GFX_LOGIC_NEQUAL  GL_NOTEQUAL
+#		define NW_GFX_LOGIC_GEQUAL  GL_GEQUAL
+#		define NW_GFX_LOGIC_LEQUAL  GL_LEQUAL
+#		define NW_GFX_LOGIC_AND     GL_AND
+#		define NW_GFX_LOGIC_AND_REV GL_AND_REVERSE
+#		define NW_GFX_LOGIC_AND_INV GL_AND_INVERTED
+#		define NW_GFX_LOGIC_OR      GL_OR
+#		define NW_GFX_LOGIC_OR_NOT  GL_NOR 
+#		define NW_GFX_LOGIC_OR_EXC  GL_XOR
+#		define NW_GFX_LOGIC_NO_OPER GL_NOOP
+		// stencil testing
+#		define NW_GFX_STENCIL_DECR GL_DECR
+#		define NW_GFX_STENCIL_INCR GL_INCR
+#		define NW_GFX_STENCIL_KEEP GL_KEEP
+#		define NW_GFX_STENCIL_ZERO GL_ZERO
+#		define NW_GFX_STENCIL_REPL GL_REPLACE
+#		define NW_GFX_STENCIL_INVT GL_INVERT
+		// color blending
+#		define NW_GFX_BLEND_SRC_ALPHA           GL_SRC_ALPHA
+#		define NW_GFX_BLEND_DST_ALPHA           GL_DST_ALPHA
+#		define NW_GFX_BLEND_SRC_COLOR           GL_SRC_COLOR
+#		define NW_GFX_BLEND_DST_COLOR           GL_DST_COLOR
+#		define NW_GFX_BLEND_ONE_MINUS_SRC_ALPHA GL_ONE_MINUS_SRC_ALPHA
+#		define NW_GFX_BLEND_ONE_MUNUS_DST_ALPHA GL_ONE_MUNUS_DST_ALPHA 
+#		define NW_GFX_BLEND_ONE_MINUS_SRC_COLOR GL_ONE_MINUS_SRC_COLOR
+#		define NW_GFX_BLEND_ONE_MINUS_DST_COLOR GL_ONE_MINUS_DST_COLOR
+		// face culling
+#		define NW_GFX_CULL_CW  GL_CW
+#		define NW_GFX_CULL_CCW GL_CCW
+		// geometry filling
+#		define NW_GFX_FILL_LINE   GL_LINE
+#		define NW_GFX_FILL_FACE   GL_FILL
+		// primitives
+#		define NW_GFX_PRIM_POINTS         GL_POINTS
+#		define NW_GFX_PRIM_LINES          GL_LINES
+#		define NW_GFX_PRIM_LINE_LOOP      GL_LINE_LOOP
+#		define NW_GFX_PRIM_LINE_STRIP     GL_LINE_STRIP
+#		define NW_GFX_PRIM_TRIANGLES      GL_TRIANGLES
+#		define NW_GFX_PRIM_TRIANGLE_STRIP GL_TRIANGLE_STRIP
+#		define NW_GFX_PRIM_TRIANGLE_FAN   GL_TRIANGLE_FAN
+		// texture wraps
+#		define NW_GFX_WRAP_REPEAT  GL_REPEAT
+#		define NW_GFX_WRAP_CLAMP   GL_CLAMP_TO_EDGE
+#		define NW_GFX_WRAP_BORDER  GL_CLAMP_TO_BORDER
+		// texture filters
+#		define NW_GFX_FILTER_LINEAR  GL_LINEAR
+#		define NW_GFX_FILTER_NEAREST GL_NEAREST
+		// base formats
+#		define NW_GFX_FORMAT_RED   GL_RED
+#		define NW_GFX_FORMAT_RG	   GL_RG
+#		define NW_GFX_FORMAT_RGB   GL_RGB
+#		define NW_GFX_FORMAT_RGBA  GL_RGBA
+#		define NW_GFX_FORMAT_DEPT  GL_DEPTH_COMPONENT
+#		define NW_GFX_FORMAT_STEN  GL_STENCIL_INDEX
+#		define NW_GFX_FORMAT_DPST  GL_DEPTH_STENCIL
+		// pixel formats
+#		define NW_GFX_FORMAT_R8_S8        GL_R8I
+#		define NW_GFX_FORMAT_R8_U8        GL_R8UI
+#		define NW_GFX_FORMAT_R16_S16      GL_R16I
+#		define NW_GFX_FORMAT_R16_U16      GL_R16UI
+#		define NW_GFX_FORMAT_R32_S32      GL_R32I
+#		define NW_GFX_FORMAT_R8G8_U16     GL_RG8UI
+#		define NW_GFX_FORMAT_R8G8_S16     GL_RG8I
+#		define NW_GFX_FORMAT_R16G16_S32   GL_RG16I
+#		define NW_GFX_FORMAT_R8G8B8_S32   GL_RGB8I
+#		define NW_GFX_FORMAT_R8G8B8A8_S32 GL_RGBA8I
+#		define NW_GFX_FORMAT_R32_U32      GL_R32UI
+#		define NW_GFX_FORMAT_R16G16_U32   GL_RG16UI
+#		define NW_GFX_FORMAT_R8G8B8_U32   GL_RGB8UI
+#		define NW_GFX_FORMAT_R8G8B8A8_U32 GL_RGBA8UI
+#		define NW_GFX_FORMAT_S8_S8        GL_R8I
+#		define NW_GFX_FORMAT_D32_S32      GL_DEPTH_COMPONENT
+#		define NW_GFX_FORMAT_D32_U32      GL_DEPTH_COMPONENT
+#		define NW_GFX_FORMAT_S8_U8        GL_STENCIL_INDEX
+#		define NW_GFX_FORMAT_D24S8_S32    GL_DEPTH_STENCIL
+#		define NW_GFX_FORMAT_D24S8_U32    GL_DEPTH_STENCIL
 #	endif // NW_GFX_MACRO_H
 #	endif	// GAPI_OGL
 #	if (NW_GAPI & NW_GAPI_D3D)

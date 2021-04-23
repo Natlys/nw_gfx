@@ -1,52 +1,53 @@
 #include "nw_gfx_pch.hpp"
 #include "nw_gfx_shd_vtx.h"
 #if (defined NW_GAPI)
-#include "core/nw_gfx_engine.h"
-#include "lib/nw_gfx_lib_shd.h"
-#include "lib/nw_gfx_lib_mtl.h"
-#if (NW_GAPI & NW_GAPI_OGL)
+#	include "core/nw_gfx_engine.h"
+#	include "lib/nw_gfx_lib_shd.h"
+#	include "lib/nw_gfx_lib_debug.h"
+#	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_shd_vtx::gfx_shd_vtx(gfx_engine& graphics) :
-		a_gfx_shd(graphics)
+	gfx_shd_vtx::gfx_shd_vtx() :
+		a_gfx_shd()
 	{
 	}
-	gfx_shd_vtx::gfx_shd_vtx(gfx_engine& graphics, cstr source_code) :
-		gfx_shd_vtx(graphics)
+	gfx_shd_vtx::gfx_shd_vtx(source_tc& source_code) :
+		gfx_shd_vtx()
 	{
-		if (!remake(source_code)) { throw init_error(__FILE__, __LINE__); return; }
 	}
 	gfx_shd_vtx::~gfx_shd_vtx() { }
 	// --setters
 	// --operators
-	stm_out& gfx_shd_vtx::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_shd_vtx::operator<<(op_stream_t& stm) const {
+		a_gfx_shd::operator<<(stm);
 		return stm;
 	}
-	stm_in& gfx_shd_vtx::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_shd_vtx::operator>>(ip_stream_t& stm) {
+		a_gfx_shd::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1b gfx_shd_vtx::remake(cstr source_code)
+	v1bit gfx_shd_vtx::remake()
 	{
-		if (!a_gfx_shd::remake(source_code)) { return NW_FALSE; }
+		NW_CHECK(a_gfx_shd::remake(), "failed remake!", return NW_FALSE);
 		
 		m_handle = glCreateShader(GL_VERTEX_SHADER);
-		cstr final_code = &m_src_code[0];
-		glShaderSource(m_handle, 1, &final_code, NW_NULL);
-		glCompileShader(m_handle);
+		cstr_t final_code = &get_source()[0];
+		glShaderSource(get_handle(), 1u, &final_code, NW_NULL);
+		glCompileShader(get_handle());
 
-		if (!gfx_check_shader(m_handle)) { return NW_FALSE; }
+		if (!gfx_check_shader(get_handle())) { return NW_FALSE; }
 
 		return NW_TRUE;
 	}
-	void gfx_shd_vtx::on_draw()
+	v1nil gfx_shd_vtx::on_draw()
 	{
 		a_gfx_shd::on_draw();
 	}
 	// --==</core_methods>==--
 }
-#endif
-#if (NW_GAPI & NW_GAPI_D3D)
+#	endif	// GAPI_OGL
+#	if (NW_GAPI & NW_GAPI_D3D)
 namespace NW
 {
 	gfx_shd_vtx::gfx_shd_vtx(gfx_engine& graphics) :
@@ -62,14 +63,14 @@ namespace NW
 	gfx_shd_vtx::~gfx_shd_vtx() { if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; } }
 	// --setters
 	// --operators
-	stm_out& gfx_shd_vtx::operator<<(stm_out& stm) const {
+	op_stream_t& gfx_shd_vtx::operator<<(op_stream_t& stm) const {
 		return stm;
 	}
-	stm_in& gfx_shd_vtx::operator>>(stm_in& stm) {
+	ip_stream_t& gfx_shd_vtx::operator>>(ip_stream_t& stm) {
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1b gfx_shd_vtx::remake(cstr source_code)
+	v1bit gfx_shd_vtx::remake(cstr source_code)
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 		
@@ -97,7 +98,7 @@ namespace NW
 		
 		return NW_TRUE;
 	}
-	void gfx_shd_vtx::on_draw()
+	v1nil gfx_shd_vtx::on_draw()
 	{
 		a_gfx_shd::on_draw();
 
@@ -127,5 +128,5 @@ namespace NW
 	}
 	// --==</core_methods>==--
 }
-#endif
+#	endif	// GAPI_D3D
 #endif	// NW_GAPI

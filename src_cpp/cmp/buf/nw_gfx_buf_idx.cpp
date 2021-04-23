@@ -7,30 +7,29 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_buf_idx::gfx_buf_idx(gfx_engine& graphics) :
-		a_gfx_buf(graphics),
-		m_vtype(type_info::get_type<v1u>())
+	gfx_buf_idx::gfx_buf_idx() :
+		a_gfx_buf()
+	{
+	}
+	gfx_buf_idx::gfx_buf_idx(layt_tc& layout, cv1u count, ptr_tc data) :
+		a_gfx_buf(layout, count, data)
 	{
 	}
 	gfx_buf_idx::~gfx_buf_idx()
 	{
 	}
 	// --setters
-	v1nil gfx_buf_idx::set_vtype(vtype_tc type) {
-		m_vtype = type;
-		NW_CHECK(remake(type_info::get(type).size, get_count(), get_bytes()), "failed remake!", return);
-	}
-	v1nil gfx_buf_idx::set_data(cv1u count, ptr_tc data, cv1u offset) {
-		a_gfx_buf::set_data(count, data, offset);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, get_stride() * offset, get_stride() * count, get_byte(get_stride() * offset));
+	v1nil gfx_buf_idx::set_data(cv1u key, ptr_tc data, cv1u count) {
+		a_gfx_buf::set_data(key, data, count);
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, get_stride() * key, get_stride() * count, get_data(get_stride() * key));
 	}
 	// --==<core_methods>==--
-	v1bit gfx_buf_idx::remake(cv1u stride, cv1u count, ptr_tc data) {
-		NW_CHECK(a_gfx_buf::remake(stride, count, data), "failed remake!", return NW_FALSE);
-		NW_CHECK(stride == type_info::get(m_vtype).size, "stride is the size of index!", return NW_FALSE);
+	v1bit gfx_buf_idx::remake() {
+		NW_CHECK(a_gfx_buf::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(get_layt().has_vtype<v1u08>() || get_layt().has_vtype<v1u16>() || get_layt().has_vtype<v1u32>(), "type error!", return NW_FALSE);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, get_handle());
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_space(), data, data ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 		
 		return NW_TRUE;
 	}

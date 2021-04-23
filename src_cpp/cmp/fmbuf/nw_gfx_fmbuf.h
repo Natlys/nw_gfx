@@ -2,57 +2,67 @@
 #define NW_GFX_FRAMEBUFFER_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#include "cmp/nw_gfx_cmp.h"
-#include "../txr/nw_gfx_txr.h"
+#	include "../nw_gfx_cmp.h"
+#	include "nw_gfx_fmbuf_part.h"
+#	include "mem/nw_mem_layt.h"
 namespace NW
 {
-	/// framebuffer class
-	class NW_API fmbuf : public t_cmp<fmbuf>, public a_gfx_cmp, public a_io_cmp
+	/// graphics_framebuffer class
+	class NW_API gfx_fmbuf : public t_cmp<gfx_fmbuf>, public a_gfx_cmp, public a_iop_cmp
 	{
-		using depth_t = mem_ref<a_gfx_txr>;
-		using depth_tc = const depth_t;
-		using stenc_t = mem_ref<a_gfx_txr>;
-		using stenc_tc = const stenc_t;
-		using target_t = mem_ref<a_gfx_txr>;
-		using target_tc = const target_t;
-		using targets_t = darray<target_t>;
-#if (NW_GAPI & NW_GAPI_OGL)
+		using layt_t = mem_layt;
+		using layt_tc = const layt_t;
+		using part_t = mem_ref<a_gfx_fmbuf_part>;
+		using part_tc = const part_t;
+		using parts_t = t_darray<part_t>;
+		using parts_tc = const parts_t;
+#	if (NW_GAPI & NW_GAPI_OGL)
 		using handle_t = GLuint;
-#endif
-#if (NW_GAPI & NW_GAPI_D3D)
+#	endif
+#	if (NW_GAPI & NW_GAPI_D3D)
 		using handle_t = ID3D11RenderTargetView*;
-#endif
+#	endif
 		using handle_tc = const handle_t;
 	public:
-		fmbuf(gfx_engine& graphics);
-		virtual ~fmbuf();
+		gfx_fmbuf();
+		virtual ~gfx_fmbuf();
 		// --getters
 		inline handle_t get_handle()        { return m_handle; }
 		inline handle_tc get_handle() const { return m_handle; }
-		inline v1s get_size_x() const { return m_size[0]; }
-		inline v1s get_size_y() const { return m_size[1]; }
-		inline depth_t& get_depth()          { return m_depth; }
-		inline stenc_t& get_stenc()          { return m_stenc; }
-		inline target_t& get_target(v1u key) { return m_targets[key % m_targets.size()]; }
+		inline layt_t& get_layt()        { return m_layt; }
+		inline layt_tc& get_layt() const { return m_layt; }
+		inline cv1u get_size() const    { return m_size[0] * m_size[1]; }
+		inline cv1u get_size_x() const  { return m_size[0]; }
+		inline cv1u get_size_y() const  { return m_size[1]; }
+		inline cv2u get_size_xy() const { return m_size; }
+		inline part_t& get_part(cv1u key = NW_NULL)        { NW_CHECK(has_part(key), "not found!", return part_t()); return m_parts[key]; }
+		inline part_tc& get_part(cv1u key = NW_NULL) const { NW_CHECK(has_part(key), "not found!", return part_tc()); return m_parts[key]; }
 		// --setters
-		v1nil add_target(target_t& ref);
-		v1nil rmv_target(v1u idx);
+		v1nil set_layt(layt_tc& layout);
+		v1nil set_size_x(cv1u size_x);
+		v1nil set_size_y(cv1u size_y);
+		v1nil set_size_xy(cv1u size_x, cv1u size_y);
+		v1nil set_size_xy(cv2u size_xy);
+		v1nil add_part(part_t& ref);
+		v1nil rmv_part(cv1u key);
 		// --predicates
+		inline v1bit has_size(cv1u size = 1u) const { return get_size() >= size; }
+		inline v1bit has_size_x(cv1u size_x = 1u) const { return get_size_x() >= size_x; }
+		inline v1bit has_size_y(cv1u size_y = 1u) const { return get_size_y() >= size_y; }
+		inline v1bit has_size_xy(cv1u size_x = 1u, cv1u size_y = 1u) const { return has_size_x(size_x) && has_size_y(size_y); }
+		inline v1bit has_part(cv1u key = NW_NULL) const { return m_parts.size() > key; }
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const override;
-		virtual stm_in& operator>>(stm_in& stm) override;
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
-		v1bit remake(v2u size_xy);
-		v1nil read_pixels(ptr_t buffer, v1u key, cv4s& rect);
-		v1nil draw_pixels(ptr_tc buffer, v1u key, cv4s& rect);
+		v1bit remake(layt_tc& layout, cv2u size_xy);
 		v1nil clear();
 		virtual v1nil on_draw() override;
 	protected:
 		handle_t m_handle;
+		parts_t m_parts;
+		layt_t m_layt;
 		v2u m_size;
-		depth_t m_depth;
-		stenc_t m_stenc;
-		targets_t m_targets;
 	};
 }
 #endif	// NW_GAPI

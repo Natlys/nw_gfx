@@ -2,18 +2,17 @@
 #define NW_GFX_COMPONENT_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#include "core/nw_gfx_rsc.h"
 namespace NW
 {
 	/// abstract graphics_component class
-	class NW_API a_gfx_cmp : public a_gfx_rsc
+	class NW_API a_gfx_cmp
 	{
 	protected:
-		a_gfx_cmp(gfx_engine& graphics);
+		a_gfx_cmp();
 	public:
 		virtual ~a_gfx_cmp();
 		// --core_methods
-		virtual v1nil on_draw();
+		virtual v1nil on_draw() = 0;
 	};
 }
 #endif	// NW_GAPI

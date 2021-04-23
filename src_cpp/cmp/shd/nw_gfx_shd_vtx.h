@@ -8,16 +8,16 @@ namespace NW
 	class NW_API gfx_shd_vtx : public a_gfx_shd
 	{
 	public:
-		gfx_shd_vtx(gfx_engine& graphics);
-		gfx_shd_vtx(gfx_engine& graphics, cstr source_code);
+		gfx_shd_vtx();
+		gfx_shd_vtx(source_tc& source_code);
 		~gfx_shd_vtx();
 		// --getters
 		// --setters
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const override;
-		virtual stm_in& operator>>(stm_in& stm) override;
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
-		virtual v1b remake(cstr source_code) override;
+		virtual v1bit remake() override;
 		virtual v1nil on_draw() override;
 	private:
 #if (NW_GAPI & NW_GAPI_D3D)

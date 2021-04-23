@@ -10,17 +10,19 @@ namespace NW
 	class NW_API gfx_txr_1d : public a_gfx_txr
 	{
 	public:
-		gfx_txr_1d(gfx_engine& graphics);
-		~gfx_txr_1d();
+		gfx_txr_1d();
+		virtual ~gfx_txr_1d();
 		// --getters
 		// --setters
-		// --core_methods
-		virtual v1bit remake(const gfx_img& img);
-		virtual v1nil clear(ptr_tc buffer) override;
-		virtual v1nil on_draw() override;
+		// --predicates
 		// --operators
-		virtual stm_out& operator<<(stm_out& stm) const override;
-		virtual stm_in& operator>>(stm_in& stm) override;
+		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
+		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
+		// --core_methods
+		virtual v1bit remake();
+		virtual v1nil clear(ptr_tc data) override;
+		virtual v1nil on_draw() override;
+		// --core_methods
 	private:
 #if (NW_GAPI & NW_GAPI_D3D)
 		ID3D11Texture1D* m_native;
