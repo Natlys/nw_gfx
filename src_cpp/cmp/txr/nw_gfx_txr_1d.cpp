@@ -8,7 +8,7 @@
 namespace NW
 {
 	gfx_txr_1d::gfx_txr_1d() :
-		a_gfx_txr()
+		gfx_txr()
 	{
 	}
 	gfx_txr_1d::~gfx_txr_1d()
@@ -17,17 +17,17 @@ namespace NW
 	// --setters
 	// --operators
 	op_stream_t& gfx_txr_1d::operator<<(op_stream_t& stm) const {
-		a_gfx_txr::operator<<(stm);
+		gfx_txr::operator<<(stm);
 		return stm;
 	}
 	ip_stream_t& gfx_txr_1d::operator>>(ip_stream_t& stm) {
-		a_gfx_txr::operator>>(stm);
+		gfx_txr::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
 	v1bit gfx_txr_1d::remake()
 	{
-		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_txr::remake(), "remake error!", return NW_FALSE);
 		NW_CHECK(get_size() > 0, "no size!", return NW_FALSE);
 
 		glBindTexture(GL_TEXTURE_1D, get_handle());
@@ -49,11 +49,11 @@ namespace NW
 	}
 	v1nil gfx_txr_1d::clear(ptr_tc data)
 	{
-		a_gfx_txr::clear(data);
+		gfx_txr::clear(data);
 	}
 	v1nil gfx_txr_1d::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 
 		// glEnable(GL_TEXTURE_1D);
 		glBindTexture(GL_TEXTURE_1D, get_handle());
@@ -65,7 +65,7 @@ namespace NW
 namespace NW
 {
 	gfx_txr_1d::gfx_txr_1d(gfx_engine& graphics) :
-		a_gfx_txr(graphics)
+		gfx_txr(graphics)
 	{
 	}
 	gfx_txr_1d::~gfx_txr_1d() { if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; } }
@@ -83,7 +83,7 @@ namespace NW
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
+		if (!gfx_txr::remake(img)) { return NW_FALSE; }
 		if (m_size_x <= 0) { return NW_FALSE; }
 		// texture
 		{
@@ -128,7 +128,7 @@ namespace NW
 	}
 	v1nil gfx_txr_1d::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 	}
 	// --==</core_methods>==--
 }

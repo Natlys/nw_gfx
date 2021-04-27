@@ -5,37 +5,44 @@
 #	include "../../lib/nw_gfx_lib_core.h"
 #	include "../../lib/nw_gfx_lib_layt.h"
 #	include "../../core/nw_gfx_engine.h"
-#	include "../../core/nw_gfx_state.h"
-#	include "../shd/nw_gfx_shd.h"
+#	include "../state/nw_gfx_state.h"
 #	if(NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
 	gfx_buf_layt::gfx_buf_layt() :
-		t_cmp(), a_gfx_cmp(), mem_layt(),
-		m_handle(NW_NULL)
+		t_cmp(), a_gfx_cmp(),
+		m_handle(NW_NULL),
+		m_layt(layt_t())
 	{
 	}
+	gfx_buf_layt::gfx_buf_layt(buf_layt_tc& copy) : gfx_buf_layt() { operator=(copy); }
+	gfx_buf_layt::gfx_buf_layt(buf_layt_t&& copy) : gfx_buf_layt() { operator=(copy); }
 	gfx_buf_layt::~gfx_buf_layt() { if (m_handle != NW_NULL) { glDeleteVertexArrays(1u, &m_handle); m_handle = NW_NULL; } }
 	// --setters
+	gfx_buf_layt::buf_layt_t& gfx_buf_layt::set_layt(layt_tc& layout) {
+		m_layt = layout;
+		return *this;
+	}
 	// --==<core_methods>==--
 	v1bit gfx_buf_layt::remake()
 	{
 		if (m_handle != NW_NULL) { glDeleteVertexArrays(1u, &m_handle); m_handle = NW_NULL; }
-		gfx_state last_state;
-		NW_CHECK(mem_layt::remake(), "failed remake!", return NW_FALSE);
+		gfx_state_context last_state;
+		NW_CHECK(m_layt.remake(), "remake error!", return NW_FALSE);
 		NW_CHECK(last_state.last_vbuf != NW_NULL, "there has to be bound a vertex buffer!", return NW_FALSE);
 
 		glGenVertexArrays(1u, &m_handle);
 		glBindVertexArray(get_handle());
 		
-		for (v1u ei = 0; ei < get_count(); ei++) {
-			auto& ielem = get_node(ei);
+		size_t ei = 0u;
+		for (auto ielem : m_layt) {
 			glEnableVertexAttribArray(ei);
-			const GLint vcount = gfx_info::get_count(ielem.get_vtype());
-			const GLenum vtype = gfx_info::get_type(ielem.get_vtype());
-			const GLvoid* voffset = reinterpret_cast<const GLvoid*>(ielem.get_offset());
-			const GLsizei stride = mem_layt::get_space();
-			glVertexAttribPointer(ei, vcount, vtype, GL_FALSE, stride, voffset);
+			const GLint count = gfx_info::get_count(ielem.get_type());
+			const GLenum type = gfx_info::get_type(ielem.get_type());
+			const GLvoid* offset = reinterpret_cast<const GLvoid*>(ielem.get_offset());
+			const GLsizei stride = m_layt.get_space();
+			glVertexAttribPointer(ei, count, type, GL_FALSE, stride, offset);
+			ei += 1u;
 		}
 
 		return NW_TRUE;
@@ -59,7 +66,7 @@ namespace NW
 	gfx_buf_layt::~gfx_buf_layt() { if (m_handle != NW_NULL) { m_handle->Release(); m_handle = NW_NULL; } }
 	// --setters
 	// --==<core_methods>==--
-	v1bit gfx_buf_layt::remake(mem_ref<a_gfx_shd>& shader, celems& elements) {
+	v1bit gfx_buf_layt::remake(mem_ref<gfx_shd>& shader, celems& elements) {
 		m_elems = elements;
 		if (m_handle != NW_NULL) { m_handle->Release(); m_handle = NW_NULL; }
 		if (shader.is_valid() == NW_FALSE) { return NW_FALSE; }

@@ -17,104 +17,110 @@ namespace NW
 	{
 	}
 	// --setters
-	v1nil gfx_engine::set_window(window_t& window) {
+	gfx_engine::engine_t& gfx_engine::set_window(window_t& window) {
 		m_context.set_window(window);
+		return *this;
 	}
-	v1nil gfx_engine::set_fmbuf_size(v1u size_x, v1u size_y) {
-		auto& fmbuf = cmp_sys::get().get_ref<gfx_fmbuf>(NW_NULL).get_val<gfx_fmbuf>();
-		NW_CHECK(fmbuf.remake(fmbuf.get_layt(), { size_x, size_y }), "failed remake!", return);
-	}
-	v1nil gfx_engine::set_viewp(v1f crd_x, v1f crd_y, v1f size_x, v1f size_y) {
-		m_viewp[0] = crd_x;
-		m_viewp[1] = crd_y;
-		m_viewp[2] = size_x;
-		m_viewp[3] = size_y;
+	gfx_engine::engine_t& gfx_engine::set_viewp(viewp_tc& viewp) {
+		m_viewp[0] = viewp[0];
+		m_viewp[1] = viewp[1];
+		m_viewp[2] = viewp[2];
+		m_viewp[3] = viewp[3];
 		glViewport(m_viewp[0], m_viewp[1], m_viewp[2], m_viewp[3]);
+		return *this;
 	}
-	v1nil gfx_engine::set_vsync(v1u vsync) {
+	gfx_engine::engine_t& gfx_engine::set_vsync(vsync_tc& vsync) {
 		m_vsync = vsync;
 		wglSwapIntervalEXT(m_vsync);
+		return *this;
 	}
 	// --==<core_methods>==--
 	v1bit gfx_engine::init()
 	{
 		// NW_CHECK(!m_ctxh && !m_dvch && !m_libh, "init is already done!", return NW_FALSE);
-		NW_CHECK(m_context.remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(m_context.remake(), "remake error!", return NW_FALSE);
 		// set up configs
 		if constexpr (NW_TRUE) {
-			set_vsync(0u);
-			set_viewp(0, 0, 800, 600);
+			set_vsync(vsync_t{ NW_NULL });
+			set_viewp(viewp_t{ 0, 0, 800, 600 });
 			glClearColor(get_rand<v1f>(0.0f, 0.5f), get_rand<v1f>(0.0f, 0.5f), get_rand<v1f>(0.0f, 0.5f), 1.0f);
 		}
-		// create default components
+		// create components
 		if constexpr (NW_TRUE) {
 			// buffers
 			if constexpr (NW_TRUE) {
-				// layouts
-				auto& layt_rect = cmp_sys::get().new_ref<gfx_buf_layt>();
-				layt_rect->add_node<v2f>("vsi_vtx_crd");
 				// shader buffers
-				auto& sbuf_tform = cmp_sys::get().new_ref<gfx_buf_shd>();
-				mem_layt sbuf_layt;
-				sbuf_layt.add_node<m4f>("cst_model");
-				sbuf_layt.add_node<m4f>("cst_view");
-				sbuf_layt.add_node<m4f>("cst_proj");
-				NW_CHECK(sbuf_tform.get_ref<mem_buf>()->remake(sbuf_layt, 1u), "failed remake", return NW_FALSE);
-				// vertex buffers
-				auto& vbuf_rect = cmp_sys::get().new_ref<gfx_buf_vtx>();
-				NW_CHECK(vbuf_rect.get_ref<mem_buf>()->remake(layt_rect, 4u, vtx_quad_2f), "failed remake!", return NW_FALSE);
-				// index buffers
-				// layouts again
-				NW_CHECK(layt_rect->remake(), "failed remake!", throw init_error());
+				if constexpr (NW_TRUE) {
+					// cam_tform
+					if constexpr (NW_TRUE) {
+						auto& sbuf = cmp_sys::get().new_ref<gfx_buf_shd>().get_val<mem_buf>();
+						mem_layt layt;
+						layt.add_node<m4f>("cam_modl").add_node<m4f>("cam_view").add_node<m4f>("cam_proj");
+						NW_CHECK(sbuf.remake(layt, 1u), "failed remake", return NW_FALSE);
+					}
+					// obj_tform
+					if constexpr (NW_TRUE) {
+						auto& sbuf = cmp_sys::get().new_ref<gfx_buf_shd>().get_val<mem_buf>();
+						mem_layt layt;
+						layt.add_node<m4f>("obj_modl");
+						NW_CHECK(sbuf.remake(layt, 1u), "failed remake", return NW_FALSE);
+					}
+				}
+				// vertex layouts
+				if constexpr (NW_TRUE) {
+					// rectangle
+					if constexpr (NW_TRUE) {
+						auto& layt = cmp_sys::get().new_ref<gfx_buf_layt>().get_val();
+						auto& vbuf = cmp_sys::get().new_ref<gfx_buf_vtx>().get_val<mem_buf>();
+						layt.get_layt().add_node<v2f>("vsi_vtx_crd");
+						NW_CHECK(vbuf.remake(layt, 4u, vtx_quad_2f), "remake error!", return NW_FALSE);
+						NW_CHECK(layt.remake(), "remake error!", throw init_error());
+					}
+				}
 			}
 			// framebuffers
-			if constexpr (NW_TRUE) {
+			if constexpr (NW_FALSE) {
 				auto& fmbuf = cmp_sys::get().new_ref<gfx_fmbuf>();
 				fmbuf->add_part(cmp_sys::get().new_ref<a_gfx_fmbuf_part, gfx_fmbuf_draw>());
 				mem_layt layt_fmbuf("fmbuf");
 				layt_fmbuf.add_node<v4u08>("draw");
 				//layt_fmbuf.add_node<v3u08>("dept");
 				//layt_fmbuf.add_node<v1u08>("sten");
-				NW_CHECK(fmbuf->remake(layt_fmbuf, v2u{ 128u, 128u }), "failed remake!", return NW_FALSE);
+				NW_CHECK(fmbuf->remake(layt_fmbuf, v2u{ 128u, 128u }), "remake error!", return NW_FALSE);
+			}
+			// states
+			if constexpr (NW_TRUE) {
+				auto& depst0 = cmp_sys::get().new_ref<gfx_state_depst>(NW_FALSE, NW_FALSE);
+				auto& depst1 = cmp_sys::get().new_ref<gfx_state_depst>(NW_TRUE, NW_FALSE);
+			}
+			// samplers
+			if constexpr (NW_TRUE) {
+				auto& smp_nearest = cmp_sys::get().new_ref<gfx_smp>(NW_GFX_FILTER_NEAREST, NW_GFX_WRAP_BORDER, get_rand<v1f, 4u>(0.0f, 1.0f));
 			}
 			// textures
 			if constexpr (NW_TRUE) {
-				auto& smp_nearest = cmp_sys::get().new_ref<gfx_txr_smp>();
-				NW_CHECK(
-					smp_nearest->remake(NW_GFX_FILTER_NEAREST, NW_GFX_WRAP_BORDER, get_rand<v1f, 4u>(0.0f, 1.0f)),
-					"failed remake!", return NW_FALSE
-				);
-				auto& txr_noise = cmp_sys::get().new_ref<a_gfx_txr, gfx_txr_2d>();
-				txr_noise->set_smp(smp_nearest);
+				auto& txr_noise = cmp_sys::get().new_ref<gfx_txr, gfx_txr_2d>();
 				txr_noise->set_layt(t_mem_layt<v4u08>("pixel"));
 				txr_noise->set_size_xyz(v3u{ 16u, 16u, 1u });
-				NW_CHECK(txr_noise->remake(), "failed remake!", return NW_FALSE);
+				NW_CHECK(txr_noise->remake(), "remake error!", return NW_FALSE);
 				for (v1u itr = 0u; itr < txr_noise->get_size(); itr++) { (*txr_noise)[itr] = get_rand<v1u08, 4u>(0u, 255u); }
-				NW_CHECK(txr_noise->remake(), "failed remake!", return NW_FALSE);
+				NW_CHECK(txr_noise->remake(), "remake error!", return NW_FALSE);
 			}
 			// materials
 			if constexpr (NW_TRUE) {
 				// screen material
-				auto& mtl_screen = cmp_sys::get().new_ref<gfx_mtl>();
-				auto& vshd_screen = cmp_sys::get().new_ref<a_gfx_shd, gfx_shd_vtx>();
-				auto& pshd_screen = cmp_sys::get().new_ref<a_gfx_shd, gfx_shd_pxl>();
-				pshd_screen->set_txr(cmp_sys::get().get_ref<a_gfx_txr>(NW_NULL), NW_NULL);
-				mtl_screen->add_shd(vshd_screen);
-				mtl_screen->add_shd(pshd_screen);
-				NW_CHECK(vshd_screen->remake(shd_src_screen_vtx), "failed remake!", return NW_FALSE);
-				NW_CHECK(pshd_screen->remake(shd_src_screen_pxl), "failed remake!", return NW_FALSE);
-				NW_CHECK(mtl_screen->remake(), "failed remake!", return NW_FALSE);
-				// 3d material
-				auto& mtl_3d = cmp_sys::get().new_ref<gfx_mtl>();
-				auto& vshd_3d = cmp_sys::get().new_ref<a_gfx_shd, gfx_shd_vtx>();
-				auto& pshd_3d = cmp_sys::get().new_ref<a_gfx_shd, gfx_shd_pxl>();
-				vshd_3d->set_buf(cmp_sys::get().get_ref<gfx_buf_shd>(NW_NULL), NW_NULL);
-				pshd_3d->set_txr(cmp_sys::get().get_ref<a_gfx_txr>(1u), NW_NULL);
-				mtl_3d->add_shd(vshd_3d);
-				mtl_3d->add_shd(pshd_3d);
-				NW_CHECK(vshd_3d->remake(shd_src_3d_vtx), "failed remake!", return NW_FALSE);
-				NW_CHECK(pshd_3d->remake(shd_src_3d_pxl), "failed remake!", return NW_FALSE);
-				NW_CHECK(mtl_3d->remake(), "failed remake!", return NW_FALSE);
+				if constexpr (NW_FALSE) {
+					auto& vshd = cmp_sys::get().new_ref<gfx_shd, gfx_shd_vtx>(shd_src_screen_vtx);
+					auto& pshd = cmp_sys::get().new_ref<gfx_shd, gfx_shd_pxl>(shd_src_screen_pxl);
+					auto& vshd_bind = cmp_sys::get().new_ref<gfx_bind>(vshd);
+					auto& pshd_bind = cmp_sys::get().new_ref<gfx_bind>(
+						pshd,
+						gfx_bind::bufs_t{ },
+						gfx_bind::txrs_t{ },
+						gfx_bind::smps_t{ }
+					);
+					auto& gmtl = cmp_sys::get().new_ref<gfx_mtl>(gfx_mtl::bind_list_t{ vshd_bind, pshd_bind });
+				}
 			}
 		}
 		return NW_TRUE;
@@ -127,13 +133,14 @@ namespace NW
 	}
 	v1nil gfx_engine::update()
 	{
-		gfx_state last_state;
+		gfx_state_context last_state;
 
 		if constexpr (NW_FALSE) {
 			auto& fmbuf = cmp_sys::get().get_ref<gfx_fmbuf>(NW_NULL);
 			fmbuf->on_draw();
 			fmbuf->clear();
 			m_cmd_buf.on_draw();
+			m_graph.on_draw();
 			glBindFramebuffer(GL_FRAMEBUFFER, NW_NULL);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 			cmp_sys::get().get_ref<gfx_buf_layt>(NW_NULL)->on_draw();
@@ -145,6 +152,7 @@ namespace NW
 		else {
 			glBindFramebuffer(GL_FRAMEBUFFER, NW_NULL);
 			m_cmd_buf.on_draw();
+			m_graph.on_draw();
 			m_context.update();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}

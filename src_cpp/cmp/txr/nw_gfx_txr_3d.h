@@ -7,7 +7,7 @@ namespace NW
 {
 	/// gfx_txr_cube class
 	/// description:
-	class NW_API gfx_txr_cube : public a_gfx_txr
+	class NW_API gfx_txr_cube : public gfx_txr
 	{
 	public:
 		gfx_txr_cube();

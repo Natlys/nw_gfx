@@ -8,15 +8,14 @@
 
 namespace NW
 {
-	using namespace NW;
 	class NW_API gfx_engine;
 	class NW_API gfx_context;
 	class NW_API gfx_lib_loader;
+	class NW_API gfx_graph;
+	class NW_API gfx_pass;
+	class NW_API gfx_cmd;
 
 	class NW_API a_gfx_cmp;
-	class NW_API a_gfx_ent;
-	
-	class NW_API gfx_mtl;
 
 	class NW_API gfx_fmbuf;
 
@@ -24,13 +23,16 @@ namespace NW
 	class NW_API gfx_buf_idx;
 	class NW_API gfx_buf_shd;
 
-	class NW_API a_gfx_shd;
+	class NW_API gfx_mtl;
+	class NW_API gfx_bind;
+
+	class NW_API gfx_shd;
 	class NW_API gfx_shd_vtx;
 	class NW_API gfx_shd_pxl;
 	class NW_API gfx_shd_gmt;
 
 	class NW_API gfx_img;
-	class NW_API a_gfx_txr;
+	class NW_API gfx_txr;
 	class NW_API gfx_txr_1d;
 	class NW_API gfx_txr_2d;
 	class NW_API gfx_txr_2d_mulsmp;

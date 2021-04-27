@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// index_buffer class
-	class NW_API gfx_buf_idx : public a_gfx_buf
+	class NW_API gfx_buf_idx : public gfx_buf
 	{
 	public:
 		gfx_buf_idx();
@@ -14,7 +14,7 @@ namespace NW
 		virtual ~gfx_buf_idx();
 		// --getters
 		// --setters
-		virtual v1nil set_data(cv1u key = NW_NULL, ptr_tc data = NW_NULL, cv1u count = NW_NULL) override;
+		virtual buf_t& set_data(cv1u key = NW_NULL, ptr_tc data = NW_NULL, cv1u count = NW_NULL) override;
 		// --core_methods
 		virtual v1bit remake() override;
 		virtual v1nil on_draw() override;

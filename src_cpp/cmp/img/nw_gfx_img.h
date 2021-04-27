@@ -15,6 +15,7 @@ namespace NW
 		gfx_img();
 		gfx_img(img_tc& copy);
 		gfx_img(img_t&& copy);
+		~gfx_img();
 		// --getters
 		inline cv1u get_size() const     { return v1u{ m_size[0] * m_size[1] * m_size[2] }; }
 		inline cv1u get_size_x() const   { return v1u{ m_size[0] }; }
@@ -29,7 +30,7 @@ namespace NW
 		v1nil set_size_xy(cv2u size_xy);
 		v1nil set_size_xyz(cv1u size_x, cv1u size_y, cv1u size_z);
 		v1nil set_size_xyz(cv3u size_xyz);
-		virtual v1nil set_data(cv1u key, ptr_tc data, cv1u count) override;
+		virtual buf_t& set_data(cv1u key, ptr_tc data, cv1u count) override;
 		// --predicates
 		inline v1bit has_size(cv1u size = 1u) const { return get_size() >= size; }
 		inline v1bit has_size_x(cv1u size_x = 1u) const { return get_size_x() >= size_x; }
@@ -40,8 +41,8 @@ namespace NW
 			return has_size_x(size_x) && has_size_y(size_y) && has_size_z(size_z);
 		}
 		// --operators
-		v1nil operator=(img_tc& copy);
-		v1nil operator=(img_t&& copy);
+		inline img_t& operator=(img_tc& copy) { mem_buf::operator=(copy); return *this; }
+		inline img_t& operator=(img_t&& copy) { mem_buf::operator=(copy); return *this; }
 		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
 		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
@@ -51,14 +52,14 @@ namespace NW
 		inline v1bit remake(layt_tc& layout, cv2u size_xy) { set_layt(layout); return remake(size_xy); }
 		inline v1bit remake(layt_tc& layout, cv3u size_xyz) { set_layt(layout); return remake(size_xyz); }
 		inline v1bit remake(layt_tc& layout, cv2u size_xy, ptr_tc data) {
-			NW_CHECK(remake(layout, size_xy), "failed remake!", return NW_FALSE);
-			mem_buf::set_data(data);
-			return NW_TRUE;
+			set_size_xy(size_xy);
+			mem_buf::set_layt(layout).set_data(data);
+			return remake();
 		}
 		inline v1bit remake(layt_tc& layout, cv3u size_xyz, ptr_tc data) {
-			NW_CHECK(remake(layout, size_xyz), "failed remake!", return NW_FALSE);
-			mem_buf::set_data(data);
-			return NW_TRUE;
+			set_size_xyz(size_xyz);
+			mem_buf::set_layt(layout).set_data(data);
+			return remake();
 		}
 	protected:
 		v3u m_size;

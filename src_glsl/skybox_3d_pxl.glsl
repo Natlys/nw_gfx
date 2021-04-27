@@ -1,14 +1,13 @@
 #version 460 core
-
+// iput;
 in VS_INFO{vec3 txr_crd;}psi;
-
+layout(location=0)uniform samplerCube txr_idx;
+// oput;
 layout(location=0)out vec4 pso_pxl_clr;
-
-layout(location=0)uniform samplerCube cst_txr_idx;
-
+// functions;
 void main()
 {
-	vec4 txr_clr = texture(unf_txr_idx, psi.txr_crd).rgba;
+	vec4 txr_clr = texture(txr_idx, psi.txr_crd).rgba;
 	
 	//if (txr_clr.r == 0.0f || txr_clr.g == 0.0f || txr_clr.b == 0.0f) { discard; }
 

@@ -7,27 +7,19 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_shd_vtx::gfx_shd_vtx() :
-		a_gfx_shd()
-	{
-	}
-	gfx_shd_vtx::gfx_shd_vtx(source_tc& source) :
-		a_gfx_shd(source)
-	{
-	}
+	gfx_shd_vtx::gfx_shd_vtx() : gfx_shd() { }
+	gfx_shd_vtx::gfx_shd_vtx(source_tc& source) : gfx_shd_vtx() { NW_CHECK(gfx_shd::remake(source), "remake error!", return); }
+	gfx_shd_vtx::gfx_shd_vtx(vshd_tc& copy) : gfx_shd_vtx() { operator=(copy); }
+	gfx_shd_vtx::gfx_shd_vtx(vshd_t&& copy) : gfx_shd_vtx() { operator=(copy); }
 	gfx_shd_vtx::~gfx_shd_vtx() { }
 	// --setters
 	// --operators
-	op_stream_t& gfx_shd_vtx::operator<<(op_stream_t& stm) const {
-		return stm;
-	}
-	ip_stream_t& gfx_shd_vtx::operator>>(ip_stream_t& stm) {
-		return stm;
-	}
+	op_stream_t& gfx_shd_vtx::operator<<(op_stream_t& stm) const { gfx_shd::operator<<(stm); return stm; }
+	ip_stream_t& gfx_shd_vtx::operator>>(ip_stream_t& stm) { gfx_shd::operator>>(stm); return stm; }
 	// --==<core_methods>==--
 	v1b gfx_shd_vtx::remake()
 	{
-		NW_CHECK(a_gfx_shd::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_shd::remake(), "remake error!", return NW_FALSE);
 		
 		m_handle = glCreateShader(GL_VERTEX_SHADER);
 		cstr_t final_code = &get_source()[0];
@@ -38,10 +30,8 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	v1nil gfx_shd_vtx::on_draw()
-	{
-		a_gfx_shd::on_draw();
-	}
+	v1nil gfx_shd_vtx::on_bind(binder_t& ref) { gfx_shd::on_bind(ref); }
+	v1nil gfx_shd_vtx::on_draw() { gfx_shd::on_draw(); }
 	// --==</core_methods>==--
 }
 #	endif	// GAPI_OGL
@@ -49,7 +39,7 @@ namespace NW
 namespace NW
 {
 	gfx_shd_vtx::gfx_shd_vtx(gfx_engine& graphics) :
-		a_gfx_shd(graphics),
+		gfx_shd(graphics),
 		m_native(NW_NULL)
 	{
 	}
@@ -72,7 +62,7 @@ namespace NW
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 		
-		if (!a_gfx_shd::remake(source_code)) { return NW_FALSE; }
+		if (!gfx_shd::remake(source_code)) { return NW_FALSE; }
 
 		HRESULT h_result = 0;
 		if ((h_result = D3DCompile(
@@ -98,7 +88,7 @@ namespace NW
 	}
 	void gfx_shd_vtx::on_draw()
 	{
-		a_gfx_shd::on_draw();
+		gfx_shd::on_draw();
 
 		m_gfx->get_ctxh()->VSSetShader(m_native, NULL, NULL);
 

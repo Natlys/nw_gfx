@@ -6,29 +6,27 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_buf_shd::gfx_buf_shd() :
-		a_gfx_buf(),
-		m_slot(NW_NULL)
-	{
-	}
-	gfx_buf_shd::~gfx_buf_shd()
-	{
-	}
+	gfx_buf_shd::gfx_buf_shd() : gfx_buf(), m_slot(NW_NULL) { }
+	gfx_buf_shd::gfx_buf_shd(layt_tc& layout, cv1u count, ptr_tc data) : gfx_buf(layout, count, data) { }
+	gfx_buf_shd::~gfx_buf_shd() { }
 	// --setters
-	v1nil gfx_buf_shd::set_slot(cv1u slot) {
+	gfx_buf_shd::gsbuf_t& gfx_buf_shd::set_slot(cv1u slot) {
 		m_slot = slot;
+		return *this;
 	}
-	v1nil gfx_buf_shd::set_data(cv1u count, ptr_tc data, cv1u offset) {
-		a_gfx_buf::set_data(count, data, offset);
-		glBufferSubData(GL_UNIFORM_BUFFER, get_stride() * offset, get_stride() * count, get_data(get_stride() * offset));
+	gfx_buf_shd::buf_t& gfx_buf_shd::set_data(cv1u key, ptr_tc data, cv1u count) {
+		gfx_buf::set_data(key, data, count);
+		glBufferSubData(GL_UNIFORM_BUFFER, get_stride() * key, get_stride() * count, get_data(get_stride() * key));
+		return *this;
 	}
 	// --==<core_methods>==--
 	v1bit gfx_buf_shd::remake()
 	{
-		NW_CHECK(a_gfx_buf::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_buf::remake(), "remake error!", return NW_FALSE);
 		
 		glBindBuffer(GL_UNIFORM_BUFFER, get_handle());
-		glBufferData(GL_UNIFORM_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		//glBufferData(GL_UNIFORM_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, get_space(), get_data(), GL_DYNAMIC_DRAW);
 		
 		return NW_TRUE;
 	}
@@ -36,7 +34,6 @@ namespace NW
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, get_handle());
 		glBindBufferBase(GL_UNIFORM_BUFFER, get_slot(), get_handle());
-		//glBindBufferRange(GL_UNIFORM_BUFFER, get_slot(), get_handle(), NW_NULL, get_space());
 	}
 	// --==</core_methods>==--
 }
@@ -45,7 +42,7 @@ namespace NW
 namespace NW
 {
 	gfx_buf_shd::gfx_buf_shd(gfx_engine& graphics) :
-		t_cmp(), a_gfx_buf(graphics),
+		t_cmp(), gfx_buf(graphics),
 		m_slot(NW_NULL)
 	{
 	}

@@ -44,8 +44,8 @@ namespace NW
 			}
 			else if (word[0] == 'v') { // vertex data processing;
 				if (word == "v") { // vertex coordinate;
-					if (!get_layt()->has_vtype_tree<v3f>()) {
-						get_layt()->add_node<v3f>("vsi_vtx_crd");
+					if (!get_layt()->get_layt().has_tree_type<v3f>()) {
+						get_layt()->get_layt().add_node<v3f>("vsi_vtx_crd");
 						get_layt()->remake();
 					}
 				}

@@ -1,18 +1,107 @@
 #include "nw_gfx_pch.hpp"
 #include "nw_gfx_state.h"
 #if (defined NW_GAPI)
-#   include "../lib/nw_gfx_lib_buf.h"
-#   include "../lib/nw_gfx_lib_fmbuf.h"
-#   include "../lib/nw_gfx_lib_layt.h"
-#   include "../lib/nw_gfx_lib_core.h"
-#   include "../lib/nw_gfx_lib_txr.h"
-#   include "../lib/nw_gfx_lib_smp.h"
-#   include "../lib/nw_gfx_lib_mtl.h"
-#   include "../lib/nw_gfx_lib_shd.h"
+#   include "../../lib/nw_gfx_lib_buf.h"
+#   include "../../lib/nw_gfx_lib_fmbuf.h"
+#   include "../../lib/nw_gfx_lib_layt.h"
+#   include "../../lib/nw_gfx_lib_core.h"
+#   include "../../lib/nw_gfx_lib_txr.h"
+#   include "../../lib/nw_gfx_lib_smp.h"
+#   include "../../lib/nw_gfx_lib_mtl.h"
+#   include "../../lib/nw_gfx_lib_shd.h"
 #   if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-    gfx_state::gfx_state()
+    gfx_state::gfx_state() : a_gfx_cmp() { }
+    gfx_state::gfx_state(state_tc& copy) : gfx_state() { operator=(copy); }
+    gfx_state::gfx_state(state_t&& copy) : gfx_state() { operator=(copy); }
+    gfx_state::~gfx_state() { }
+    // --setters
+    // --operators
+    // --==<core_methods>==--
+    v1bit gfx_state::remake()
+    {
+        return NW_TRUE;
+    }
+    v1nil gfx_state::on_draw()
+    {
+    }
+    // --==</core_methods>==--
+}
+namespace NW
+{
+    gfx_state_depst::gfx_state_depst() : gfx_state(), m_is_enabled_dept(NW_TRUE), m_is_enabled_sten(NW_TRUE) { }
+    gfx_state_depst::gfx_state_depst(v1bit enable_dept, v1bit enable_sten) : gfx_state_depst() { NW_CHECK(remake(enable_dept, enable_sten), "remake error!", return); }
+    gfx_state_depst::gfx_state_depst(depst_tc& copy) : gfx_state_depst() { operator=(copy); }
+    gfx_state_depst::gfx_state_depst(depst_t&& copy) : gfx_state_depst() { operator=(copy); }
+    gfx_state_depst::~gfx_state_depst() { }
+    // --setters
+    gfx_state_depst::depst_t& gfx_state_depst::set_enabled_dept(v1bit enable) { m_is_enabled_dept = enable; return *this; }
+    gfx_state_depst::depst_t& gfx_state_depst::set_enabled_sten(v1bit enable) { m_is_enabled_sten = enable; return *this; }
+    // --operators
+    // --==<core_methods>==--
+    v1bit gfx_state_depst::remake()
+    {
+        NW_CHECK(gfx_state::remake(), "remake error!", return NW_FALSE);
+        
+        return NW_TRUE;
+    }
+    v1nil gfx_state_depst::on_draw()
+    {
+        gfx_state::on_draw();
+
+        if (m_is_enabled_dept) { glEnable(GL_DEPTH_TEST); }
+        else { glDisable(GL_DEPTH_TEST); }
+        if (m_is_enabled_sten) { glEnable(GL_STENCIL_TEST); }
+        else { glDisable(GL_STENCIL_TEST); }
+    }
+    // --==</core_methods>==--
+}
+namespace NW
+{
+    gfx_state_rastr::gfx_state_rastr() : gfx_state() { }
+    gfx_state_rastr::gfx_state_rastr(rastr_tc& copy) : gfx_state_rastr() { operator=(copy); }
+    gfx_state_rastr::gfx_state_rastr(rastr_t&& copy) : gfx_state_rastr() { operator=(copy); }
+    gfx_state_rastr::~gfx_state_rastr() { }
+    // --setters
+    // --operators
+    // --==<core_methods>==--
+    v1bit gfx_state_rastr::remake()
+    {
+        NW_CHECK(gfx_state::remake(), "remake error!", return NW_FALSE);
+        
+        return NW_TRUE;
+    }
+    v1nil gfx_state_rastr::on_draw()
+    {
+        gfx_state::on_draw();
+    }
+    // --==</core_methods>==--
+}
+namespace NW
+{
+    gfx_state_blend::gfx_state_blend() : gfx_state() { }
+    gfx_state_blend::gfx_state_blend(blend_tc& copy) : gfx_state_blend() { operator=(copy); }
+    gfx_state_blend::gfx_state_blend(blend_t&& copy) : gfx_state_blend() { operator=(copy); }
+    gfx_state_blend::~gfx_state_blend() { }
+    // --setters
+    // --operators
+    // --==<core_methods>==--
+    v1bit gfx_state_blend::remake()
+    {
+        NW_CHECK(gfx_state::remake(), "remake error!", return NW_FALSE);
+        
+        return NW_TRUE;
+    }
+    v1nil gfx_state_blend::on_draw()
+    {
+        gfx_state::on_draw();
+    }
+    // --==</core_methods>==--
+}
+namespace NW
+{
+    gfx_state_context::gfx_state_context()
     {
         // shaders
         glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*)&last_shd_prog);
@@ -40,7 +129,7 @@ namespace NW
         last_depth_test = glIsEnabled(GL_DEPTH_TEST);
         last_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
     }
-	gfx_state::~gfx_state()
+    gfx_state_context::~gfx_state_context()
     {
         // enable flags
         if (last_blending) { glEnable(GL_BLEND); }

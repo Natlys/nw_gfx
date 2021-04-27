@@ -9,48 +9,35 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_mtl::gfx_mtl() :
-		t_cmp(), a_gfx_cmp(), a_iop_cmp(),
-		m_handle(NW_NULL)
-	{
-	}
+	gfx_mtl::gfx_mtl() : t_cmp(), a_gfx_cmp(), a_iop_cmp(), m_handle(NW_NULL), m_binds(binds_t()) { }
+	gfx_mtl::gfx_mtl(binds_tc& binds) : gfx_mtl() { NW_CHECK(remake(binds), "remake error!", return); }
+	gfx_mtl::gfx_mtl(bind_list_tc& binds) : gfx_mtl() { NW_CHECK(remake(binds), "remake error!", return); }
+	gfx_mtl::gfx_mtl(mtl_tc& copy) : gfx_mtl() { operator=(copy); }
+	gfx_mtl::gfx_mtl(mtl_t&& copy) : gfx_mtl() { operator=(copy); }
 	gfx_mtl::~gfx_mtl() { if (m_handle != NW_NULL) { glDeleteProgram(m_handle); m_handle = NW_NULL; } }
 	// --setters
-	v1nil gfx_mtl::set_buf(cv1u shd_key, buf_t& ref, cv1u buf_key) {
-		get_shd(shd_key)->set_buf(ref, buf_key);
-	}
-	v1nil gfx_mtl::set_txr(cv1u shd_key, txr_t& ref, cv1u txr_idx) {
-		get_shd(shd_key)->set_txr(ref, txr_idx);
-	}
-	v1nil gfx_mtl::add_shd(shd_t& ref) {
-		m_shds.push_back(ref);
-	}
-	v1nil gfx_mtl::rmv_shd(cv1u key) {
-		m_shds.erase(m_shds.begin() + key % m_shds.size());
-	}
+	gfx_mtl::mtl_t& gfx_mtl::set_binds(binds_tc& binds) { m_binds.clear(); for (auto& ibind : binds) { add_bind(ibind); } return *this; }
+	gfx_mtl::mtl_t& gfx_mtl::set_binds(bind_list_tc& binds) { m_binds.clear(); for (auto& ibind : binds) { add_bind(ibind); } return *this; }
+	gfx_mtl::mtl_t& gfx_mtl::add_bind(bind_tc& ref) { m_binds.push_back(ref); return *this; }
+	gfx_mtl::mtl_t& gfx_mtl::rmv_bind(size_tc key) { NW_CHECK(has_bind(key), "key error!", return *this); m_binds.erase(m_binds.begin() + key); return *this; }
 	// --operators
-	op_stream_t& gfx_mtl::operator<<(op_stream_t& stm) const {
-		return stm;
-	}
-	ip_stream_t& gfx_mtl::operator>>(ip_stream_t& stm) {
-		return stm;
-	}
+	op_stream_t& gfx_mtl::operator<<(op_stream_t& stm) const { return stm; }
+	ip_stream_t& gfx_mtl::operator>>(ip_stream_t& stm) { return stm; }
 	// --==<core_methods>==--
 	v1nil gfx_mtl::on_draw() {
-		glUseProgram(m_handle);
-		for (auto& ishd : m_shds) {
-			ishd->on_draw();
-		}
+		glUseProgram(get_handle());
+		for (auto& ibind : m_binds) { ibind->on_draw(); }
 	}
 	v1bit gfx_mtl::remake()
 	{
 		if (m_handle != NW_NULL) { glDeleteProgram(m_handle); m_handle = NW_NULL; }
+		NW_CHECK(has_binds(), "no binders!", return NW_FALSE);
+		
 		m_handle = glCreateProgram();
-		if (m_shds.size()) { return NW_FALSE; }
 
-		for (auto& ishd : m_shds) { glAttachShader(get_handle(), ishd->get_handle()); }
+		for (auto& ibind : m_binds) { glAttachShader(get_handle(), ibind->get_shd()->get_handle()); }
 		glLinkProgram(get_handle());
-		NW_CHECK(gfx_check_shader(get_handle()), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_check_shader(get_handle()), "remake error!", return NW_FALSE);
 
 		return NW_TRUE;
 	}

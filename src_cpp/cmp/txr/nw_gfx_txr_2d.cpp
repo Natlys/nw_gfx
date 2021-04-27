@@ -7,25 +7,26 @@
 namespace NW
 {
 	gfx_txr_2d::gfx_txr_2d() :
-		a_gfx_txr()
+		gfx_txr()
 	{
 	}
 	gfx_txr_2d::~gfx_txr_2d() { }
 	// --setters
 	// --operators
 	op_stream_t& gfx_txr_2d::operator<<(op_stream_t& stm) const {
+		gfx_txr::operator<<(stm);
 		return stm;
 	}
 	ip_stream_t& gfx_txr_2d::operator>>(ip_stream_t& stm) {
+		gfx_txr::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
 	v1bit gfx_txr_2d::remake()
 	{
-		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_txr::remake(), "remake error!", return NW_FALSE);
 		NW_CHECK(has_size(), "no size!", return NW_FALSE);
 		
-		glGenTextures(1, &m_handle);
 		glBindTexture(GL_TEXTURE_2D, get_handle());
 
 		v4f border_color = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -43,11 +44,11 @@ namespace NW
 	}
 	v1nil gfx_txr_2d::clear(ptr_tc data)
 	{
-		a_gfx_txr::clear(data);
+		gfx_txr::clear(data);
 	}
 	v1nil gfx_txr_2d::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 
 		// glEnable(GL_TEXTURE_2D);
 		glActiveTexture(GL_TEXTURE0 + get_slot());
@@ -77,7 +78,7 @@ namespace NW
 	// --==<core_methods>==--
 	v1bit gfx_txr_2d_mulsmp::remake()
 	{
-		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_txr::remake(), "remake error!", return NW_FALSE);
 		NW_CHECK(has_size(), "no size!", return NW_FALSE);
 		
 		glGenTextures(1, &m_handle);
@@ -89,7 +90,7 @@ namespace NW
 	}
 	v1nil gfx_txr_2d_mulsmp::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 
 		// glEnable(GL_MULTISAMPLE);
 		glActiveTexture(GL_TEXTURE0 + get_slot());
@@ -102,7 +103,7 @@ namespace NW
 namespace NW
 {
 	gfx_txr_2d::gfx_txr_2d(gfx_engine& graphics) :
-		a_gfx_txr(graphics),
+		gfx_txr(graphics),
 		m_native(NW_NULL)
 	{
 	}
@@ -120,7 +121,7 @@ namespace NW
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 
-		if (!a_gfx_txr::remake(source)) { return NW_FALSE; }
+		if (!gfx_txr::remake(source)) { return NW_FALSE; }
 		if (get_size_x() <= 0 || get_size_y() <= 0) { return NW_FALSE; }
 		// texture
 		{
@@ -169,7 +170,7 @@ namespace NW
 	}
 	void gfx_txr_2d::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 	}
 	// --==</core_methods>==--
 }
@@ -197,14 +198,14 @@ namespace NW
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 		
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
+		if (!gfx_txr::remake(img)) { return NW_FALSE; }
 		if (get_size_x() <= 0 || get_size_y() <= 0) { return NW_FALSE; }
 		
 		return NW_TRUE;
 	}
 	void gfx_txr_2d_mulsmp::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 	}
 	// --==</core_methods>==--
 }

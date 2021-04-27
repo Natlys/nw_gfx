@@ -44,6 +44,8 @@ namespace NW
 			glDrawArrays = (pfn_gfx_draw_vtx)get_proc("glDrawArrays");
 			glDrawElements = (pfn_gfx_draw_idx)get_proc("glDrawElements");
 			// configs
+			glLineWidth = (pfn_gfx_line_width)get_proc("glLineWidth");
+			glPointSize = (pfn_gfx_point_size)get_proc("glPointSize");
 			glViewport = (pfn_gfx_viewport)get_proc("glViewport");
 			glScissor = (pfn_gfx_scissor)get_proc("glScissor");
 			glEnable = (pfn_gfx_enable)get_proc("glEnable");
@@ -235,6 +237,8 @@ namespace NW
 	pfn_gfx_draw_vtx glDrawArrays = NULL;
 	pfn_gfx_draw_idx glDrawElements = NULL;
 	// configs
+	pfn_gfx_line_width glLineWidth = NULL;
+	pfn_gfx_point_size glPointSize = NULL;
 	pfn_gfx_viewport glViewport = NULL;
 	pfn_gfx_scissor glScissor = NULL;
 	pfn_gfx_enable glEnable = NULL;

@@ -13,7 +13,7 @@ namespace NW
 		using layt_tc = const layt_t;
 		using part_t = mem_ref<a_gfx_fmbuf_part>;
 		using part_tc = const part_t;
-		using parts_t = t_darray<part_t>;
+		using parts_t = darray_t<part_t>;
 		using parts_tc = const parts_t;
 #	if (NW_GAPI & NW_GAPI_OGL)
 		using handle_t = GLuint;

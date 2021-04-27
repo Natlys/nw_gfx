@@ -7,7 +7,7 @@ namespace NW
 {
 	/// texture_1d class
 	/// description:
-	class NW_API gfx_txr_1d : public a_gfx_txr
+	class NW_API gfx_txr_1d : public gfx_txr
 	{
 	public:
 		gfx_txr_1d();

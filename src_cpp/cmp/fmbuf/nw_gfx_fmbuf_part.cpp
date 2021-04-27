@@ -19,7 +19,7 @@ namespace NW
 	// --==<core_methods>==--
 	v1bit a_gfx_fmbuf_part::remake()
 	{
-		NW_CHECK(gfx_txr_2d::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_txr_2d::remake(), "remake error!", return NW_FALSE);
 
 		return NW_TRUE;
 	}

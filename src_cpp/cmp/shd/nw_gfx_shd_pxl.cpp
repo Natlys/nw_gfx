@@ -7,41 +7,31 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_shd_pxl::gfx_shd_pxl() :
-		a_gfx_shd()
-	{
-	}
-	gfx_shd_pxl::gfx_shd_pxl(source_tc& source) :
-		a_gfx_shd(source)
-	{
-	}
+	gfx_shd_pxl::gfx_shd_pxl() : gfx_shd() { } 
+	gfx_shd_pxl::gfx_shd_pxl(source_tc& source) : gfx_shd_pxl() { NW_CHECK(gfx_shd::remake(source), "remake error!", return); }
+	gfx_shd_pxl::gfx_shd_pxl(pshd_tc& copy) : gfx_shd_pxl() { operator=(copy); }
+	gfx_shd_pxl::gfx_shd_pxl(pshd_t&& copy) : gfx_shd_pxl() { operator=(copy); }
 	gfx_shd_pxl::~gfx_shd_pxl() { }
 	// --setters
 	// --operators
-	op_stream_t& gfx_shd_pxl::operator<<(op_stream_t& stm) const {
-		return stm;
-	}
-	ip_stream_t& gfx_shd_pxl::operator>>(ip_stream_t& stm) {
-		return stm;
-	}
+	op_stream_t& gfx_shd_pxl::operator<<(op_stream_t& stm) const { gfx_shd::operator<<(stm); return stm; }
+	ip_stream_t& gfx_shd_pxl::operator>>(ip_stream_t& stm) { gfx_shd::operator>>(stm); return stm; }
 	// --==<core_methods>==--
 	v1b gfx_shd_pxl::remake()
 	{
-		NW_CHECK(a_gfx_shd::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_shd::remake(), "remake error!", return NW_FALSE);
 		
 		m_handle = glCreateShader(GL_FRAGMENT_SHADER);
 		cstr_t final_code = &get_source()[0];
 		glShaderSource(get_handle(), 1u, &final_code, NW_NULL);
 		glCompileShader(get_handle());
 
-		NW_CHECK(gfx_check_shader(get_handle()), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_check_shader(get_handle()), "remake error!", return NW_FALSE);
 
 		return NW_TRUE;
 	}
-	v1nil gfx_shd_pxl::on_draw()
-	{
-		a_gfx_shd::on_draw();
-	}
+	v1nil gfx_shd_pxl::on_bind(binder_t& ref) { gfx_shd::on_bind(ref); }
+	v1nil gfx_shd_pxl::on_draw() { gfx_shd::on_draw(); }
 	// --==</core_methods>==--
 }
 #	endif	// GAPI_OGL
@@ -49,7 +39,7 @@ namespace NW
 namespace NW
 {
 	gfx_shd_pxl::gfx_shd_pxl(gfx_engine& graphics) :
-		a_gfx_shd(graphics),
+		gfx_shd(graphics),
 		m_native(NW_NULL)
 	{
 	}
@@ -72,7 +62,7 @@ namespace NW
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
 		
-		if (!a_gfx_shd::remake(source_code)) { return NW_FALSE; }
+		if (!gfx_shd::remake(source_code)) { return NW_FALSE; }
 
 		HRESULT h_result = 0;
 		if ((h_result = D3DCompile(
@@ -98,7 +88,7 @@ namespace NW
 	}
 	void gfx_shd_pxl::on_draw()
 	{
-		a_gfx_shd::on_draw();
+		gfx_shd::on_draw();
 
 		m_gfx->get_ctxh()->PSSetShader(m_native, NULL, NULL);
 

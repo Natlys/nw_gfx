@@ -15,6 +15,23 @@ namespace NW
 	}
 	gfx_fmbuf::~gfx_fmbuf() { if (m_handle != NW_NULL) { glDeleteFramebuffers(1u, &m_handle); m_handle = NW_NULL; } }
 	// --setters
+	v1nil gfx_fmbuf::set_layt(layt_tc& layout) {
+		m_layt = layout;
+	}
+	v1nil gfx_fmbuf::set_size_x(cv1u size_x) {
+		m_size[0] = size_x;
+	}
+	v1nil gfx_fmbuf::set_size_y(cv1u size_y) {
+		m_size[1] = size_y;
+	}
+	v1nil gfx_fmbuf::set_size_xy(cv1u size_x, cv1u size_y) {
+		m_size[0] = size_x;
+		m_size[1] = size_y;
+	}
+	v1nil gfx_fmbuf::set_size_xy(cv2u size_xy) {
+		m_size[0] = size_xy[0];
+		m_size[1] = size_xy[1];
+	}
 	v1nil gfx_fmbuf::add_part(part_t& ref) { m_parts.push_back(ref); }
 	v1nil gfx_fmbuf::rmv_part(cv1u key) { m_parts.erase(m_parts.begin() + key % m_parts.size()); }
 	// --operators

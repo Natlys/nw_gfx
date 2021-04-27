@@ -1,13 +1,13 @@
 #include "nw_gfx_pch.hpp"
-#include "nw_gfx_txr_smp.h"
+#include "nw_gfx_smp.h"
 #if (defined NW_GAPI)
-#include "core/nw_gfx_engine.h"
-#include "lib/nw_gfx_lib_smp.h"
-#include "lib/nw_gfx_lib_txr.h"
+#	include "../../core/nw_gfx_engine.h"
+#	include "../../lib/nw_gfx_lib_smp.h"
+#	include "../../lib/nw_gfx_lib_txr.h"
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_txr_smp::gfx_txr_smp() :
+	gfx_smp::gfx_smp() :
 		t_cmp(), a_gfx_cmp(),
 		m_handle(NW_NULL),
 		m_slot(NW_NULL),
@@ -16,22 +16,19 @@ namespace NW
 		m_color(NW_NULL)
 	{
 	}
-	gfx_txr_smp::~gfx_txr_smp() { if (m_handle != NW_NULL) { glDeleteSamplers(1u, &m_handle); m_handle = NW_NULL; } }
+	gfx_smp::gfx_smp(filter_t filter) : gfx_smp() { NW_CHECK(remake(filter), "remake error!", return); }
+	gfx_smp::gfx_smp(filter_t filter, border_t border) : gfx_smp() { NW_CHECK(remake(filter, border), "remake error!", return); }
+	gfx_smp::gfx_smp(filter_t filter, border_t border, cv4f& color) : gfx_smp() { NW_CHECK(remake(filter, border, color), "remake error!", return); }
+	gfx_smp::gfx_smp(smp_tc& copy) : gfx_smp() { operator=(copy); }
+	gfx_smp::gfx_smp(smp_t&& copy) : gfx_smp() { operator=(copy); }
+	gfx_smp::~gfx_smp() { if (m_handle != NW_NULL) { glDeleteSamplers(1u, &m_handle); m_handle = NW_NULL; } }
 	// --setters
-	v1nil gfx_txr_smp::set_slot(cv1u slot) {
-		m_slot = slot;
-	}
-	v1nil gfx_txr_smp::set_filter(filter_tc filter) {
-		m_filter = filter;
-	}
-	v1nil gfx_txr_smp::set_border(border_tc border) {
-		m_border = border;
-	}
-	v1nil gfx_txr_smp::set_color(cv4f& color) {
-		m_color = color;
-	}
+	gfx_smp::smp_t& gfx_smp::set_slot(cv1u slot) { m_slot = slot; return *this; }
+	gfx_smp::smp_t& gfx_smp::set_filter(filter_tc filter) { m_filter = filter; return *this; }
+	gfx_smp::smp_t& gfx_smp::set_border(border_tc border) { m_border = border; return *this; }
+	gfx_smp::smp_t& gfx_smp::set_color(cv4f& color) { m_color = color; return *this; }
 	// --==<core_methods>==--
-	v1bit gfx_txr_smp::remake()
+	v1bit gfx_smp::remake()
 	{
 		glGenSamplers(1u, &m_handle);
 		glSamplerParameteri(get_handle(), GL_TEXTURE_MIN_FILTER, get_filter());
@@ -43,7 +40,7 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	v1nil gfx_txr_smp::on_draw()
+	v1nil gfx_smp::on_draw()
 	{
 		glBindSampler(get_slot(), get_handle());
 	}
@@ -53,7 +50,7 @@ namespace NW
 #if (NW_GAPI & NW_GAPI_D3D)
 namespace NW
 {
-	gfx_txr_smp::gfx_txr_smp(
+	gfx_smp::gfx_smp(
 		gfx_engine& graphics,
 		filter filter_mode,
 		wrap wrap_mode,
@@ -68,13 +65,13 @@ namespace NW
 	{
 		if (!remake(filter_mode, wrap_mode, border_color)) { throw init_error(__FILE__, __LINE__); return; }
 	}
-	gfx_txr_smp::~gfx_txr_smp() { if (m_handle != NW_NULL) { m_handle->Release(); m_handle = NW_NULL; } }
+	gfx_smp::~gfx_smp() { if (m_handle != NW_NULL) { m_handle->Release(); m_handle = NW_NULL; } }
 	// --setters
-	void gfx_txr_smp::set_slot(v1u slot) {
+	void gfx_smp::set_slot(v1u slot) {
 		m_slot = slot;
 	}
 	// --==<core_methods>==--
-	v1bit gfx_txr_smp::remake(filter filter_mode, wrap wrap_mode, v4f border_color)
+	v1bit gfx_smp::remake(filter filter_mode, wrap wrap_mode, v4f border_color)
 	{
 		if (filter_mode != NW_NULL) { m_filter = filter_mode; }
 		if (wrap_mode != NW_NULL) { m_wrap = wrap_mode; }
@@ -100,7 +97,7 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	void gfx_txr_smp::on_draw()
+	void gfx_smp::on_draw()
 	{
 		m_gfx->get_ctxh()->VSSetSamplers(m_slot, 1u, &m_handle);
 		m_gfx->get_ctxh()->PSSetSamplers(m_slot, 1u, &m_handle);

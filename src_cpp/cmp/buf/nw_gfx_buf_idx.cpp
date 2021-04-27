@@ -7,24 +7,22 @@
 #if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	gfx_buf_idx::gfx_buf_idx() :
-		a_gfx_buf()
-	{
-	}
-	gfx_buf_idx::~gfx_buf_idx()
-	{
-	}
+	gfx_buf_idx::gfx_buf_idx() : gfx_buf() { }
+	gfx_buf_idx::gfx_buf_idx(layt_tc& layout, cv1u count, ptr_tc data) : gfx_buf(layout, count, data) { }
+	gfx_buf_idx::~gfx_buf_idx() { }
 	// --setters
-	v1nil gfx_buf_idx::set_data(cv1u count, ptr_tc data, cv1u offset) {
-		a_gfx_buf::set_data(count, data, offset);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, get_stride() * offset, get_stride() * count, get_data(get_stride() * offset));
+	gfx_buf_idx::buf_t& gfx_buf_idx::set_data(cv1u key, ptr_tc data, cv1u count) {
+		gfx_buf::set_data(key, data, count);
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, get_stride() * key, get_stride() * count, get_data(get_stride() * key));
+		return *this;
 	}
 	// --==<core_methods>==--
 	v1bit gfx_buf_idx::remake() {
-		NW_CHECK(a_gfx_buf::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_buf::remake(), "remake error!", return NW_FALSE);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, get_handle());
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_space(), get_data(), has_data() ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, get_space(), get_data(), GL_DYNAMIC_DRAW);
 		
 		return NW_TRUE;
 	}
@@ -39,7 +37,7 @@ namespace NW
 namespace NW
 {
 	gfx_buf_idx::gfx_buf_idx(gfx_engine& graphics) :
-		t_cmp(), a_gfx_buf(graphics),
+		t_cmp(), gfx_buf(graphics),
 		m_data_type(convert<value_types, data_type>(VTYPE_V1_U32))
 	{
 	}

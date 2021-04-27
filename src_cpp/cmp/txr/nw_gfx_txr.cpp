@@ -8,54 +8,41 @@
 #	if (NW_GAPI & NW_GAPI_OGL)
 namespace NW
 {
-	a_gfx_txr::a_gfx_txr() :
-		t_cmp(), a_gfx_cmp(),
-		m_handle(NW_NULL),
-		m_format(NW_NULL),
-		m_pxtype(NW_NULL),
-		m_slot(NW_NULL)
-	{
-	}
-	a_gfx_txr::~a_gfx_txr() { if (m_handle != NW_NULL) { glDeleteTextures(1u, &m_handle); m_handle = NW_NULL; } }
+	gfx_txr::gfx_txr() : t_cmp(), a_gfx_cmp(), m_handle(NW_NULL), m_format(NW_NULL), m_pxtype(NW_NULL), m_slot(NW_NULL) { }
+	gfx_txr::gfx_txr(txr_tc& copy) : gfx_txr() { operator=(copy); }
+	gfx_txr::gfx_txr(txr_t&& copy) : gfx_txr() { operator=(copy); }
+	gfx_txr::~gfx_txr() { if (m_handle != NW_NULL) { glDeleteTextures(1u, &m_handle); m_handle = NW_NULL; } }
 	// --setters
-	v1nil a_gfx_txr::set_slot(cv1u slot) {
-		m_slot = slot;
-		m_smp->set_slot(slot);
-	}
-	v1nil a_gfx_txr::set_smp(smp_t& ref) {
-		m_smp = ref;
-	}
+	gfx_txr::txr_t& gfx_txr::set_slot(cv1u slot) { m_slot = slot; return *this; }
 	// --operators
-	op_stream_t& a_gfx_txr::operator<<(op_stream_t& stm) const {
+	op_stream_t& gfx_txr::operator<<(op_stream_t& stm) const {
+		gfx_img::operator<<(stm);
 		return stm;
 	}
-	ip_stream_t& a_gfx_txr::operator>>(ip_stream_t& stm) {
+	ip_stream_t& gfx_txr::operator>>(ip_stream_t& stm) {
+		gfx_img::operator>>(stm);
 		return stm;
 	}
 	// --==<core_methods>==--
-	v1bit a_gfx_txr::remake()
+	v1bit gfx_txr::remake()
 	{
-		NW_CHECK(gfx_img::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_img::remake(), "remake error!", return NW_FALSE);
 		if (m_handle != NW_NULL) { glDeleteTextures(1u, &m_handle); m_handle = NW_NULL; }
 		
-		m_format = gfx_info::get_img_fmt(gfx_img::get_layt().get_vtype());
-		m_pxtype = gfx_info::get_type(gfx_img::get_layt().get_vtype());
+		m_format = gfx_info::get_img_fmt(gfx_img::get_layt().get_type());
+		m_pxtype = gfx_info::get_type(gfx_img::get_layt().get_type());
 
 		glGenTextures(1u, &m_handle);
 
 		return NW_TRUE;
 	}
-	v1nil a_gfx_txr::clear(ptr_tc data)
+	v1nil gfx_txr::clear(ptr_tc data)
 	{
 		glClearTexImage(get_handle(), 0, get_format(), get_pxtype(), data);
 	}
-	v1nil a_gfx_txr::on_draw()
+	v1nil gfx_txr::on_draw()
 	{
 		glActiveTexture(GL_TEXTURE0 + get_slot());
-		if (has_smp()) {
-			get_smp()->set_slot(m_slot);
-			get_smp()->on_draw();
-		}
 	}
 	// --==</core_methods>==--
 }
@@ -63,7 +50,7 @@ namespace NW
 #	if (NW_GAPI & NW_GAPI_D3D)
 namespace NW
 {
-	a_gfx_txr::a_gfx_txr(gfx_engine& graphics) :
+	gfx_txr::gfx_txr(gfx_engine& graphics) :
 		a_gfx_cmp(graphics), t_cmp(), gfx_img(),
 		m_handle(NW_NULL),
 		m_slot(NW_NULL),
@@ -71,27 +58,27 @@ namespace NW
 		m_pxl_fmt(convert<pixel_formats, pxl_fmt>(PXF_R8G8B8A8_U32))
 	{
 	}
-	a_gfx_txr::~a_gfx_txr()
+	gfx_txr::~gfx_txr()
 	{
 		if (m_handle != NW_NULL) { m_handle->Release(); m_handle = NW_NULL; }
 	}
 	// --setters
-	v1nil a_gfx_txr::set_slot(v1u slot) {
+	v1nil gfx_txr::set_slot(v1u slot) {
 		m_slot = slot;
 		m_smp->set_slot(slot);
 	}
-	v1nil a_gfx_txr::set_txr_fmt(txr_fmt format) {
+	v1nil gfx_txr::set_txr_fmt(txr_fmt format) {
 		m_txr_fmt = format;
 	}
-	v1nil a_gfx_txr::set_pxl_fmt(pxl_fmt format) {
+	v1nil gfx_txr::set_pxl_fmt(pxl_fmt format) {
 		m_pxl_fmt = format;
 	}
-	v1nil a_gfx_txr::set_smp(smp& ref) {
+	v1nil gfx_txr::set_smp(smp& ref) {
 		m_smp = ref;
 	}
 	// --operators
 	// --==<core_methods>==--
-	v1bit a_gfx_txr::load_file(cstr file_path)
+	v1bit gfx_txr::load_file(cstr file_path)
 	{
 		img_bmp img;
 		if (!iop_sys::get().load_file(file_path, img)) { throw init_error(__FILE__, __LINE__); return NW_FALSE; }
@@ -99,11 +86,11 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	v1bit a_gfx_txr::save_file(cstr file_path)
+	v1bit gfx_txr::save_file(cstr file_path)
 	{
 		return NW_TRUE;
 	}
-	v1bit a_gfx_txr::remake(const gfx_img& img)
+	v1bit gfx_txr::remake(const gfx_img& img)
 	{
 		set_data(img);
 		m_pxl_fmt = convert<v1s, pxl_fmt>(img.get_channels());
@@ -112,7 +99,7 @@ namespace NW
 
 		return NW_TRUE;
 	}
-	v1nil a_gfx_txr::on_draw() {
+	v1nil gfx_txr::on_draw() {
 		m_smp->set_slot(m_slot);
 		m_smp->on_draw();
 

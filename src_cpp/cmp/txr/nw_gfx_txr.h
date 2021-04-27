@@ -2,21 +2,19 @@
 #define NW_GFX_TEXTURE_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
+#	include "../nw_gfx_cmp.h"
 #	include "../img/nw_gfx_img.h"
-#	include "nw_gfx_txr_smp.h"
 namespace NW
 {
-	/// abstarct texture_component class
+	/// graphics_texture class
 	/// description:
-	class NW_API a_gfx_txr : public t_cmp<a_gfx_txr>, public a_gfx_cmp, public gfx_img
+	class NW_API gfx_txr : public t_cmp<gfx_txr>, public a_gfx_cmp, public gfx_img
 	{
 	public:
-		using txr_t = a_gfx_txr;
+		// --texture
+		using txr_t = gfx_txr;
 		using txr_tc = const txr_t;
-		using img_t = gfx_img;
-		using img_tc = const img_t;
-		using smp_t = mem_ref<gfx_txr_smp>;
-		using smp_tc = const smp_t;
+		// --gfx_api
 #	if (NW_GAPI & NW_GAPI_OGL)
 		using handle_t = GLuint;
 		using format_t = GLenum;
@@ -31,27 +29,23 @@ namespace NW
 		using format_tc = const format_t;
 		using pxtype_tc = const pxtype_t;
 	public:
-		a_gfx_txr();
-		a_gfx_txr(txr_tc& copy);
-		a_gfx_txr(txr_t&& copy);
-		virtual ~a_gfx_txr();
+		gfx_txr();
+		gfx_txr(txr_tc& copy);
+		gfx_txr(txr_t&& copy);
+		virtual ~gfx_txr();
 		// --getters
 		inline handle_t get_handle()        { return m_handle; }
 		inline handle_tc get_handle() const { return m_handle; }
 		inline format_tc get_format() const { return m_format; }
 		inline pxtype_tc get_pxtype() const { return m_pxtype; }
-		inline cv1u get_slot() const   { return m_slot; }
-		inline smp_t& get_smp()        { return m_smp; }
-		inline smp_tc& get_smp() const { return m_smp; }
+		inline cv1u get_slot() const { return m_slot; }
 		// --setters
-		v1nil set_slot(cv1u slot);
-		v1nil set_smp(smp_t& ref);
+		txr_t& set_slot(cv1u slot);
 		// --predicates
 		inline v1bit has_slot(cv1u slot = NW_NULL) const { return m_slot == slot; }
-		inline v1bit has_smp() const { return m_smp.is_valid(); }
 		// --operators
-		inline v1nil operator=(txr_tc& copy);
-		inline v1nil operator=(txr_t&& copy);
+		inline txr_t& operator=(txr_tc& copy) { gfx_img::operator=(copy); return *this; }
+		inline txr_t& operator=(txr_t&& copy) { gfx_img::operator=(copy); return *this; }
 		virtual op_stream_t& operator<<(op_stream_t& stm) const override;
 		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
 		// --core_methods
@@ -63,7 +57,6 @@ namespace NW
 		format_t m_format;
 		pxtype_t m_pxtype;
 		v1u m_slot;
-		smp_t m_smp;
 	};
 }
 #endif	// NW_GAPI

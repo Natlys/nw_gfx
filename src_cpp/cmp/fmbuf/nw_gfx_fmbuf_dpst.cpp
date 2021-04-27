@@ -17,7 +17,7 @@ namespace NW
 	// --==<core_methods>==--
 	v1bit gfx_fmbuf_dpst::remake()
 	{
-		NW_CHECK(a_gfx_fmbuf_part::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(a_gfx_fmbuf_part::remake(), "remake error!", return NW_FALSE);
 		
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, get_handle(), 0);
 

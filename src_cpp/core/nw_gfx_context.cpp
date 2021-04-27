@@ -9,7 +9,7 @@
 namespace NW
 {
 	gfx_context::gfx_context() :
-		a_mem_cmp(),
+		a_mem_user(),
 		m_handle(NW_NULL),
 		m_device(NW_NULL),
 		m_window(NW_NULL),
@@ -26,11 +26,17 @@ namespace NW
 	gfx_context::gfx_context(window_t window) :
 		gfx_context()
 	{
-		NW_CHECK(remake(window), "failed remake!", return);
+		NW_CHECK(remake(window), "remake error!", return);
 	}
 	gfx_context::~gfx_context()
 	{
-		if (has_handle()) {}
+		if (has_handle() && has_device()) {
+			wglMakeContextCurrent(NW_NULL, NW_NULL);
+			::ReleaseDC(m_window, m_device);
+			wglDeleteContext(m_handle);
+			m_handle = NW_NULL;
+			m_device = NW_NULL;
+		}
 	}
 	// --setters
 	v1nil gfx_context::set_window(window_t& window) {
@@ -44,14 +50,8 @@ namespace NW
 		// only one context can be used in a single thread at one time;
 		if constexpr (NW_TRUE) {
 			if (has_handle() && has_device()) {
-				// NW_CHECK(m_wndh, "no window!", return NW_FALSE);
-				// break the connection between our thread and the rendering context;
 				wglMakeContextCurrent(NW_NULL, NW_NULL);
-				// release the associated dc and delete the rendering context;
 				::ReleaseDC(m_window, m_device);
-				// before delete - we need to release that;
-				// DeleteDC(m_ctxh);	// delete only created device context;
-				// before this call device context must be released or deleted;
 				wglDeleteContext(m_handle);
 				m_handle = NW_NULL;
 				m_device = NW_NULL;

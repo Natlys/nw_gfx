@@ -15,6 +15,8 @@ namespace NW
 	typedef v1nil(NW_API_ENTRYP pfn_gfx_draw_vtx)(GLenum primitive, GLint first, GLsizei count);
 	typedef v1nil(NW_API_ENTRYP pfn_gfx_draw_idx)(GLenum primitive, GLsizei count, GLenum data_type, const GLvoid* index_data);
 	// configs
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_line_width)(GLfloat size);
+	typedef v1nil(NW_API_ENTRYP pfn_gfx_point_size)(GLfloat size);
 	typedef v1nil(NW_API_ENTRYP pfn_gfx_viewport)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
 	typedef v1nil(NW_API_ENTRYP pfn_gfx_scissor)(GLint crd_x, GLint crd_y, GLsizei size_x, GLsizei size_y);
 	typedef v1nil(NW_API_ENTRYP pfn_gfx_enable)(GLenum mode_to_enable);
@@ -63,6 +65,8 @@ namespace NW
 	extern pfn_gfx_draw_vtx ogl_draw_vtx;
 	extern pfn_gfx_draw_idx ogl_draw_idx;
 	// configs
+	extern pfn_gfx_line_width ogl_line_width;
+	extern pfn_gfx_point_size ogl_point_size;
 	extern pfn_gfx_viewport ogl_viewport;
 	extern pfn_gfx_scissor ogl_scissor;
 	extern pfn_gfx_enable ogl_enable;
@@ -87,6 +91,8 @@ namespace NW
 #define glDrawArrays             ogl_draw_vtx
 #define glDrawElements           ogl_draw_idx
 // configs
+#define glLineWidth              ogl_line_width
+#define glPointSize              ogl_point_size
 #define glViewport               ogl_viewport
 #define glScissor                ogl_scissor
 #define glEnable                 ogl_enable

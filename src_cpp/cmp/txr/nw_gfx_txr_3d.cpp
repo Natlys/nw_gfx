@@ -8,7 +8,7 @@
 namespace NW
 {
 	gfx_txr_cube::gfx_txr_cube() :
-		a_gfx_txr()
+		gfx_txr()
 	{
 	}
 	gfx_txr_cube::~gfx_txr_cube() { }
@@ -23,7 +23,7 @@ namespace NW
 	// --==<core_methods>==--
 	v1bit gfx_txr_cube::remake()
 	{
-		NW_CHECK(a_gfx_txr::remake(), "failed remake!", return NW_FALSE);
+		NW_CHECK(gfx_txr::remake(), "remake error!", return NW_FALSE);
 		NW_CHECK(has_size(), "no size!", return NW_FALSE);
 		
 		glGenTextures(1, &m_handle);
@@ -48,11 +48,11 @@ namespace NW
 	}
 	v1nil gfx_txr_cube::clear(ptr_tc buffer)
 	{
-		a_gfx_txr::clear(buffer);
+		gfx_txr::clear(buffer);
 	}
 	v1nil gfx_txr_cube::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 
 		// glEnable(GL_TEXTURE_CUBE_MAP);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, get_handle());
@@ -65,7 +65,7 @@ namespace NW
 namespace NW
 {
 	gfx_txr_cube::gfx_txr_cube(gfx_engine& graphics) :
-		a_gfx_txr(graphics)
+		gfx_txr(graphics)
 	{
 	}
 	gfx_txr_cube::~gfx_txr_cube() { if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; } }
@@ -81,7 +81,7 @@ namespace NW
 	v1bit gfx_txr_cube::remake(const gfx_img& img)
 	{
 		if (m_native != NW_NULL) { m_native->Release(); m_native = NW_NULL; }
-		if (!a_gfx_txr::remake(img)) { return NW_FALSE; }
+		if (!gfx_txr::remake(img)) { return NW_FALSE; }
 		if (get_size_x() <= 0 || get_size_y() <= 0) { return NW_FALSE; }
 		
 		return NW_TRUE;
@@ -91,7 +91,7 @@ namespace NW
 	}
 	v1nil gfx_txr_cube::on_draw()
 	{
-		a_gfx_txr::on_draw();
+		gfx_txr::on_draw();
 	}
 	// --==</core_methods>==--
 }

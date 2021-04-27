@@ -6,7 +6,7 @@
 namespace NW
 {
 	/// graphics_context class
-	class NW_API gfx_context : public a_mem_cmp
+	class NW_API gfx_context : public a_mem_user
 	{
 	public:
 		using handle_t = context_handle;

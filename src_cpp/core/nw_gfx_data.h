@@ -2,7 +2,6 @@
 #define NW_GFX_DATA_H
 #include "nw_gfx_core.hpp"
 #if (defined NW_GAPI)
-#	include "core/nw_core_mtx.h"
 // vertex
 namespace NW
 {
@@ -141,14 +140,14 @@ layout(location = 2)in vec3 vsi_nrm_crd;
 
 out VS_INFO{vec4 vtx_crd;vec2 txr_crd;vec3 nrm_crd;}vso;
 
-layout(std140)uniform cst_transform{mat4 cst_model;mat4 cst_view;mat4 cst_proj;};
+layout(std140)uniform cst_tform{mat4 cst_modl;mat4 cst_view;mat4 cst_proj;};
 
 void main()
 {
 	gl_Position =
 		cst_proj *
 		cst_view *
-		cst_model *
+		//cst_modl *
 		vec4(vsi_vtx_crd.xyz, 1.0f);
 
 	vso.vtx_crd = gl_Position;
@@ -175,7 +174,7 @@ void main()
 
 	//if (txr_clr.r == 0.0f || txr_clr.g == 0.0f || txr_clr.b == 0.0f) { discard; }
 	//txr_clr = vec4(normalize(psi.nrm_crd), 1.0f);
-	txr_clr = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	//txr_clr = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	pso_pxl_clr_0 = txr_clr;
 }
@@ -201,6 +200,8 @@ void main()
 in VS_INFO{vec4 vtx_crd;}psi;
 
 layout(location=0)out vec4 pso_pxl_clr_0;
+
+layout(location=0)uniform sampler2D cst_txr_idx;
 
 void main()
 {
