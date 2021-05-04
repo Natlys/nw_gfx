@@ -24,7 +24,7 @@ namespace NW
 	public:
 		gfx_context();
 		gfx_context(window_t window);
-		~gfx_context();
+		virtual ~gfx_context();
 		// --getters
 		inline handle_t& get_handle()        { return m_handle; }
 		inline handle_tc& get_handle() const { return m_handle; }
@@ -50,6 +50,37 @@ namespace NW
 		v1bit remake();
 		inline v1bit remake(window_t window) { set_window(window); return remake(); }
 		v1nil update();
+#	if (NW_GAPI & NW_GAPI_OGL)
+		// --api_functions
+		// // --getters
+		pfn_gfx_get_int_v get_int;
+		pfn_gfx_get_string get_str;
+		pfn_gfx_get_error get_error;
+		// // --predicates
+		pfn_gfx_is_enabled is_enabled;
+		// // --commands
+		pfn_gfx_draw_vtx draw_vtx;
+		pfn_gfx_draw_idx draw_idx;
+		pfn_gfx_clear_error clear_error;
+		// // --setters
+		// // // --general
+		pfn_gfx_enable set_enabled;
+		pfn_gfx_disable set_disabled;
+		// // // --rasterizer
+		pfn_gfx_viewport set_viewport;
+		pfn_gfx_scissor set_scissor;
+		pfn_gfx_line_width set_line_width;
+		pfn_gfx_point_size set_point_size;
+		pfn_gfx_polygon_mode set_polygon_mode;
+		// // // --depth
+		pfn_gfx_depth_mask set_depth_mask;
+		pfn_gfx_depth_func set_depth_func;
+		// // // --blend
+		pfn_gfx_blend_equation set_blend_equation;
+		pfn_gfx_blend_equation_separate set_blend_equation_separate;
+		pfn_gfx_blend_function set_blend_function;
+		pfn_gfx_blend_function_separate set_blend_function_separate;
+#	endif
 	private:
 		handle_t m_handle;
 		device_t m_device;

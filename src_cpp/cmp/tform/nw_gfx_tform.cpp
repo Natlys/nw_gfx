@@ -12,7 +12,7 @@ namespace NW
 	gfx_tform::tform_t& gfx_tform::set_crd(cv3f& coord) { m_crd = coord; return *this; }
 	gfx_tform::tform_t& gfx_tform::set_rtn(cv3f& rotat) { m_rtn = rotat; return *this; }
 	gfx_tform::tform_t& gfx_tform::set_scl(cv3f& scale) { m_scl = scale; return *this; }
-	gfx_tform::tform_t& gfx_tform::set_modl(cm4f& model) { get_elem("modl") = model; return *this; }
+	gfx_tform::tform_t& gfx_tform::set_modl(cm4f& model) { get_elem("modl").set<m4f>(model); return *this; }
 	// --operators
 	// --==<core_methods>==--
 	v1bit gfx_tform::remake()

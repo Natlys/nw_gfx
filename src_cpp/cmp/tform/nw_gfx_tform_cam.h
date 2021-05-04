@@ -57,8 +57,8 @@ namespace NW
 		inline v3f get_upper_crd(v1f scalar = 1.0f) const { return m_upper * -scalar + m_crd; }
 		inline v3f get_front_crd(v1f scalar = 1.0f) const { return get_front_dir(scalar) + m_crd; }
 		// // --transform
-		inline cm4f& get_proj() const { return get_elem("proj"); }
-		inline cm4f& get_view() const { return get_elem("view"); }
+		inline cm4f& get_view() const { return get_elem("view").get<m4f>(); }
+		inline cm4f& get_proj() const { return get_elem("proj").get<m4f>(); }
 		// // --configuration
 		inline mode_tc& get_mode() const { return m_mode; }
 		// --setters
@@ -77,8 +77,8 @@ namespace NW
 		cam_t& set_rtn_limit(cv3f& rotat_limit);
 		cam_t& set_rtn_speed(cv1f rotat_speed);
 		// // --transform
-		cam_t& set_proj(cm4f& proj);
 		cam_t& set_view(cm4f& view);
+		cam_t& set_proj(cm4f& proj);
 		// // --configuration
 		cam_t& set_mode(mode_tc mode);
 		// --predicates

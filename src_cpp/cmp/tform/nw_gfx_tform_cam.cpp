@@ -42,8 +42,8 @@ namespace NW
 	gfx_tform_cam::cam_t& gfx_tform_cam::set_rtn_limit(cv3f& rotat_limit) { m_rtn_limit = rotat_limit; return *this; }
 	gfx_tform_cam::cam_t& gfx_tform_cam::set_rtn_speed(cv1f rotat_speed) { m_rtn_speed = rotat_speed; return *this; }
 	// // --transform
-	gfx_tform_cam::cam_t& gfx_tform_cam::set_proj(cm4f& proj) { get_elem("proj") = proj; return *this; }
-	gfx_tform_cam::cam_t& gfx_tform_cam::set_view(cm4f& view) { get_elem("view") = view; return *this; }
+	gfx_tform_cam::cam_t& gfx_tform_cam::set_view(cm4f& view) { get_elem("view").set<m4f>(view); return *this; }
+	gfx_tform_cam::cam_t& gfx_tform_cam::set_proj(cm4f& proj) { get_elem("proj").set<m4f>(proj); return *this; }
 	// // --configuration
 	gfx_tform_cam::cam_t& gfx_tform_cam::set_mode(mode_tc mode) {
 		m_mode = mode;
@@ -149,17 +149,21 @@ namespace NW
 			break;
 		}
 		case NW_CAMERA_3D: {
+			m_front = v3f{ 0.0f, 0.0f, 1.0f };
 #			if (NW_TRUE)
 			m_front[0] = NW_NUM_SIN(-m_rtn[1]) * NW_NUM_COS(m_rtn[0]);
 			m_front[1] = NW_NUM_SIN(m_rtn[0]);
 			m_front[2] = NW_NUM_COS(-m_rtn[1]) * NW_NUM_COS(m_rtn[0]);
 #			elif (NW_FALSE)
-			m_front = m3f::make_rotat_xyz(m_rtn) * v3f { 0.0f, 0.0f, 1.0f };
+			m_front[0] = NW_NUM_COS(m_rtn[2]) * NW_NUM_COS(m_rtn[1]) * NW_NUM_COS(m_rtn[0]);
+			m_front[1] = NW_NUM_SIN(m_rtn[2]) * NW_NUM_COS(m_rtn[1]);
+			m_front[2] = NW_NUM_SIN(m_rtn[1]) * NW_NUM_COS(m_rtn[0]);
 #			elif (NW_TRUE)
-			m_front = v3f{ 0.0f, 0.0f, 1.0f };
+			m_front = m3f::make_rotat_xyz(-m_rtn) * m_front;
+#			elif (NW_TRUE)
 			m_front = inum3d_t::make_rotat(m_rtn[0], v3f{ 1.0f, 0.0f, 0.0f }, m_front).m_imag;
 			m_front = inum3d_t::make_rotat(m_rtn[1], v3f{ 0.0f, 1.0f, 0.0f }, m_front).m_imag;
-			//m_front = inum3d_t::make_rotat(m_rtn[2], v3f{ 0.0f, 0.0f, 1.0f }, m_front).m_imag;
+			m_front = inum3d_t::make_rotat(m_rtn[2], v3f{ 0.0f, 0.0f, 1.0f }, m_front).m_imag;
 #			endif
 			m_front = v3f::make_norm(m_front);
 			m_right = v3f::make_norm(v3f::make_crs(m_front, v3f{ 0.0f, 1.0f, 0.0f }));

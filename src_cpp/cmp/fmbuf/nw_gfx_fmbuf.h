@@ -34,8 +34,8 @@ namespace NW
 		inline cv1u get_size_x() const  { return m_size[0]; }
 		inline cv1u get_size_y() const  { return m_size[1]; }
 		inline cv2u get_size_xy() const { return m_size; }
-		inline part_t& get_part(cv1u key = NW_NULL)        { NW_CHECK(has_part(key), "not found!", return part_t()); return m_parts[key]; }
-		inline part_tc& get_part(cv1u key = NW_NULL) const { NW_CHECK(has_part(key), "not found!", return part_tc()); return m_parts[key]; }
+		inline part_t& get_part(cv1u key = NW_NULL)        { NW_CHECK(has_part(key), "not found!", return m_parts[0]); return m_parts[key]; }
+		inline part_tc& get_part(cv1u key = NW_NULL) const { NW_CHECK(has_part(key), "not found!", return m_parts[0]); return m_parts[key]; }
 		// --setters
 		v1nil set_layt(layt_tc& layout);
 		v1nil set_size_x(cv1u size_x);
