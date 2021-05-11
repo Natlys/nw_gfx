@@ -1,3 +1,0 @@
-#ifndef NW_GFX_MESH_NODE_H
-#define NW_GFX_MESH_NODE_H
-#endif	// NW_GFX_MESH_NODE_H
