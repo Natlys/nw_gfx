@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_buf.h"
+#include "nc_gfx_buf.hxx"
 #if (defined NC_GAPI)
-#	include "core/nc_nc_gfx_eng.h"
+#	include "core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -11,12 +11,12 @@ namespace NC
 	gfx_buf_t::gfx_buf_t(gbuf_tc& copy) : gfx_buf_t() { operator=(copy); }
 	gfx_buf_t::gfx_buf_t(gbuf_t&& copy) : gfx_buf_t() { operator=(copy); }
 	gfx_buf_t::~gfx_buf_t() { if (m_handle != NC_NULL) { get_context()->buf_del(1u, &m_handle); m_handle = NC_NULL; } }
-	// setters //
+	/* setters */
 	gfx_buf_t::buf_t& gfx_buf_t::set_data(size_t key, ptr_tc data, size_t count) { mem_buf_t::set_data(key, data, count); return *this; }
-	// operators //
-	op_stream_t& gfx_buf_t::operator<<(op_stream_t& stm) const { mem_buf_t::operator<<(stm); return stm; }
-	ip_stream_t& gfx_buf_t::operator>>(ip_stream_t& stm) { mem_buf_t::operator>>(stm); return stm; }
-	// commands //
+	/* operators */
+	nc_ostream_t& gfx_buf_t::operator<<(nc_ostream_t& stm) const { mem_buf_t::operator<<(stm); return stm; }
+	nc_istream_t& gfx_buf_t::operator>>(nc_istream_t& stm) { mem_buf_t::operator>>(stm); return stm; }
+	/* commands */
 	v1bit_t gfx_buf_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->buf_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -38,7 +38,7 @@ namespace NC
 	{
 	}
 	gfx_buf_t::~gfx_buf_t() { if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; } }
-	// commands //
+	/* commands */
 	v1bit_t gfx_buf_t::remake()
 	{
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }

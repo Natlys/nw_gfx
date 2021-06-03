@@ -1,8 +1,8 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_txr_1d.h"
+#include "nc_gfx_txr_1d.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
-#	include "../img/nc_gfx_img.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
+#	include "../img/nc_gfx_img.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -13,17 +13,17 @@ namespace NC
 	gfx_txr1d_t::~gfx_txr1d_t()
 	{
 	}
-	// setters //
-	// operators //
-	op_stream_t& gfx_txr1d_t::operator<<(op_stream_t& stm) const {
+	/* setters */
+	/* operators */
+	nc_ostream_t& gfx_txr1d_t::operator<<(nc_ostream_t& stm) const {
 		gfx_txr_t::operator<<(stm);
 		return stm;
 	}
-	ip_stream_t& gfx_txr1d_t::operator>>(ip_stream_t& stm) {
+	nc_istream_t& gfx_txr1d_t::operator>>(nc_istream_t& stm) {
 		gfx_txr_t::operator>>(stm);
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_txr1d_t::remake()
 	{
 		NC_CHECK(gfx_txr_t::remake(), "remake error!", return NC_FALSE);
@@ -68,16 +68,16 @@ namespace NC
 	{
 	}
 	gfx_txr1d_t::~gfx_txr1d_t() { if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; } }
-	// setters //
-	// operators //
-	// operators //
-	op_stream_t& gfx_txr1d_t::operator<<(op_stream_t& stm) const {
+	/* setters */
+	/* operators */
+	/* operators */
+	nc_ostream_t& gfx_txr1d_t::operator<<(nc_ostream_t& stm) const {
 		return stm;
 	}
-	ip_stream_t& gfx_txr1d_t::operator>>(ip_stream_t& stm) {
+	nc_istream_t& gfx_txr1d_t::operator>>(nc_istream_t& stm) {
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_txr1d_t::remake(const gfx_img_t& img)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }

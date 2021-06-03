@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_mtl.h"
+#include "nc_gfx_mtl.hxx"
 #if (defined NC_GAPI)
-#include "core/nc_nc_gfx_eng.h"
+#include "core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -11,15 +11,15 @@ namespace NC
 	gfx_mtl_t::gfx_mtl_t(mtl_tc& copy) : gfx_mtl_t() { operator=(copy); }
 	gfx_mtl_t::gfx_mtl_t(mtl_t&& copy) : gfx_mtl_t() { operator=(copy); }
 	gfx_mtl_t::~gfx_mtl_t() { if (m_handle != NC_NULL) { get_context()->mtl_del(m_handle); m_handle = NC_NULL; } }
-	// setters //
+	/* setters */
 	gfx_mtl_t::mtl_t& gfx_mtl_t::set_binds(binds_tc& binds) { m_binds.clear(); for (auto& ibind : binds) { add_bind(ibind); } return *this; }
 	gfx_mtl_t::mtl_t& gfx_mtl_t::set_binds(bind_list_tc& binds) { m_binds.clear(); for (auto& ibind : binds) { add_bind(ibind); } return *this; }
 	gfx_mtl_t::mtl_t& gfx_mtl_t::add_bind(bind_tc& ref) { m_binds.push_back(ref); return *this; }
 	gfx_mtl_t::mtl_t& gfx_mtl_t::rmv_bind(size_tc key) { NC_CHECK(has_bind(key), "key error!", return *this); m_binds.erase(m_binds.begin() + key); return *this; }
-	// operators //
-	op_stream_t& gfx_mtl_t::operator<<(op_stream_t& stm) const { return stm; }
-	ip_stream_t& gfx_mtl_t::operator>>(ip_stream_t& stm) { return stm; }
-	// commands //
+	/* operators */
+	nc_ostream_t& gfx_mtl_t::operator<<(nc_ostream_t& stm) const { return stm; }
+	nc_istream_t& gfx_mtl_t::operator>>(nc_istream_t& stm) { return stm; }
+	/* commands */
 	v1nil_t gfx_mtl_t::on_draw()
 	{
 		get_context()->mtl_bind(get_handle());
@@ -49,7 +49,7 @@ namespace NC
 	{
 	}
 	gfx_mtl_t::~gfx_mtl_t() { }
-	// setters //
+	/* setters */
 	void gfx_mtl_t::set_buf(v1u_t shd_idx, buf& ref, v1u_t gfx_buf_idx_t) {
 		get_shd(shd_idx)->set_buf(ref, gfx_buf_idx_t);
 	}
@@ -62,14 +62,14 @@ namespace NC
 	void gfx_mtl_t::rmv_shd(v1u_t idx) {
 		m_shds.erase(m_shds.begin() + idx % m_shds.size());
 	}
-	// operators //
+	/* operators */
 	stm_out& gfx_mtl_t::operator<<(stm_out& stm) const {
 		return stm;
 	}
 	stm_in& gfx_mtl_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_mtl_t::remake()
 	{
 		//

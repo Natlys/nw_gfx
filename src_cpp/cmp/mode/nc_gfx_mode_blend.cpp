@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_mode_blend.h"
+#include "nc_gfx_mode_blend.hxx"
 #if (defined NC_GAPI)
-#   include "../../core/nc_nc_gfx_eng.h"
+#   include "../../core/nc_nc_gfx_eng.hxx"
 #   if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -9,9 +9,9 @@ namespace NC
     gfx_state_blend_t::gfx_state_blend_t(blend_tc& copy) : gfx_state_blend_t() { operator=(copy); }
     gfx_state_blend_t::gfx_state_blend_t(blend_t&& copy) : gfx_state_blend_t() { operator=(copy); }
     gfx_state_blend_t::~gfx_state_blend_t() { }
-    // setters //
-    // operators //
-    // commands //
+    /* setters */
+    /* operators */
+    /* commands */
     v1bit_t gfx_state_blend_t::remake()
     {
         NC_CHECK(gfx_mode_t::remake(), "remake error!", return NC_FALSE);

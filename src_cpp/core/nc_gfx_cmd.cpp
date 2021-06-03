@@ -1,10 +1,10 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_cmd.h"
+#include "nc_gfx_cmd.hxx"
 #if (defined NC_GAPI)
-#	include "../cmp/buf/nc_gfx_buf_vtx.h"
-#	include "../cmp/buf/nc_gfx_buf_idx.h"
-#	include "../lib/nc_gfx_lib_info.h"
-#	include "nc_nc_gfx_eng.h"
+#	include "../cmp/buf/nc_gfx_buf_vtx.hxx"
+#	include "../cmp/buf/nc_gfx_buf_idx.hxx"
+#	include "../lib/nc_gfx_lib_info.hxx"
+#	include "nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -15,7 +15,7 @@ namespace NC
 	gfx_cmd_t::gfx_cmd_t(cmd_tc& copy) : gfx_cmd_t() { operator=(copy); }
 	gfx_cmd_t::gfx_cmd_t(cmd_t&& copy) : gfx_cmd_t() { operator=(copy); }
 	gfx_cmd_t::~gfx_cmd_t() { set_cmps(); }
-	// setters //
+	/* setters */
 	gfx_cmd_t::cmd_t& gfx_cmd_t::set_type(type_tc type) { m_type = type; return *this; }
 	gfx_cmd_t::cmd_t& gfx_cmd_t::set_prim(prim_tc prim) { m_prim = prim; return *this; }
 	gfx_cmd_t::cmd_t& gfx_cmd_t::set_cmps() { while (m_cmps != NC_NULL) { rmv_cmp(NC_NULL); } return *this; }
@@ -35,8 +35,8 @@ namespace NC
 		m_cmps = next_head;
 		return *this;
 	}
-	// operators //
-	// commands //
+	/* operators */
+	/* commands */
 	v1bit_t gfx_cmd_t::remake()
 	{
 		NC_CHECK(has_type(), "no type!", return NC_FALSE);
@@ -87,7 +87,7 @@ namespace NC
 	{
 		while (m_list != NC_NULL) { rmv_cmd(NC_NULL); }
 	}
-	// setters //
+	/* setters */
 	v1nil_t gfx_cmd_buf_t::add_cmd(cmd_tc& command) {
 		list_t* next_head = new list_t();
 		next_head->m_link = m_list;
@@ -101,14 +101,14 @@ namespace NC
 		delete m_list;
 		m_list = next_head;
 	}
-	// operators //
+	/* operators */
 	v1nil_t gfx_cmd_buf_t::operator=(cbuf_tc& copy) {
 		NC_ERROR("does not work for now", return);
 	}
 	v1nil_t gfx_cmd_buf_t::operator=(cbuf_t&& copy) {
 		NC_ERROR("does not work for now", return);
 	}
-	// commands //
+	/* commands */
 	v1nil_t gfx_cmd_buf_t::on_draw()
 	{
 		while (m_list != NC_NULL) {

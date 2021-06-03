@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_fmbuf_dpst.h"
+#include "nc_gfx_fmbuf_dpst.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -12,9 +12,9 @@ namespace NC
 	gfx_fmbuf_dpst_t::~gfx_fmbuf_dpst_t()
 	{
 	}
-	// setters //
-	// operators //
-	// commands //
+	/* setters */
+	/* operators */
+	/* commands */
 	v1bit_t gfx_fmbuf_dpst_t::remake()
 	{
 		NC_CHECK(gfx_fmbuf_part_t::remake(), "remake error!", return NC_FALSE);

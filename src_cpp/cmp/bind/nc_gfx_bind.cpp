@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_bind.h"
+#include "nc_gfx_bind.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -12,7 +12,7 @@ namespace NC
 	gfx_bind_t::gfx_bind_t(bind_tc& copy) : gfx_bind_t() { operator=(copy); }
 	gfx_bind_t::gfx_bind_t(bind_t&& copy) : gfx_bind_t() { operator=(copy); }
 	gfx_bind_t::~gfx_bind_t() { }
-	// setters //
+	/* setters */
 	gfx_bind_t::bind_t& gfx_bind_t::set_shd(shd_tc& ref) { m_shd = ref; return *this; }
 	// // --buffers
 	gfx_bind_t::bind_t& gfx_bind_t::set_bufs(bufs_tc& bufs) { m_bufs.clear(); for (auto& ibuf : bufs) { add_buf(ibuf); } return *this; }
@@ -29,7 +29,7 @@ namespace NC
 	gfx_bind_t::bind_t& gfx_bind_t::set_smps(smp_list_tc& smps) { m_smps.clear(); for (auto& ismp : smps) { add_smp(ismp); } return *this; }
 	gfx_bind_t::bind_t& gfx_bind_t::add_smp(smp_tc& ref) { m_smps.push_back(ref); return *this; }
 	gfx_bind_t::bind_t& gfx_bind_t::rmv_smp(size_t key) { NC_CHECK(has_smp(key), "key error!", return *this); m_smps.erase(m_smps.begin() + key); return *this; }
-	// commands //
+	/* commands */
 	v1bit_t gfx_bind_t::remake()
 	{
 		NC_CHECK(has_shd(), "remake error!", return NC_FALSE);

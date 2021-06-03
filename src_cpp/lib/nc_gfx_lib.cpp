@@ -1,11 +1,11 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_lib.h"
+#include "nc_gfx_lib.hxx"
 #if (defined NC_GAPI)
 #	if (NC_GAPI & NC_GAPI_OGL)
-#	include "../core/nc_nc_gfx_eng.h"
-#	include "std/nc_std_error.h"
-#	include "nc_gfx_lib_wapi.h"
-#	include "nc_gfx_lib_core.h"
+#	include "../core/nc_nc_gfx_eng.hxx"
+#	include "std/nc_std_error.hxx"
+#	include "nc_gfx_lib_wapi.hxx"
+#	include "nc_gfx_lib_core.hxx"
 namespace NC
 {
 	gfx_library_t::gfx_library_t() :
@@ -24,8 +24,8 @@ namespace NC
 	{
 		if (has_handle()) { ::FreeLibrary(m_handle); m_handle = NC_NULL; }
 	}
-	// setters //
-	// commands //
+	/* setters */
+	/* commands */
 	// --==</core_methods>==--
 }
 namespace NC

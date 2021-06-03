@@ -1,8 +1,8 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_tform_cam.h"
+#include "nc_gfx_tform_cam.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
-#	include "num/nc_num_imag.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
+#	include "num/nc_num_imag.hxx"
 namespace NC
 {
 	gfx_tform_cam::gfx_tform_cam() :
@@ -24,7 +24,7 @@ namespace NC
 	gfx_tform_cam::gfx_tform_cam(cam_tc& copy) : gfx_tform_cam() { operator=(copy); }
 	gfx_tform_cam::gfx_tform_cam(cam_t&& copy) : gfx_tform_cam() { operator=(copy); }
 	gfx_tform_cam::~gfx_tform_cam() { }
-	// setters //
+	/* setters */
 	// // --protection
 	gfx_tform_cam::cam_t& gfx_tform_cam::set_fov(v1f_tc field_of_view) { m_fov = field_of_view; return *this; }
 	gfx_tform_cam::cam_t& gfx_tform_cam::set_ratio(v1f_tc aspect_ratio) { m_ratio = aspect_ratio; return *this; }
@@ -53,7 +53,7 @@ namespace NC
 		}
 		return *this;
 	}
-	// commands //
+	/* commands */
 	v1nil_t gfx_tform_cam::update(keybod_tc* keyboard, cursor_tc* cursor, timer_tc* timer)
 	{
 		if (timer == NC_NULL) { return; }

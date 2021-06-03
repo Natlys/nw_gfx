@@ -1,5 +1,5 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_graph.h"
+#include "nc_gfx_graph.hxx"
 #if (defined NC_GAPI)
 namespace NC
 {
@@ -11,7 +11,7 @@ namespace NC
 	gfx_graph_t::gfx_graph_t(graph_tc& copy) : gfx_graph_t() { operator=(copy); }
 	gfx_graph_t::gfx_graph_t(graph_t&& copy) : gfx_graph_t() { operator=(copy); }
 	gfx_graph_t::~gfx_graph_t() { }
-	// setters //
+	/* setters */
 	gfx_graph_t::graph_t& gfx_graph_t::set_passes(passes_tc& passes) { m_passes.clear(); for (auto& ipass : passes) { add_pass(ipass); } return *this; }
 	gfx_graph_t::graph_t& gfx_graph_t::set_passes(pass_list_tc& passes) { m_passes.clear(); for (auto& ipass : passes) { add_pass(ipass); } return *this; }
 	gfx_graph_t::graph_t& gfx_graph_t::set_root(size_t key) { m_root = &get_pass(key); return *this; }
@@ -34,7 +34,7 @@ namespace NC
 		NC_ERROR("key error!", return *this);
 		return *this;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_graph_t::remake()
 	{
 		NC_CHECK(has_pass(), "no passes!", return NC_FALSE);

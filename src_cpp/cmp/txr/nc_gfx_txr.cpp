@@ -1,9 +1,9 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_txr.h"
+#include "nc_gfx_txr.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
-#	include "../../lib/nc_gfx_lib_info.h"
-#	include "../img/nc_gfx_img.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
+#	include "../../lib/nc_gfx_lib_info.hxx"
+#	include "../img/nc_gfx_img.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -11,18 +11,18 @@ namespace NC
 	gfx_txr_t::gfx_txr_t(txr_tc& copy) : gfx_txr_t() { operator=(copy); }
 	gfx_txr_t::gfx_txr_t(txr_t&& copy) : gfx_txr_t() { operator=(copy); }
 	gfx_txr_t::~gfx_txr_t() { if (m_handle != NC_NULL) { get_context()->txr_del(1u, &m_handle); m_handle = NC_NULL; } }
-	// setters //
+	/* setters */
 	gfx_txr_t::txr_t& gfx_txr_t::set_slot(v1u_tc slot) { m_slot = slot; return *this; }
-	// operators //
-	op_stream_t& gfx_txr_t::operator<<(op_stream_t& stm) const {
+	/* operators */
+	nc_ostream_t& gfx_txr_t::operator<<(nc_ostream_t& stm) const {
 		gfx_img_t::operator<<(stm);
 		return stm;
 	}
-	ip_stream_t& gfx_txr_t::operator>>(ip_stream_t& stm) {
+	nc_istream_t& gfx_txr_t::operator>>(nc_istream_t& stm) {
 		gfx_img_t::operator>>(stm);
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_txr_t::remake()
 	{
 		NC_CHECK(gfx_img_t::remake(), "remake error!", return NC_FALSE);
@@ -61,7 +61,7 @@ namespace NC
 	{
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }
 	}
-	// setters //
+	/* setters */
 	v1nil_t gfx_txr_t::set_slot(v1u_t slot) {
 		m_slot = slot;
 		m_smp->set_slot(slot);
@@ -75,8 +75,8 @@ namespace NC
 	v1nil_t gfx_txr_t::set_smp(smp& ref) {
 		m_smp = ref;
 	}
-	// operators //
-	// commands //
+	/* operators */
+	/* commands */
 	v1bit_t gfx_txr_t::load_file(cstr file_path)
 	{
 		img_bmp img;

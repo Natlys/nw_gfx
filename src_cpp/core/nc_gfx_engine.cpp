@@ -1,14 +1,14 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_nc_gfx_eng.h"
+#include "nc_nc_gfx_eng.hxx"
 #if (defined NC_GAPI)
 #	include "nc_gfx.hpp"
-#	include "nc_gfx_data.h"
+#	include "nc_gfx_data.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
 	nc_gfx_eng::nc_gfx_eng() : std_engine_t(), m_context(context_t()), m_viewp(NC_NULL), m_vsync(NC_NULL) { }
 	nc_gfx_eng::~nc_gfx_eng() { }
-	// setters //
+	/* setters */
 	nc_gfx_eng::engine_t& nc_gfx_eng::set_window(window_t& window) {
 		m_context.set_window(window);
 		return *this;
@@ -26,7 +26,7 @@ namespace NC
 		wglSwapIntervalEXT(m_vsync);
 		return *this;
 	}
-	// commands //
+	/* commands */
 	v1bit_t nc_gfx_eng::init()
 	{
 		// initialize something
@@ -204,7 +204,7 @@ namespace NC
 		m_cmp_reg.clear();
 	}
 <<<<<<< HEAD
-	// setters //
+	/* setters */
 	v1nil_t nc_gfx_eng::set_fmbuf_size(v1u_t size_x, v1u_t size_y) {
 =======
 	// -- setters
@@ -264,7 +264,7 @@ namespace NC
 		m_prim = convert<primitives, prim>(primitive);
 		m_ctxh->IASetPrimitiveTopology(convert<primitives, D3D11_PRIMITIVE_TOPOLOGY>(primitive));
 	}
-	// commands //
+	/* commands */
 <<<<<<< HEAD
 	v1bit_t nc_gfx_eng::init()
 	{

@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_tform_obj.h"
+#include "nc_gfx_tform_obj.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 namespace NC
 {
 	gfx_tform_obj::gfx_tform_obj() : gfx_tform()
@@ -15,9 +15,9 @@ namespace NC
 	gfx_tform_obj::gfx_tform_obj(obj_tc& copy) : gfx_tform_obj() { operator=(copy); }
 	gfx_tform_obj::gfx_tform_obj(obj_t&& copy) : gfx_tform_obj() { operator=(copy); }
 	gfx_tform_obj::~gfx_tform_obj() { }
-	// setters //
-	// operators //
-	// commands //
+	/* setters */
+	/* operators */
+	/* commands */
 	v1bit_t gfx_tform_obj::remake()
 	{
 		NC_CHECK(gfx_tform::remake(), "remake error!", return NC_FALSE);

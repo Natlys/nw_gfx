@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_shd_pxl.h"
+#include "nc_gfx_shd_pxl.hxx"
 #if (defined NC_GAPI)
-#	include "core/nc_nc_gfx_eng.h"
+#	include "core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -10,11 +10,11 @@ namespace NC
 	gfx_shd_pxl_t::gfx_shd_pxl_t(pshd_tc& copy) : gfx_shd_pxl_t() { operator=(copy); }
 	gfx_shd_pxl_t::gfx_shd_pxl_t(pshd_t&& copy) : gfx_shd_pxl_t() { operator=(copy); }
 	gfx_shd_pxl_t::~gfx_shd_pxl_t() { }
-	// setters //
-	// operators //
-	op_stream_t& gfx_shd_pxl_t::operator<<(op_stream_t& stm) const { gfx_shd_t::operator<<(stm); return stm; }
-	ip_stream_t& gfx_shd_pxl_t::operator>>(ip_stream_t& stm) { gfx_shd_t::operator>>(stm); return stm; }
-	// commands //
+	/* setters */
+	/* operators */
+	nc_ostream_t& gfx_shd_pxl_t::operator<<(nc_ostream_t& stm) const { gfx_shd_t::operator<<(stm); return stm; }
+	nc_istream_t& gfx_shd_pxl_t::operator>>(nc_istream_t& stm) { gfx_shd_t::operator>>(stm); return stm; }
+	/* commands */
 	v1bit_t gfx_shd_pxl_t::remake()
 	{
 		NC_CHECK(gfx_shd_t::remake(), "remake error!", return NC_FALSE);
@@ -47,15 +47,15 @@ namespace NC
 		if (!remake(source_code)) { throw init_error(__FILE__, __LINE__); return; }
 	}
 	gfx_shd_pxl_t::~gfx_shd_pxl_t() { if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; } }
-	// setters //
-	// operators //
+	/* setters */
+	/* operators */
 	stm_out& gfx_shd_pxl_t::operator<<(stm_out& stm) const {
 		return stm;
 	}
 	stm_in& gfx_shd_pxl_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_shd_pxl_t::remake(cstr source_code)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }
@@ -67,7 +67,7 @@ namespace NC
 			&m_src_code[0],		// source code
 			m_src_code.size(),	// source code length
 			NULL,				// source name
-			NULL,				// defines
+			NULL,				/* defines */
 			NULL,				// includes
 			"main",				// entry point name
 			"ps_4_0",			// target

@@ -1,8 +1,8 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_fmbuf.h"
+#include "nc_gfx_fmbuf.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
-#	include "../txr/nc_gfx_txr.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
+#	include "../txr/nc_gfx_txr.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -13,7 +13,7 @@ namespace NC
 	{
 	}
 	gfx_fmbuf_t::~gfx_fmbuf_t() { if (m_handle != NC_NULL) { get_context()->fmbuf_del(1u, &m_handle); m_handle = NC_NULL; } }
-	// setters //
+	/* setters */
 	v1nil_t gfx_fmbuf_t::set_layt(layt_tc& layout) {
 		m_layt = layout;
 	}
@@ -33,10 +33,10 @@ namespace NC
 	}
 	v1nil_t gfx_fmbuf_t::add_part(part_t& ref) { m_parts.push_back(ref); }
 	v1nil_t gfx_fmbuf_t::rmv_part(v1u_tc key) { m_parts.erase(m_parts.begin() + key % m_parts.size()); }
-	// operators //
-	op_stream_t& gfx_fmbuf_t::operator<<(op_stream_t& stm) const { return stm; }
-	ip_stream_t& gfx_fmbuf_t::operator>>(ip_stream_t& stm) { return stm; }
-	// commands //
+	/* operators */
+	nc_ostream_t& gfx_fmbuf_t::operator<<(nc_ostream_t& stm) const { return stm; }
+	nc_istream_t& gfx_fmbuf_t::operator>>(nc_istream_t& stm) { return stm; }
+	/* commands */
 	v1bit_t gfx_fmbuf_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->fmbuf_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -70,11 +70,11 @@ namespace NC
 	{
 	}
 	fmbuf::~fmbuf() { }
-	// setters //
+	/* setters */
 	void fmbuf::add_target(target_t& ref) { m_targets.push_back(ref); }
 	void fmbuf::rmv_target(v1u_t key) { m_targets.erase(m_targets.begin() + key % m_targets.size()); }
-	// operators //
-	// commands //
+	/* operators */
+	/* commands */
 	v1bit_t fmbuf::remake(v2u size_xy)
 	{
 		return NC_TRUTH;

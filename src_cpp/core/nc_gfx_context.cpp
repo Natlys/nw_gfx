@@ -1,8 +1,8 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_context.h"
+#include "nc_gfx_context.hxx"
 #if (defined NC_GAPI)
 #	if (NC_GAPI & NC_GAPI_OGL)
-#	include "../lib/nc_gfx_lib_core.h"
+#	include "../lib/nc_gfx_lib_core.hxx"
 namespace NC
 {
 	gfx_context_t::gfx_context_t() :
@@ -11,14 +11,14 @@ namespace NC
 		m_device(NC_NULL),
 		m_window(NC_NULL),
 		m_loader(loader_t()),
-		m_drawer(NC_DEFAULT_STR),
-		m_vendor(NC_DEFAULT_STR),
-		m_shd_lang(NC_DEFAULT_STR),
-		m_max_slot_atb(NC_DEFAULT_VAL),
-		m_max_slot_txr(NC_DEFAULT_VAL),
-		m_pxl_gran(NC_DEFAULT_VAL),
-		m_pxl_range(NC_DEFAULT_VAL),
-		set_point_size(NC_DEFAULT_VAL)
+		m_drawer(NC_VOID_STR),
+		m_vendor(NC_VOID_STR),
+		m_shd_lang(NC_VOID_STR),
+		m_max_slot_atb(NC_VOID_VAL),
+		m_max_slot_txr(NC_VOID_VAL),
+		m_pxl_gran(NC_VOID_VAL),
+		m_pxl_range(NC_VOID_VAL),
+		set_point_size(NC_VOID_VAL)
 	{
 	}
 	gfx_context_t::gfx_context_t(window_t window) : gfx_context_t() { NC_CHECK(remake(window), "remake error!", return); }
@@ -32,9 +32,9 @@ namespace NC
 			m_device = NC_NULL;
 		}
 	}
-	// setters //
+	/* setters */
 	gfx_context_t::context_t& gfx_context_t::set_window(window_t& window) { m_window = window; return *this; }
-	// commands //
+	/* commands */
 	v1bit_t gfx_context_t::remake()
 	{
 		NC_CHECK(has_window(), "no window!", return NC_FALSE);
@@ -82,17 +82,17 @@ namespace NC
 			wglMakeContextCurrent(m_device, m_handle);
 			// --core
 			if constexpr (NC_TRUTH) {
-				// getters //
+				/* getters */
 				get_int = (pfn_gfx_get_int)m_loader.get_proc("glGetIntegerv");
 				get_str = (pfn_gfx_get_str)m_loader.get_proc("glGetString");
 				get_err = (pfn_gfx_get_err)m_loader.get_proc("glGetError");
-				// setters //
+				/* setters */
 				set_enabled = (pfn_gfx_set_enabled)m_loader.get_proc("glEnable");
 				set_disabled = (pfn_gfx_set_disabled)m_loader.get_proc("glDisable");
-				// predicates //
+				/* vetters */
 				is_enabled = (pfn_gfx_is_enabled)m_loader.get_proc("glIsEnabled");
 				is_shader = (pfn_gfx_is_shader)m_loader.get_proc("glIsShader");
-				// commands //
+				/* commands */
 				draw_vtx = (pfn_gfx_draw_vtx)m_loader.get_proc("glDrawArrays");
 				draw_idx = (pfn_gfx_draw_idx)m_loader.get_proc("glDrawElements");
 				clear_error = (pfn_gfx_clear_error)(m_loader.get_proc("glClearError"));
@@ -107,7 +107,7 @@ namespace NC
 			}
 			// --rasterizer
 			if constexpr (NC_TRUTH) {
-				// setters //
+				/* setters */
 				set_line_width = (pfn_gfx_rastr_set_line_width)m_loader.get_proc("glLineWidth");
 				set_point_size = (pfn_gfx_rastr_set_point_size)m_loader.get_proc("glPointSize");
 				set_viewp = (pfn_gfx_rastr_set_viewp)m_loader.get_proc("glViewport");
@@ -117,7 +117,7 @@ namespace NC
 			}
 			// --blending
 			if constexpr (NC_TRUTH) {
-				// setters //
+				/* setters */
 				set_blend_equation = (pfn_gfx_blend_set_equation)m_loader.get_proc("glBlendEquation");
 				set_blend_equation_separate = (pfn_gfx_blend_set_equation_separate)m_loader.get_proc("glBlendEquationSeparate");
 				set_blend_function = (pfn_gfx_blend_set_function)m_loader.get_proc("glBlendFunc");
@@ -125,7 +125,7 @@ namespace NC
 			}
 			// --depth_stencil
 			if constexpr (NC_TRUTH) {
-				// setters //
+				/* setters */
 				set_depth_mask = (pfn_gfx_depth_set_mask)m_loader.get_proc("glDepthMask");
 				set_depth_func = (pfn_gfx_depth_set_func)m_loader.get_proc("glDepthFunc");
 				set_stenc_mask = (pfn_gfx_stenc_set_mask)m_loader.get_proc("glStencilMask");
@@ -140,7 +140,7 @@ namespace NC
 				buf_bind_rang = (pfn_gfx_buf_bind_rang)(m_loader.get_proc("glBindBufferRange"));
 				buf_bind_base = (pfn_gfx_buf_bind_base)(m_loader.get_proc("glBindBufferBase"));
 				buf_bind_vert = (pfn_gfx_buf_bind_vert)(m_loader.get_proc("glBindBufferBase"));
-				// setters //
+				/* setters */
 				buf_set_data = (pfn_gfx_buf_set_data)(m_loader.get_proc("glBufferData"));
 				buf_set_sub_data = (pfn_gfx_buf_set_sub_data)(m_loader.get_proc("glBufferSubData"));
 			}
@@ -150,7 +150,7 @@ namespace NC
 				layt_new = (pfn_gfx_layt_gen)(m_loader.get_proc("glGenVertexArrays"));
 				layt_del = (pfn_gfx_layt_del)(m_loader.get_proc("glDeleteVertexArrays"));
 				layt_bind = (pfn_gfx_layt_bind)(m_loader.get_proc("glBindVertexArray"));
-				// setters //
+				/* setters */
 				layt_set_atb = (pfn_gfx_layt_set_atb)(m_loader.get_proc("glVertexAttribPointer"));
 				layt_set_enabled = (pfn_gfx_layt_set_enabled)(m_loader.get_proc("glEnableVertexAttribArray"));
 				layt_set_disabled = (pfn_gfx_layt_set_disabled)(m_loader.get_proc("glEnableVertexAttribArray"));
@@ -164,7 +164,7 @@ namespace NC
 				txr_bind = (pfn_gfx_txr_bind)(m_loader.get_proc("glBindTexture"));
 				txr_active = (pfn_gfx_txr_active)(m_loader.get_proc("glActiveTexture"));
 				txr_clear = (pfn_gfx_txr_clear)(m_loader.get_proc("glClearTexImage"));
-				// setters //
+				/* setters */
 				txr_set_image_1d = (pfn_gfx_txr_set_image_1d)(m_loader.get_proc("glTexImage1D"));
 				txr_set_image_2d = (pfn_gfx_txr_set_image_2d)(m_loader.get_proc("glTexImage2D"));
 				txr_set_image_3d = (pfn_gfx_txr_set_image_3d)(m_loader.get_proc("glTexImage3D"));
@@ -181,7 +181,7 @@ namespace NC
 				smp_new = (pfn_gfx_smp_gen)(m_loader.get_proc("glGenSamplers"));
 				smp_del = (pfn_gfx_smp_del)(m_loader.get_proc("glDeleteSamplers"));
 				smp_bind = (pfn_gfx_smp_bind)(m_loader.get_proc("glBindSampler"));
-				// setters //
+				/* setters */
 				smp_set_param_n1s = (pfn_gfx_smp_set_param_n1s)(m_loader.get_proc("glSamplerParameteri"));
 				smp_set_param_v1s = (pfn_gfx_smp_set_param_v1s)(m_loader.get_proc("glSamplerParameteriv"));
 				smp_set_param_n1f = (pfn_gfx_smp_set_param_n1f)(m_loader.get_proc("glSamplerParameterf"));
@@ -193,10 +193,10 @@ namespace NC
 				shd_new = (pfn_gfx_shd_new)m_loader.get_proc("glCreateShader");
 				shd_del = (pfn_gfx_shd_del)m_loader.get_proc("glDeleteShader");
 				shd_remake = (pfn_gfx_shd_remake)m_loader.get_proc("glCompileShader");
-				// getters //
+				/* getters */
 				shd_get_v1s = (pfn_gfx_shd_get_v1s)m_loader.get_proc("glGetShaderiv");
 				shd_get_info_log = (pfn_gfx_shd_get_info_log)m_loader.get_proc("glGetShaderInfoLog");
-				// setters //
+				/* setters */
 				shd_set_source = (pfn_gfx_shd_set_source)m_loader.get_proc("glShaderSource");
 			}
 			if constexpr (NC_TRUTH) { // materials
@@ -205,12 +205,12 @@ namespace NC
 				mtl_del = (pfn_gfx_mtl_del)(m_loader.get_proc("glDeleteProgram"));
 				mtl_bind = (pfn_gfx_mtl_bind)(m_loader.get_proc("glUseProgram"));
 				mtl_remake = (pfn_gfx_mtl_remake)(m_loader.get_proc("glLinkProgram"));
-				// getters //
+				/* getters */
 				mtl_get_iv = (pfn_gfx_mtl_get_iv)(m_loader.get_proc("glGetProgramiv"));
 				mtl_get_info_log = (pfn_gfx_mtl_get_info_log)(m_loader.get_proc("glGetProgramInfoLog"));
 				mtl_get_loc_atb = (pfn_gfx_mtl_get_loc_atb)(m_loader.get_proc("glGetAttribLocation"));
 				mtl_get_loc_unf = (pfn_gfx_mtl_get_loc_unf)(m_loader.get_proc("glGetUniformLocation"));
-				// setters //
+				/* setters */
 				mtl_add_shader = (pfn_gfx_mtl_add_shd)(m_loader.get_proc("glAttachShader"));
 				mtl_rmv_shader = (pfn_gfx_mtl_rmv_shd)(m_loader.get_proc("glDetachShader"));
 				// // --uniforms
@@ -255,9 +255,9 @@ namespace NC
 				fmbuf_draw = (pfn_gfx_fmbuf_draw)m_loader.get_proc("glDrawPixels");
 				fmbuf_read = (pfn_gfx_fmbuf_read)m_loader.get_proc("glReadPixels");
 				fmbuf_clear = (pfn_gfx_fmbuf_clear)m_loader.get_proc("glClear");
-				// getters //
+				/* getters */
 				fmbuf_get_status = (pfn_gfx_fmbuf_get_status)(m_loader.get_proc("glCheckFramebufferStatus"));
-				// setters //
+				/* setters */
 				fmbuf_set_txr_1d = (pfn_gfx_fmbuf_set_txr_1d)m_loader.get_proc("glFramebufferTexture1D");
 				fmbuf_set_txr_2d = (pfn_gfx_fmbuf_set_txr_2d)m_loader.get_proc("glFramebufferTexture2D");
 				fmbuf_set_txr_3d = (pfn_gfx_fmbuf_set_txr_3d)m_loader.get_proc("glFramebufferTexture3D");
@@ -293,8 +293,8 @@ namespace NC
 }
 #	endif	// GAPI_OGL
 #	if (NC_GAPI & NC_GAPI_D3D)
-#	include "dxgi.h"
-#	include "d3dcompiler.h"
+#	include "dxgi.hxx"
+#	include "d3dcompiler.hxx"
 namespace NC
 {
 	//

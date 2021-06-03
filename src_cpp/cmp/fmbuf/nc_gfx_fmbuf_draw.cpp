@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_fmbuf_draw.h"
+#include "nc_gfx_fmbuf_draw.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -12,9 +12,9 @@ namespace NC
 	gfx_fmbuf_draw_t::~gfx_fmbuf_draw_t()
 	{
 	}
-	// setters //
-	// operators //
-	// commands //
+	/* setters */
+	/* operators */
+	/* commands */
 	v1nil_t gfx_fmbuf_draw_t::read_pixels(ptr_t data, cv4s& rect)
 	{
 		get_context()->fmbuf_set_read(GL_COLOR_ATTACHMENT0 + get_slot());

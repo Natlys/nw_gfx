@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_buf_shd.h"
+#include "nc_gfx_buf_shd.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -11,7 +11,7 @@ namespace NC
 	gfx_buf_shd_t::gfx_buf_shd_t(gsbuf_tc& copy) : gfx_buf_shd_t() { operator=(copy); }
 	gfx_buf_shd_t::gfx_buf_shd_t(gsbuf_t&& copy) : gfx_buf_shd_t() { operator=(copy); }
 	gfx_buf_shd_t::~gfx_buf_shd_t() { }
-	// setters //
+	/* setters */
 	gfx_buf_shd_t::gsbuf_t& gfx_buf_shd_t::set_slot(v1u_tc slot) { m_slot = slot; return *this; }
 	gfx_buf_shd_t::buf_t& gfx_buf_shd_t::set_data(size_t key, ptr_tc data, size_t count) {
 		gfx_buf_t::set_data(key, data, count);
@@ -19,10 +19,10 @@ namespace NC
 		get_context()->buf_set_sub_data(GL_UNIFORM_BUFFER, get_stride() * key, get_stride() * count, get_data(get_stride() * key));
 		return *this;
 	}
-	// operators //
-	op_stream_t& gfx_buf_shd_t::operator<<(op_stream_t& stm) const { gfx_buf_t::operator<<(stm); return stm; }
-	ip_stream_t& gfx_buf_shd_t::operator>>(ip_stream_t& stm) { gfx_buf_t::operator>>(stm); return stm; }
-	// commands //
+	/* operators */
+	nc_ostream_t& gfx_buf_shd_t::operator<<(nc_ostream_t& stm) const { gfx_buf_t::operator<<(stm); return stm; }
+	nc_istream_t& gfx_buf_shd_t::operator>>(nc_istream_t& stm) { gfx_buf_t::operator>>(stm); return stm; }
+	/* commands */
 	v1bit_t gfx_buf_shd_t::remake()
 	{
 		NC_CHECK(gfx_buf_t::remake(), "remake error!", return NC_FALSE);
@@ -58,7 +58,7 @@ namespace NC
 	gfx_buf_shd_t::~gfx_buf_shd_t()
 	{
 	}
-	// setters //
+	/* setters */
 	void gfx_buf_shd_t::set_slot(v1u_t bind_slot) {
 		m_slot = bind_slot;
 	}
@@ -71,7 +71,7 @@ namespace NC
 		memcpy(static_cast<ubyte*>(msub_res.pData) + m_offset + offset, buffer, nof_bytes);
 		m_gfx->get_ctxh()->Unmap(m_handle, 0u);
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_buf_shd_t::remake_bytes(size nof_bytes, cptr buffer, size offset)
 	{
 		m_size = nof_bytes;

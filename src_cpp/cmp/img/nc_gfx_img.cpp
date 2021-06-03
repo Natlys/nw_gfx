@@ -1,22 +1,22 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_img.h"
+#include "nc_gfx_img.hxx"
 #if (defined NC_GAPI)
-#	include "nc_gfx_img_info.h"
+#	include "nc_gfx_img_info.hxx"
 namespace NC
 {
 	gfx_img_t::gfx_img_t() : mem_buf_t(), m_size(1) { }
 	gfx_img_t::gfx_img_t(img_tc& copy) : gfx_img_t() { operator=(copy); }
 	gfx_img_t::gfx_img_t(img_t&& copy) : gfx_img_t() { operator=(copy); }
 	gfx_img_t::~gfx_img_t() {}
-	// setters //
+	/* setters */
 	gfx_img_t::img_t& gfx_img_t::set_size(v1u_tc size) { m_size[0] = size; mem_buf_t::set_count(get_size()); return *this; }
 	gfx_img_t::img_t& gfx_img_t::set_size(v1u_tc size_x, v1u_tc size_y) { m_size[0] = size_x; m_size[1] = size_y; mem_buf_t::set_count(get_size()); return *this; }
 	gfx_img_t::img_t& gfx_img_t::set_size(cv2u size_xy) { m_size[0] = size_xy[0]; m_size[1] = size_xy[1]; mem_buf_t::set_count(get_size()); return *this; }
 	gfx_img_t::img_t& gfx_img_t::set_size(v1u_tc size_x, v1u_tc size_y, v1u_tc size_z) { m_size[0] = size_x; m_size[1] = size_y; m_size[2] = size_z; mem_buf_t::set_count(get_size()); return *this; }
 	gfx_img_t::img_t& gfx_img_t::set_size(cv3u size) { m_size[0] = size[0]; m_size[1] = size[1]; m_size[2] = size[2]; mem_buf_t::set_count(get_size()); return *this; }
 	gfx_img_t::buf_t& gfx_img_t::set_data(size_t key, ptr_tc data, size_t count) { mem_buf_t::set_data(key, data, count); NC_CHECK(has_size(), "no size!", return *this); remake(); return *this; }
-	// operators //
-	op_stream_t& gfx_img_t::operator<<(op_stream_t& stm) const {
+	/* operators */
+	nc_ostream_t& gfx_img_t::operator<<(nc_ostream_t& stm) const {
 		// mem_buf_t::operator<<(stm);
 		if constexpr (NC_TRUTH) {
 			img_bmp_info bmp;
@@ -44,7 +44,7 @@ namespace NC
 		}
 		return stm;
 	}
-	ip_stream_t& gfx_img_t::operator>>(ip_stream_t& stm) {
+	nc_istream_t& gfx_img_t::operator>>(nc_istream_t& stm) {
 		// mem_buf_t::operator>>(stm);
 		if constexpr (NC_TRUTH) {
 			img_bmp_info bmp;
@@ -83,7 +83,7 @@ namespace NC
 		}
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_img_t::remake()
 	{
 		NC_CHECK(mem_buf_t::remake(), "remake error!", return NC_FALSE);

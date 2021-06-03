@@ -1,8 +1,8 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_mesh.h"
+#include "nc_gfx_mesh.hxx"
 #if (defined NC_GAPI)
-#	include "../../core/nc_nc_gfx_eng.h"
-#	include "../../lib/nc_gfx_lib_core.h"
+#	include "../../core/nc_nc_gfx_eng.hxx"
+#	include "../../lib/nc_gfx_lib_core.hxx"
 #	if (NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -17,12 +17,12 @@ namespace NC
 		cmp_sys::get().del_ref<gfx_layt_t>(m_layt->get_idx());
 		cmp_sys::get().del_ref<gfx_mtl_t>(m_gmtl->get_idx());
 	}
-	// setters //
-	// operators //
-	op_stream_t& gfx_mesh::operator<<(op_stream_t& stm) const {
+	/* setters */
+	/* operators */
+	nc_ostream_t& gfx_mesh::operator<<(nc_ostream_t& stm) const {
 		return stm;
 	}
-	ip_stream_t& gfx_mesh::operator>>(ip_stream_t& stm) {
+	nc_istream_t& gfx_mesh::operator>>(nc_istream_t& stm) {
 		dstr_t word;
 		while (stm >> word) {
 			if (word == "mtllib") { // material file is found;
@@ -54,7 +54,7 @@ namespace NC
 		}
 		return stm;
 	}
-	// commands //
+	/* commands */
 	v1nil_t gfx_mesh::on_draw()
 	{
 		m_gmtl->on_draw();

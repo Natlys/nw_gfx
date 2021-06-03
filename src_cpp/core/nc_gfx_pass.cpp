@@ -1,5 +1,5 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_pass.h"
+#include "nc_gfx_pass.hxx"
 #if (defined NC_GAPI)
 namespace NC
 {
@@ -15,7 +15,7 @@ namespace NC
 	gfx_pass_t::gfx_pass_t(pass_tc& copy) : gfx_pass_t() { operator=(copy); }
 	gfx_pass_t::gfx_pass_t(pass_t&& copy) : gfx_pass_t() { operator=(copy); }
 	gfx_pass_t::~gfx_pass_t() { set_cmds().set_links(); }
-	// setters //
+	/* setters */
 	gfx_pass_t::pass_t& gfx_pass_t::set_cmds() { m_cmds.clear(); return *this; }
 	gfx_pass_t::pass_t& gfx_pass_t::set_cmds(cmds_tc& cmds) { m_cmds.clear(); for (auto& icmd : cmds) { add_cmd(icmd); } return *this; }
 	gfx_pass_t::pass_t& gfx_pass_t::set_cmds(cmd_list_tc& cmds) { m_cmds.clear(); for (auto& icmd : cmds) { add_cmd(icmd); } return *this; }
@@ -39,7 +39,7 @@ namespace NC
 		NC_ERROR("key error!", return *this);
 		return *this;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_pass_t::remake()
 	{
 		//NC_CHECK(has_cmd(), "no commands!", return NC_FALSE);

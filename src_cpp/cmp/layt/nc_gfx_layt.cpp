@@ -1,9 +1,9 @@
 #include "nc_gfx_pch.hpp"
-#include "nc_gfx_layt.h"
+#include "nc_gfx_layt.hxx"
 #if(defined NC_GAPI)
-#	include "../../lib/nc_gfx_lib_info.h"
-#	include "../../lib/nc_gfx_lib_core.h"
-#	include "../../core/nc_nc_gfx_eng.h"
+#	include "../../lib/nc_gfx_lib_info.hxx"
+#	include "../../lib/nc_gfx_lib_core.hxx"
+#	include "../../core/nc_nc_gfx_eng.hxx"
 #	if(NC_GAPI & NC_GAPI_OGL)
 namespace NC
 {
@@ -16,12 +16,12 @@ namespace NC
 	gfx_layt_t::gfx_layt_t(buf_layt_tc& copy) : gfx_layt_t() { operator=(copy); }
 	gfx_layt_t::gfx_layt_t(buf_layt_t&& copy) : gfx_layt_t() { operator=(copy); }
 	gfx_layt_t::~gfx_layt_t() { if (m_handle != NC_NULL) { get_context()->layt_del(1u, &m_handle); m_handle = NC_NULL; } }
-	// setters //
+	/* setters */
 	gfx_layt_t::buf_layt_t& gfx_layt_t::set_layt(layt_tc& layout) {
 		m_layt = layout;
 		return *this;
 	}
-	// commands //
+	/* commands */
 	v1bit_t gfx_layt_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->layt_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -63,9 +63,9 @@ namespace NC
 	{
 	}
 	gfx_layt_t::~gfx_layt_t() { if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; } }
-	// setters //
-	// commands //
-	v1bit_t gfx_layt_t::remake(mem_ref_t<gfx_shd_t>& shader, celems& elements) {
+	/* setters */
+	/* commands */
+	v1bit_t gfx_layt_t::remake(nc_ref_t<gfx_shd_t>& shader, celems& elements) {
 		m_elems = elements;
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }
 		if (shader.is_valid() == NC_FALSE) { return NC_FALSE; }
