@@ -53,7 +53,7 @@ namespace NC
 		}
 		return *this;
 	}
-	/* commands */
+	/* command */
 	v1nil_t gfx_tform_cam::update(keybod_tc* keyboard, cursor_tc* cursor, timer_tc* timer)
 	{
 		if (timer == NC_NULL) { return; }
@@ -63,26 +63,26 @@ namespace NC
 			switch (get_mode()) {
 			case NC_CAMERA_2D:
 				delta_coord *= (2.0f);
-				if (keyboard->is_held(NC_KEYCODE_W)) { m_crd[1] += delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_S)) { m_crd[1] -= delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_D)) { m_crd[0] += delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_A)) { m_crd[0] -= delta_coord; }
+				if (keyboard->is_held(NC_CKEY_W)) { m_crd[1] += delta_coord; }
+				if (keyboard->is_held(NC_CKEY_S)) { m_crd[1] -= delta_coord; }
+				if (keyboard->is_held(NC_CKEY_D)) { m_crd[0] += delta_coord; }
+				if (keyboard->is_held(NC_CKEY_A)) { m_crd[0] -= delta_coord; }
 				break;
 			case NC_CAMERA_3D:
 				delta_coord *= (2.5f / m_fov);
-				if (keyboard->is_held(NC_KEYCODE_W)) { m_crd += v3f_t::make_norm(v3f_t{ m_front[0], 0.0f, m_front[2] }) * delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_S)) { m_crd -= v3f_t::make_norm(v3f_t{ m_front[0], 0.0f, m_front[2] }) * delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_D)) { m_crd += m_right * delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_A)) { m_crd -= m_right * delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_SPACE)) { m_crd[1] += delta_coord; }
-				if (keyboard->is_held(NC_KEYCODE_SHIFT)) { m_crd[1] -= delta_coord; }
+				if (keyboard->is_held(NC_CKEY_W)) { m_crd += v3f_t::make_norm(v3f_t{ m_front[0], 0.0f, m_front[2] }) * delta_coord; }
+				if (keyboard->is_held(NC_CKEY_S)) { m_crd -= v3f_t::make_norm(v3f_t{ m_front[0], 0.0f, m_front[2] }) * delta_coord; }
+				if (keyboard->is_held(NC_CKEY_D)) { m_crd += m_right * delta_coord; }
+				if (keyboard->is_held(NC_CKEY_A)) { m_crd -= m_right * delta_coord; }
+				if (keyboard->is_held(NC_CKEY_SPACE)) { m_crd[1] += delta_coord; }
+				if (keyboard->is_held(NC_CKEY_SHIFT)) { m_crd[1] -= delta_coord; }
 				break;
 			}
 			// configuration
-			if (keyboard->is_held(NC_KEYCODE_C)) {
-				if (keyboard->is_press(NC_KEYCODE_1)) { set_mode(NC_CAMERA); }
-				if (keyboard->is_press(NC_KEYCODE_2)) { set_mode(NC_CAMERA_2D); }
-				if (keyboard->is_press(NC_KEYCODE_3)) { set_mode(NC_CAMERA_3D); }
+			if (keyboard->is_held(NC_CKEY_C)) {
+				if (keyboard->is_press(NC_CKEY_1)) { set_mode(NC_CAMERA); }
+				if (keyboard->is_press(NC_CKEY_2)) { set_mode(NC_CAMERA_2D); }
+				if (keyboard->is_press(NC_CKEY_3)) { set_mode(NC_CAMERA_3D); }
 			}
 		}
 		if (cursor != NC_NULL) {
@@ -91,7 +91,7 @@ namespace NC
 			switch (get_mode()) {
 			case NC_CAMERA_2D:
 				delta_rotat *= 75.0f / m_fov;
-				if (cursor->is_held(NC_CURCODE_1)) { m_rtn[2] += cursor->get_move_delta_x(delta_rotat); }
+				if (cursor->is_held(NC_CCUR_1)) { m_rtn[2] += cursor->get_move_delta_x(delta_rotat); }
 				if (m_rtn[2] > +180.0f) { m_rtn[2] = -180.0f; break; }
 				if (m_rtn[2] < -180.0f) { m_rtn[2] = +180.0f; break; }
 				break;
@@ -106,8 +106,8 @@ namespace NC
 				if (m_rtn[1] > +180.0f) { m_rtn[1] = -180.0f; break; }
 				if (m_rtn[1] < -180.0f) { m_rtn[1] = +180.0f; break; }
 				// rolling
-				if (keyboard->is_held(NC_KEYCODE_E)) { m_rtn[2] += delta_rotat; }
-				if (keyboard->is_held(NC_KEYCODE_Q)) { m_rtn[2] -= delta_rotat; }
+				if (keyboard->is_held(NC_CKEY_E)) { m_rtn[2] += delta_rotat; }
+				if (keyboard->is_held(NC_CKEY_Q)) { m_rtn[2] -= delta_rotat; }
 				if (m_rtn[2] > +180.0f) { m_rtn[2] = -180.0f; break; }
 				if (m_rtn[2] < -180.0f) { m_rtn[2] = +180.0f; break; }
 				break;
@@ -125,7 +125,7 @@ namespace NC
 				break;
 			}
 			// panning
-			if (cursor->is_held(NC_CURCODE_2)) {
+			if (cursor->is_held(NC_CCUR_2)) {
 				v1f_t delta_coord = -timer->get_delta(m_fov);
 				m_crd[0] -= cursor->get_move_delta_x(delta_coord);
 				m_crd[1] += cursor->get_move_delta_y(delta_coord);
@@ -157,18 +157,18 @@ namespace NC
 		case NC_CAMERA_3D: {
 			m_front = v3f_t{ 0.0f, 0.0f, 1.0f };
 #			if (NC_FALSE)
-			m_front[0] = NC_NUM_SIN(-m_rtn[1]) * NC_NUM_COS(m_rtn[0]);
-			m_front[1] = NC_NUM_SIN(m_rtn[0]);
-			m_front[2] = NC_NUM_COS(-m_rtn[1]) * NC_NUM_COS(m_rtn[0]);
+			m_front[0] = NC_NUM_FSIN(-m_rtn[1]) * NC_NUM_CSIN(m_rtn[0]);
+			m_front[1] = NC_NUM_FSIN(m_rtn[0]);
+			m_front[2] = NC_NUM_CSIN(-m_rtn[1]) * NC_NUM_CSIN(m_rtn[0]);
 #			elif (NC_FALSE)
-			m_front[0] = NC_NUM_COS(m_rtn[2]) * NC_NUM_COS(m_rtn[1]) * NC_NUM_COS(m_rtn[0]);
-			m_front[1] = NC_NUM_SIN(m_rtn[2]) * NC_NUM_COS(m_rtn[1]);
-			m_front[2] = NC_NUM_SIN(m_rtn[1]) * NC_NUM_COS(m_rtn[0]);
+			m_front[0] = NC_NUM_CSIN(m_rtn[2]) * NC_NUM_CSIN(m_rtn[1]) * NC_NUM_CSIN(m_rtn[0]);
+			m_front[1] = NC_NUM_FSIN(m_rtn[2]) * NC_NUM_CSIN(m_rtn[1]);
+			m_front[2] = NC_NUM_FSIN(m_rtn[1]) * NC_NUM_CSIN(m_rtn[0]);
 #			elif (NC_TRUTH)
 			m_front = m3x3f::make_rotat_xyz(-m_rtn) * m_front;
 #			elif (NC_TRUTH)
-			m_front = inum3d_t::make_mat({ NC_NUM_COS(-m_rtn[0] / 2.0f), v3f_t{ NC_NUM_SIN(-m_rtn[0] / 2.0f), NC_NUM_SIN(0.0f), NC_NUM_SIN(0.0f) } }) * m_front;
-			m_front = inum3d_t::make_mat({ NC_NUM_COS(-m_rtn[1]), v3f_t{ NC_NUM_SIN(0.0f), NC_NUM_SIN(-m_rtn[1]), NC_NUM_SIN(0.0f) } }) * m_front;
+			m_front = inum3d_t::make_mat({ NC_NUM_CSIN(-m_rtn[0] / 2.0f), v3f_t{ NC_NUM_FSIN(-m_rtn[0] / 2.0f), NC_NUM_FSIN(0.0f), NC_NUM_FSIN(0.0f) } }) * m_front;
+			m_front = inum3d_t::make_mat({ NC_NUM_CSIN(-m_rtn[1]), v3f_t{ NC_NUM_FSIN(0.0f), NC_NUM_FSIN(-m_rtn[1]), NC_NUM_FSIN(0.0f) } }) * m_front;
 #			elif (NC_TRUTH)
 			m_front = inum3d_t::make_rotat(m_rtn[0], v3f_t{ 1.0f, 0.0f, 0.0f }, m_front).m_imag;
 			m_front = inum3d_t::make_rotat(m_rtn[1], v3f_t{ 0.0f, 1.0f, 0.0f }, m_front).m_imag;

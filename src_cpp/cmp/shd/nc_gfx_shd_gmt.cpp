@@ -14,7 +14,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_shd_gmt_t::operator<<(nc_ostream_t& stm) const { gfx_shd_t::operator<<(stm); return stm; }
 	nc_istream_t& gfx_shd_gmt_t::operator>>(nc_istream_t& stm) { gfx_shd_t::operator>>(stm); return stm; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_shd_gmt_t::remake()
 	{
 		NC_CHECK(gfx_shd_t::remake(), "remake error!", return NC_FALSE);
@@ -55,7 +55,7 @@ namespace NC
 	nc_istream_t& gfx_shd_gmt_t::operator>>(nc_istream_t& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_shd_gmt_t::remake(cstr source_code)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }

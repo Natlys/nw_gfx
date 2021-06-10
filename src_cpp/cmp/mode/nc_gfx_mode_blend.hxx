@@ -20,7 +20,7 @@ namespace NC
 #   endif   // GAPI_D3D
         using handle_tc = const handle_t;
     public:
-        /* ctor_dtor */
+        /* codetor */
         gfx_state_blend_t();
         gfx_state_blend_t(blend_tc& copy);
         gfx_state_blend_t(blend_t&& copy);
@@ -32,7 +32,7 @@ namespace NC
         /* operators */
         inline blend_t& operator=(blend_tc& copy) { gfx_mode_t::operator=(copy); return *this; }
         inline blend_t& operator=(blend_t&& copy) { gfx_mode_t::operator=(copy); return *this; }
-        /* commands */
+        /* command */
         virtual v1bit_t remake() override;
         virtual v1nil_t on_draw() override;
     protected:

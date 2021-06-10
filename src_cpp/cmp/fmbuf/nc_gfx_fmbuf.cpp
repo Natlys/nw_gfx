@@ -36,7 +36,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_fmbuf_t::operator<<(nc_ostream_t& stm) const { return stm; }
 	nc_istream_t& gfx_fmbuf_t::operator>>(nc_istream_t& stm) { return stm; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_fmbuf_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->fmbuf_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -74,7 +74,7 @@ namespace NC
 	void fmbuf::add_target(target_t& ref) { m_targets.push_back(ref); }
 	void fmbuf::rmv_target(v1u_t key) { m_targets.erase(m_targets.begin() + key % m_targets.size()); }
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t fmbuf::remake(v2u size_xy)
 	{
 		return NC_TRUTH;

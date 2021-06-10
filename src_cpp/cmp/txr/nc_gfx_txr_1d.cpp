@@ -23,7 +23,7 @@ namespace NC
 		gfx_txr_t::operator>>(stm);
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr1d_t::remake()
 	{
 		NC_CHECK(gfx_txr_t::remake(), "remake error!", return NC_FALSE);
@@ -77,7 +77,7 @@ namespace NC
 	nc_istream_t& gfx_txr1d_t::operator>>(nc_istream_t& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr1d_t::remake(const gfx_img_t& img)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }

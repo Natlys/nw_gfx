@@ -63,7 +63,7 @@ namespace NC
 		/* operators */
 		inline cmd_t& operator=(cmd_tc& copy) { NC_CHECK(remake(copy.get_type(), copy.get_prim(), copy.get_cmps()), "remake error!", return *this); return *this; }
 		inline cmd_t& operator=(cmd_t&& copy) { NC_CHECK(remake(copy.get_type(), copy.get_prim(), copy.get_cmps()), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(type_tc type, prim_tc prim) { set_type(type).set_prim(prim); return remake(); }
 		inline v1bit_t remake(type_tc type, prim_tc prim, cmps_tc& cmps) { set_type(type).set_prim(prim).set_cmps(cmps); return remake(); }
@@ -104,7 +104,7 @@ namespace NC
 		/* operators */
 		v1nil_t operator=(cbuf_tc& copy);
 		v1nil_t operator=(cbuf_t&& copy);
-		/* commands */
+		/* command */
 		v1nil_t on_draw();
 	private:
 		list_t* m_list;

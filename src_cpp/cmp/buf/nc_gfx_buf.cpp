@@ -16,7 +16,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_buf_t::operator<<(nc_ostream_t& stm) const { mem_buf_t::operator<<(stm); return stm; }
 	nc_istream_t& gfx_buf_t::operator>>(nc_istream_t& stm) { mem_buf_t::operator>>(stm); return stm; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_buf_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->buf_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -38,7 +38,7 @@ namespace NC
 	{
 	}
 	gfx_buf_t::~gfx_buf_t() { if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; } }
-	/* commands */
+	/* command */
 	v1bit_t gfx_buf_t::remake()
 	{
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }

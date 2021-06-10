@@ -47,7 +47,7 @@ namespace NC
 		/* operators */
 		inline smp_t& operator=(smp_tc& copy) { NC_CHECK(remake(copy.get_filter(), copy.get_border(), copy.get_color()), "remake error!", return *this); return *this; }
 		inline smp_t& operator=(smp_t&& copy) { NC_CHECK(remake(copy.get_filter(), copy.get_border(), copy.get_color()), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(filter_t filter) { set_filter(filter); return remake(); }
 		inline v1bit_t remake(filter_t filter, border_t border) { set_border(border); return remake(filter); }

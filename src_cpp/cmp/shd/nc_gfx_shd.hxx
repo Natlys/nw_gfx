@@ -40,7 +40,7 @@ namespace NC
 		inline shd_t& operator=(shd_t&& copy) { NC_CHECK(remake(copy.get_source()), "remake error!", return *this); return *this; }
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1bit_t remake();
 		inline v1bit_t remake(source_tc& source) { set_source(source); return remake(); }
 		virtual v1nil_t on_bind(binder_t& binder);

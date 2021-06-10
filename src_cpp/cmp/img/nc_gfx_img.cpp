@@ -50,7 +50,7 @@ namespace NC
 			img_bmp_info bmp;
 			stm >> bmp;
 			NC_CHECK(bmp.data_info.nof_pixel_bits >= 8u && bmp.data_info.nof_pixel_bits <= 32u, "format error!", return stm);
-			set_size(NC_NUM_ABS(bmp.data_info.width), NC_NUM_ABS(bmp.data_info.height));
+			set_size(NC_NUM_FABS(bmp.data_info.width), NC_NUM_FABS(bmp.data_info.height));
 			v1s_t nof_channels = bmp.data_info.nof_pixel_bits;
 			m_layt = mem_layt_t("pixel", type_info_t::get_type<v4u08>());
 			NC_CHECK(mem_buf_t::remake(bmp.data_info.image_size / nof_channels, NC_NULL), "remake error!", return stm);
@@ -83,7 +83,7 @@ namespace NC
 		}
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_img_t::remake()
 	{
 		NC_CHECK(mem_buf_t::remake(), "remake error!", return NC_FALSE);

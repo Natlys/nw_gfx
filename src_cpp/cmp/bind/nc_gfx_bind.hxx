@@ -109,7 +109,7 @@ namespace NC
 			NC_CHECK(remake(copy.get_shd(), copy.get_bufs(), copy.get_txrs(), copy.get_smps()), "remake error!", return *this);
 			return *this;
 		}
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(shd_tc& shd) { set_shd(shd); return remake(); }
 		inline v1bit_t remake(shd_tc& shd, buf_list_tc& bufs, txr_list_tc& txrs, smp_list_tc& smps) {

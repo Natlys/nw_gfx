@@ -149,7 +149,7 @@ namespace NC
 		size_tc count;
 		size_tc space;
 	public:
-		/* commands */
+		/* command */
 #		define NC_GFX_ITERATOR_VTYPE(tname, tenum, vcount, vspace) type == type_info_t::get_type<tname>() ? tenum :
 		static inline enum_tc get_type(type_tc type) { return NC_GFX_FOREACH_VTYPE(NC_GFX_ITERATOR_VTYPE) NC_NULL; }
 #		undef NC_GFX_ITERATOR_VTYPE

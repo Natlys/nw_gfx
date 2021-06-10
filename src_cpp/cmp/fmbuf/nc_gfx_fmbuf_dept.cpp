@@ -9,7 +9,7 @@ namespace NC
 	gfx_fmbuf_dept_t::~gfx_fmbuf_dept_t() { }
 	/* setters */
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_fmbuf_dept_t::remake()
 	{
 		NC_CHECK(gfx_fmbuf_part_t::remake(), "remake error!", return NC_FALSE);

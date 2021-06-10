@@ -20,7 +20,7 @@ namespace NC
 	nc_istream_t& gfx_shd_t::operator>>(nc_istream_t& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_shd_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->shd_del(m_handle); m_handle = NC_NULL; }
@@ -77,7 +77,7 @@ namespace NC
 		if (m_txrs.size() <= idx + 1) { m_txrs.resize(idx + 1); }
 		m_txrs[idx] = ref;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_shd_t::remake(cstr source_code)
 	{
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }

@@ -16,7 +16,7 @@ namespace NC
 #   if (NC_GAPI & NC_GAPI_D3D)
 #   endif   // GAPI_D3D
     public:
-        /* ctor_dtor */
+        /* codetor */
         gfx_mode_t();
         gfx_mode_t(mode_tc& copy);
         gfx_mode_t(mode_t&& copy);
@@ -27,7 +27,7 @@ namespace NC
         /* operators */
         inline mode_t& operator=(mode_tc& copy) { return *this; }
         inline mode_t& operator=(mode_t&& copy) { return *this; }
-        /* commands */
+        /* command */
         virtual v1bit_t remake();
         virtual v1nil_t on_draw() override;
     protected:

@@ -26,7 +26,7 @@ namespace NC
 		wglSwapIntervalEXT(m_vsync);
 		return *this;
 	}
-	/* commands */
+	/* command */
 	v1bit_t nc_gfx_eng::init()
 	{
 		// initialize something
@@ -264,7 +264,7 @@ namespace NC
 		m_prim = convert<primitives, prim>(primitive);
 		m_ctxh->IASetPrimitiveTopology(convert<primitives, D3D11_PRIMITIVE_TOPOLOGY>(primitive));
 	}
-	/* commands */
+	/* command */
 <<<<<<< HEAD
 	v1bit_t nc_gfx_eng::init()
 	{

@@ -62,7 +62,7 @@ namespace NC
 		/* operators */
 		inline graph_t& operator=(graph_tc& copy) { m_root = copy.get_root(); NC_CHECK(remake(copy.get_passes()), "remake error!", return *this); return *this; }
 		inline graph_t& operator=(graph_t&& copy) { m_root = copy.get_root(); NC_CHECK(remake(copy.get_passes()), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(size_t root_key) { set_root(root_key); return remake(); }
 		inline v1bit_t remake(passes_tc& passes) { set_passes(passes); return remake(0u); }

@@ -14,7 +14,7 @@ namespace NC
 		/* getters */
 		/* setters */
 		/* operators */
-		/* commands */
+		/* command */
 		virtual v1bit_t remake() override;
 		virtual v1nil_t clear(ptr_tc data = NC_NULL) override;
 		virtual v1nil_t on_draw() override;

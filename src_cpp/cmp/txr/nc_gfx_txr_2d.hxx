@@ -10,7 +10,7 @@ namespace NC
 	class gfx_txr2d_t : public gfx_txr_t
 	{
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		gfx_txr2d_t();
 		virtual ~gfx_txr2d_t();
 		/* getters */
@@ -19,7 +19,7 @@ namespace NC
 		/* operators */
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1bit_t remake() override;
 		virtual v1nil_t clear(ptr_tc data) override;
 		virtual v1nil_t on_draw() override;
@@ -32,7 +32,7 @@ namespace NC
 	class gfx_txr2d_mulsmp_t : public gfx_txr2d_t
 	{
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		gfx_txr2d_mulsmp_t();
 		virtual ~gfx_txr2d_mulsmp_t();
 		/* getters */
@@ -42,7 +42,7 @@ namespace NC
 		/* operators */
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1bit_t remake();
 		virtual v1nil_t on_draw() override;
 	private:

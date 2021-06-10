@@ -52,7 +52,7 @@ namespace NC
 		inline v1bit_t has_handle() const { return m_handle != NC_NULL; }
 		inline v1bit_t has_device() const { return m_device != NC_NULL; }
 		inline v1bit_t has_window() const { return m_window != NC_NULL; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(window_t window) { set_window(window); return remake(); }
 		v1bit_t update();
@@ -66,7 +66,7 @@ namespace NC
 		// /* vetters */
 		pfn_gfx_is_enabled is_enabled;
 		pfn_gfx_is_shader is_shader;
-		/* commands */
+		/* command */
 		pfn_gfx_draw_vtx draw_vtx;
 		pfn_gfx_draw_idx draw_idx;
 		pfn_gfx_clear_error clear_error;
@@ -207,7 +207,7 @@ namespace NC
 		pfn_gfx_fmbuf_set_txr_2d fmbuf_set_txr_2d;
 		pfn_gfx_fmbuf_set_txr_3d fmbuf_set_txr_3d;
 		pfn_gfx_fmbuf_set_color fmbuf_set_color;
-		/* commands */
+		/* command */
 		pfn_gfx_fmbuf_draw fmbuf_draw;
 		pfn_gfx_fmbuf_read fmbuf_read;
 		pfn_gfx_fmbuf_clear fmbuf_clear;

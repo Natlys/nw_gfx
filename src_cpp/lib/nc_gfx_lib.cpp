@@ -25,7 +25,7 @@ namespace NC
 		if (has_handle()) { ::FreeLibrary(m_handle); m_handle = NC_NULL; }
 	}
 	/* setters */
-	/* commands */
+	/* command */
 	// --==</core_methods>==--
 }
 namespace NC

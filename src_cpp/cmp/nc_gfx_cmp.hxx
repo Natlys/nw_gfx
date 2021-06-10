@@ -11,14 +11,14 @@ namespace NC
 		using context_t = gfx_context_t;
 		using context_tc = const context_t;
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		gfx_cmp_t();
 		virtual ~gfx_cmp_t();
 		/* getters */
 		inline context_t* get_context()        { return m_context; }
 		inline context_tc* get_context() const { return m_context; }
 		/* setters */
-		/* commands */
+		/* command */
 		virtual v1nil_t on_draw() = 0;
 	private:
 		context_t* m_context;

@@ -14,7 +14,7 @@ namespace NC
 	gfx_tform::tform_t& gfx_tform::set_scl(v3f_tc& scale) { m_scl = scale; return *this; }
 	gfx_tform::tform_t& gfx_tform::set_modl(cm4x4f& model) { get_elem("modl").set<m4x4f>(model); return *this; }
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_tform::remake()
 	{
 		NC_CHECK(gfx_buf_shd_t::remake(), "remake error!", return NC_FALSE);

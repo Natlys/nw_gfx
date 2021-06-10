@@ -39,7 +39,7 @@ namespace NC
 		NC_ERROR("key error!", return *this);
 		return *this;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_pass_t::remake()
 	{
 		//NC_CHECK(has_cmd(), "no commands!", return NC_FALSE);

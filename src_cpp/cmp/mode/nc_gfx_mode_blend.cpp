@@ -11,7 +11,7 @@ namespace NC
     gfx_state_blend_t::~gfx_state_blend_t() { }
     /* setters */
     /* operators */
-    /* commands */
+    /* command */
     v1bit_t gfx_state_blend_t::remake()
     {
         NC_CHECK(gfx_mode_t::remake(), "remake error!", return NC_FALSE);

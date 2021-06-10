@@ -19,7 +19,7 @@ namespace NC
 		/* getters */
 		/* setters */
 		/* vetters */
-		/* commands */
+		/* command */
 		v1nil_t read_pixels(ptr_t data, cv4s& rect);
 		v1nil_t draw_pixels(ptr_tc data, cv4s& rect);
 		virtual v1bit_t remake() override;

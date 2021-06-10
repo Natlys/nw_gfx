@@ -53,7 +53,7 @@ namespace NC
 		/* operators */
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual ip_stream_t& operator>>(ip_stream_t& stm) override;
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(layt_tc& layt, cv2u size_xy) { set_layt(layt); set_size_xy(size_xy); return remake(); }
 		v1nil_t clear();

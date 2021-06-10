@@ -20,7 +20,7 @@ namespace NC
 #   endif   // GAPI_D3D
         using handle_tc = const handle_t;
     public:
-        /* ctor_dtor */
+        /* codetor */
         gfx_mode_depst_t();
         gfx_mode_depst_t(v1bit_t enable_dept, v1bit_t enable_sten);
         gfx_mode_depst_t(depst_tc& copy);
@@ -37,7 +37,7 @@ namespace NC
         /* operators */
         inline depst_t& operator=(depst_tc& copy) { gfx_mode_t::operator=(copy); return *this; }
         inline depst_t& operator=(depst_t&& copy) { gfx_mode_t::operator=(copy); return *this; }
-        /* commands */
+        /* command */
         virtual v1bit_t remake() override;
         inline v1bit_t remake(v1bit_t enable_dept, v1bit_t enable_sten) { set_enabled_dept(enable_dept).set_enabled_sten(enable_sten); return remake(); }
         virtual v1nil_t on_draw() override;

@@ -35,7 +35,7 @@ namespace NC
 		/* operators */
 		inline tform_t& operator=(tform_tc& copy) { gfx_buf_shd_t::operator=(copy); return *this; }
 		inline tform_t& operator=(tform_t&& copy) { gfx_buf_shd_t::operator=(copy); return *this; }
-		/* commands */
+		/* command */
 		virtual v1bit_t remake() override;
 		virtual v1nil_t on_draw() override;
 	protected:

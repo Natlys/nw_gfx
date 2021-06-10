@@ -34,7 +34,7 @@ namespace NC
 		NC_ERROR("key error!", return *this);
 		return *this;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_graph_t::remake()
 	{
 		NC_CHECK(has_pass(), "no passes!", return NC_FALSE);

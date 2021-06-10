@@ -47,7 +47,7 @@ namespace NC
 		inline txr_t& operator=(txr_t&& copy) { gfx_img_t::operator=(copy); return *this; }
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1bit_t remake();
 		virtual v1nil_t clear(ptr_tc data);
 		virtual v1nil_t on_draw() override;

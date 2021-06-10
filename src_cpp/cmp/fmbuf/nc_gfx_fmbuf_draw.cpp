@@ -14,7 +14,7 @@ namespace NC
 	}
 	/* setters */
 	/* operators */
-	/* commands */
+	/* command */
 	v1nil_t gfx_fmbuf_draw_t::read_pixels(ptr_t data, cv4s& rect)
 	{
 		get_context()->fmbuf_set_read(GL_COLOR_ATTACHMENT0 + get_slot());

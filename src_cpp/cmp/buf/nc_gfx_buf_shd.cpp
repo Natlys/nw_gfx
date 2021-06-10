@@ -22,7 +22,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_buf_shd_t::operator<<(nc_ostream_t& stm) const { gfx_buf_t::operator<<(stm); return stm; }
 	nc_istream_t& gfx_buf_shd_t::operator>>(nc_istream_t& stm) { gfx_buf_t::operator>>(stm); return stm; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_buf_shd_t::remake()
 	{
 		NC_CHECK(gfx_buf_t::remake(), "remake error!", return NC_FALSE);
@@ -71,7 +71,7 @@ namespace NC
 		memcpy(static_cast<ubyte*>(msub_res.pData) + m_offset + offset, buffer, nof_bytes);
 		m_gfx->get_ctxh()->Unmap(m_handle, 0u);
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_buf_shd_t::remake_bytes(size nof_bytes, cptr buffer, size offset)
 	{
 		m_size = nof_bytes;

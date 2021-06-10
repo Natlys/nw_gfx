@@ -56,7 +56,7 @@ namespace NC
 		inline mtl_t& operator=(mtl_t&& copy) { NC_CHECK(remake(copy.get_binds()), "remake error!", return *this); return *this; }
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(binds_tc& binds) { set_binds(binds); return remake(); }
 		inline v1bit_t remake(bind_list_tc& binds) { set_binds(binds); return remake(); }

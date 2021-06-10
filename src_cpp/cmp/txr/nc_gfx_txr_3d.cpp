@@ -12,7 +12,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_txr3d_cube_t::operator<<(nc_ostream_t& stm) const { return stm; }
 	nc_istream_t& gfx_txr3d_cube_t::operator>>(nc_istream_t& stm) { return stm; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr3d_cube_t::remake()
 	{
 		NC_CHECK(gfx_txr_t::remake(), "remake error!", return NC_FALSE);
@@ -69,7 +69,7 @@ namespace NC
 	stm_in& gfx_txr3d_cube_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr3d_cube_t::remake(const gfx_img_t& img)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }

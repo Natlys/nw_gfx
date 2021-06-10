@@ -49,7 +49,7 @@ namespace NC
 		inline img_t& operator=(img_t&& copy) { NC_CHECK(remake(copy.get_layt(), copy.get_size_xyz(), copy.get_data()), "remake error!", return *this); return *this; }
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		inline v1bit_t remake(cv2u size) { set_size(size[0], size[1], 1u); return remake(); }
 		inline v1bit_t remake(cv3u size) { set_size(size[0], size[1], size[2]); return remake(); }
 		inline v1bit_t remake(layt_tc& layout, cv2u size) { set_layt(layout); set_size(size); return remake(); }

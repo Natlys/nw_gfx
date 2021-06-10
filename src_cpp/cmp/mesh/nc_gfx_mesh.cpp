@@ -54,7 +54,7 @@ namespace NC
 		}
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1nil_t gfx_mesh::on_draw()
 	{
 		m_gmtl->on_draw();

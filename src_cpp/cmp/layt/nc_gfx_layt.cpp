@@ -21,7 +21,7 @@ namespace NC
 		m_layt = layout;
 		return *this;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_layt_t::remake()
 	{
 		if (m_handle != NC_NULL) { get_context()->layt_del(1u, &m_handle); m_handle = NC_NULL; }
@@ -64,7 +64,7 @@ namespace NC
 	}
 	gfx_layt_t::~gfx_layt_t() { if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; } }
 	/* setters */
-	/* commands */
+	/* command */
 	v1bit_t gfx_layt_t::remake(nc_ref_t<gfx_shd_t>& shader, celems& elements) {
 		m_elems = elements;
 		if (m_handle != NC_NULL) { m_handle->Release(); m_handle = NC_NULL; }

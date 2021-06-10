@@ -27,7 +27,7 @@ namespace NC
 #	endif
 		using handle_tc = const handle_t;
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		gfx_layt_t();
 		gfx_layt_t(buf_layt_tc& copy);
 		gfx_layt_t(buf_layt_t&& copy);
@@ -47,7 +47,7 @@ namespace NC
 		inline operator layt_tc& () const { return m_layt; }
 		inline buf_layt_t& operator=(buf_layt_tc& copy) { NC_CHECK(remake(copy.get_layt()), "remake error!", return *this); return *this; }
 		inline buf_layt_t& operator=(buf_layt_t&& copy) { NC_CHECK(remake(copy.get_layt()), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(layt_tc& layout) { set_layt(layout); return remake(); }
 		virtual v1nil_t on_draw() override;

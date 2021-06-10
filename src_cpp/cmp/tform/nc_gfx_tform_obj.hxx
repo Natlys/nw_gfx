@@ -22,7 +22,7 @@ namespace NC
 		/* operators */
 		inline obj_t& operator=(obj_tc& copy) { NC_CHECK(remake(), "remake error!", return *this); return *this; }
 		inline obj_t& operator=(obj_t&& copy) { NC_CHECK(remake(), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		virtual v1bit_t remake() override;
 		virtual v1nil_t on_draw() override;
 	protected:

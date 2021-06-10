@@ -18,7 +18,7 @@ namespace NC
 	typedef GLboolean(NC_API_CALL* pfn_gfx_is_enabled)(GLenum what);
 	typedef GLboolean(NC_API_CALL* pfn_gfx_is_shader)(GLuint id);
 	typedef GLboolean(NC_API_CALL* pfn_gfx_is_material)(GLuint id);
-	/* commands */
+	/* command */
 	typedef v1nil_t(NC_API_CALL* pfn_gfx_draw_vtx)(GLenum primitive, GLint first, GLsizei count);
 	typedef v1nil_t(NC_API_CALL* pfn_gfx_draw_idx)(GLenum primitive, GLsizei count, GLenum data_type, const GLvoid* index_data);
 	typedef v1nil_t(NC_API_CALL* pfn_gfx_clear_error)(v1nil_t);

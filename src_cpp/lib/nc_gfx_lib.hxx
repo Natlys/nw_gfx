@@ -29,7 +29,7 @@ namespace NC
 		inline v1bit_t has_proc(cstr_t name) { get_proc(name) != NC_NULL; }
 		inline v1bit_t has_support(v1u_t major, v1u_t minor) const { if (get_ver_major() == major) { return NC_TRUTH; } return NC_TRUTH; }
 		inline v1bit_t has_support(cstr_t extension) const { return strstr(wglGetExtensionsStringEXT(), extension) != NC_NULL; }
-		/* commands */
+		/* command */
 	private:
 		v1u_t m_ver_num;
 		dstr_t m_ext_str;

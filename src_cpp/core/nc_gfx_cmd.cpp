@@ -36,7 +36,7 @@ namespace NC
 		return *this;
 	}
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_cmd_t::remake()
 	{
 		NC_CHECK(has_type(), "no type!", return NC_FALSE);
@@ -108,7 +108,7 @@ namespace NC
 	v1nil_t gfx_cmd_buf_t::operator=(cbuf_t&& copy) {
 		NC_ERROR("does not work for now", return);
 	}
-	/* commands */
+	/* command */
 	v1nil_t gfx_cmd_buf_t::on_draw()
 	{
 		while (m_list != NC_NULL) {

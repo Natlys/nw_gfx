@@ -17,7 +17,7 @@ namespace NC
 	gfx_tform_obj::~gfx_tform_obj() { }
 	/* setters */
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_tform_obj::remake()
 	{
 		NC_CHECK(gfx_tform::remake(), "remake error!", return NC_FALSE);

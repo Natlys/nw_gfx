@@ -29,7 +29,7 @@ namespace NC
 	gfx_bind_t::bind_t& gfx_bind_t::set_smps(smp_list_tc& smps) { m_smps.clear(); for (auto& ismp : smps) { add_smp(ismp); } return *this; }
 	gfx_bind_t::bind_t& gfx_bind_t::add_smp(smp_tc& ref) { m_smps.push_back(ref); return *this; }
 	gfx_bind_t::bind_t& gfx_bind_t::rmv_smp(size_t key) { NC_CHECK(has_smp(key), "key error!", return *this); m_smps.erase(m_smps.begin() + key); return *this; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_bind_t::remake()
 	{
 		NC_CHECK(has_shd(), "remake error!", return NC_FALSE);

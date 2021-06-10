@@ -19,7 +19,7 @@ namespace NC
 	/* operators */
 	nc_ostream_t& gfx_mtl_t::operator<<(nc_ostream_t& stm) const { return stm; }
 	nc_istream_t& gfx_mtl_t::operator>>(nc_istream_t& stm) { return stm; }
-	/* commands */
+	/* command */
 	v1nil_t gfx_mtl_t::on_draw()
 	{
 		get_context()->mtl_bind(get_handle());
@@ -69,7 +69,7 @@ namespace NC
 	stm_in& gfx_mtl_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_mtl_t::remake()
 	{
 		//

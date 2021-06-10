@@ -27,7 +27,7 @@ namespace NC
 		/* operators */
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1nil_t on_draw() override;
 	protected:
 		layt_t m_layt;

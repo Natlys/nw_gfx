@@ -7,7 +7,7 @@
 #   if (defined NC_API)
 #       undef NC_API
 #   endif   /* NC_API */
-#   if !(defined NC_BUILD)
+#   if !(defined(NC_BUILD))
 #   elif (NC_BUILD & NC_BUILD_EXE)
 #       define NC_API extern
 #   elif (NC_BUILD & NC_BUILD_LIB)

@@ -29,7 +29,7 @@ namespace NC
 		using mode_t = v1u_t;
 		using mode_tc = const mode_t;
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		gfx_tform_cam();
 		gfx_tform_cam(cam_tc& copy);
 		gfx_tform_cam(cam_t&& copy);
@@ -68,7 +68,7 @@ namespace NC
 		/* operators */
 		inline cam_t& operator=(cam_tc& copy) { NC_CHECK(remake(), "remake error!", return *this); return *this; }
 		inline cam_t& operator=(cam_t&& copy) { NC_CHECK(remake(), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1nil_t update(keybod_tc* keyboard, cursor_tc* cursor, timer_tc* timer);
 		virtual v1bit_t remake() override;
 		virtual v1nil_t on_draw() override;

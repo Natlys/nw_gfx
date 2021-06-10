@@ -40,7 +40,7 @@ namespace NC
 		inline gbuf_t& operator=(gbuf_t&& copy) { NC_CHECK(remake(copy.get_layt(), copy.get_count(), copy.get_data()), "remake error!", return *this); return *this; }
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		inline v1bit_t remake(layt_tc& layout, size_t count) { return mem_buf_t::remake(layout, count); }
 		inline v1bit_t remake(layt_tc& layout, size_t count, ptr_tc data) { return mem_buf_t::remake(layout, count, data); }
 		virtual v1bit_t remake() override;

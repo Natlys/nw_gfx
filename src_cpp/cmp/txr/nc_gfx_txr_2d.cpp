@@ -20,7 +20,7 @@ namespace NC
 		gfx_txr_t::operator>>(stm);
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr2d_t::remake()
 	{
 		NC_CHECK(gfx_txr_t::remake(), "remake error!", return NC_FALSE);
@@ -73,7 +73,7 @@ namespace NC
 	nc_istream_t& gfx_txr2d_mulsmp_t::operator>>(nc_istream_t& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr2d_mulsmp_t::remake()
 	{
 		NC_CHECK(gfx_txr_t::remake(), "remake error!", return NC_FALSE);
@@ -113,7 +113,7 @@ namespace NC
 	stm_in& gfx_txr2d_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr2d_t::remake(const gfx_img_t& source)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }
@@ -190,7 +190,7 @@ namespace NC
 	stm_in& gfx_txr2d_mulsmp_t::operator>>(stm_in& stm) {
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr2d_mulsmp_t::remake(const gfx_img_t& img)
 	{
 		if (m_native != NC_NULL) { m_native->Release(); m_native = NC_NULL; }

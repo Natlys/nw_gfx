@@ -89,7 +89,7 @@ namespace NC
 		/* operators */
 		inline pass_t& operator=(pass_tc& copy) { NC_CHECK(remake(copy.get_cmds(), copy.get_links()), "remake error!", return *this); return *this; }
 		inline pass_t& operator=(pass_t&& copy) { NC_CHECK(remake(copy.get_cmds(), copy.get_links()), "remake error!", return *this); return *this; }
-		/* commands */
+		/* command */
 		v1bit_t remake();
 		inline v1bit_t remake(cmds_tc& cmds)       { set_cmds(cmds); return remake(); }
 		inline v1bit_t remake(cmd_list_tc& cmds)   { set_cmds(cmds); return remake(); }

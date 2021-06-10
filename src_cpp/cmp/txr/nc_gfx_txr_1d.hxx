@@ -18,11 +18,11 @@ namespace NC
 		/* operators */
 		virtual nc_ostream_t& operator<<(nc_ostream_t& stm) const override;
 		virtual nc_istream_t& operator>>(nc_istream_t& stm) override;
-		/* commands */
+		/* command */
 		virtual v1bit_t remake();
 		virtual v1nil_t clear(ptr_tc data) override;
 		virtual v1nil_t on_draw() override;
-		/* commands */
+		/* command */
 	private:
 #if (NC_GAPI & NC_GAPI_D3D)
 		ID3D11Texture1D* m_native;

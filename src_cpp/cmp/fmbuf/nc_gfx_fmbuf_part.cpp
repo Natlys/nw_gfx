@@ -14,7 +14,7 @@ namespace NC
 	}
 	/* setters */
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_fmbuf_part_t::remake()
 	{
 		NC_CHECK(gfx_txr2d_t::remake(), "remake error!", return NC_FALSE);

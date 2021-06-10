@@ -17,7 +17,7 @@ namespace NC
 	gfx_smp_t::smp_t& gfx_smp_t::set_filter(filter_tc filter) { m_filter = filter; return *this; }
 	gfx_smp_t::smp_t& gfx_smp_t::set_border(border_tc border) { m_border = border; return *this; }
 	gfx_smp_t::smp_t& gfx_smp_t::set_color(v4f_tc& color) { m_color = color; return *this; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_smp_t::remake()
 	{
 		get_context()->smp_new(1u, &m_handle);
@@ -60,7 +60,7 @@ namespace NC
 	void gfx_smp_t::set_slot(v1u_t slot) {
 		m_slot = slot;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_smp_t::remake(filter filter_mode, wrap wrap_mode, v4f_t border_color)
 	{
 		if (filter_mode != NC_NULL) { m_filter = filter_mode; }

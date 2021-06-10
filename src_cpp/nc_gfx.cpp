@@ -1,7 +1,7 @@
 #include "nc_gfx_pch.hpp"
 #include "nc_gfx.hpp"
 
-#if (defined NC_BUILD)
+#if (defined(NC_BUILD))
 #   if (NC_BUILD & NC_BUILD_EXE)
 int main(int arg_num, const char* arg_str[])
 {

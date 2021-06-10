@@ -28,7 +28,7 @@ namespace NC
 		using vsync_t = v1u_t;
 		using vsync_tc = const vsync_t;
 	public:
-		/* ctor_dtor */
+		/* codetor */
 		nc_gfx_eng();
 		~nc_gfx_eng();
 		/* getters */
@@ -46,7 +46,7 @@ namespace NC
 		inline v1bit_t has_vsync() const { return m_vsync != NC_NULL; }
 		inline v1bit_t has_window() const { return m_context.has_window(); }
 		/* operators */
-		/* commands */
+		/* command */
 		virtual v1bit_t init() override;
 		virtual v1bit_t quit() override;
 		virtual v1bit_t work() override;

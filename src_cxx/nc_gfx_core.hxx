@@ -1,13 +1,13 @@
-#ifndef NC_GFX_CORE_H
-#   define NC_GFX_CORE_H
+#ifndef NC_GFX_CORE_HXX
+#   define NC_GFX_CORE_HXX
 /* config */
-/* includes */
-#   include "nc_gfx_pch.hxx"
+/* building */
+#   define NC_BUILD NC_BUILD_EXE
 /* linkage */
 #   if (defined NC_API)
 #       undef NC_API
 #   endif   /* NC_API */
-#   if !(defined NC_BUILD)
+#   if !(defined(NC_BUILD))
 #   elif (NC_BUILD & NC_BUILD_EXE)
 #       define NC_API extern
 #   elif (NC_BUILD & NC_BUILD_LIB)
@@ -17,5 +17,7 @@
 #   else
 #       define NC_API NC_DLL_IMPORT
 #   endif	/* NC_BUILD */
+/* includes */
+#   include "nc_gfx_pch.hxx"
 /* end_of_file */
-#endif	/* NC_GFX_CORE_H */
+#endif	/* NC_GFX_CORE_HXX */

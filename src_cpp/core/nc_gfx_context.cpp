@@ -34,7 +34,7 @@ namespace NC
 	}
 	/* setters */
 	gfx_context_t::context_t& gfx_context_t::set_window(window_t& window) { m_window = window; return *this; }
-	/* commands */
+	/* command */
 	v1bit_t gfx_context_t::remake()
 	{
 		NC_CHECK(has_window(), "no window!", return NC_FALSE);
@@ -92,7 +92,7 @@ namespace NC
 				/* vetters */
 				is_enabled = (pfn_gfx_is_enabled)m_loader.get_proc("glIsEnabled");
 				is_shader = (pfn_gfx_is_shader)m_loader.get_proc("glIsShader");
-				/* commands */
+				/* command */
 				draw_vtx = (pfn_gfx_draw_vtx)m_loader.get_proc("glDrawArrays");
 				draw_idx = (pfn_gfx_draw_idx)m_loader.get_proc("glDrawElements");
 				clear_error = (pfn_gfx_clear_error)(m_loader.get_proc("glClearError"));

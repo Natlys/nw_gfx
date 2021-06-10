@@ -22,7 +22,7 @@ namespace NC
 		gfx_img_t::operator>>(stm);
 		return stm;
 	}
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr_t::remake()
 	{
 		NC_CHECK(gfx_img_t::remake(), "remake error!", return NC_FALSE);
@@ -76,7 +76,7 @@ namespace NC
 		m_smp = ref;
 	}
 	/* operators */
-	/* commands */
+	/* command */
 	v1bit_t gfx_txr_t::load_file(cstr file_path)
 	{
 		img_bmp img;

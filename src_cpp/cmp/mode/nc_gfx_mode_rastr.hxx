@@ -20,7 +20,7 @@ namespace NC
 #   endif   // GAPI_D3D
     using handle_tc = const handle_t;
     public:
-        /* ctor_dtor */
+        /* codetor */
         gfx_mode_rastr_t();
         gfx_mode_rastr_t(rastr_tc& copy);
         gfx_mode_rastr_t(rastr_t&& copy);
@@ -32,7 +32,7 @@ namespace NC
         /* operators */
         inline rastr_t& operator=(rastr_tc& copy) { gfx_mode_t::operator=(copy); return *this; }
         inline rastr_t& operator=(rastr_t&& copy) { gfx_mode_t::operator=(copy); return *this; }
-        /* commands */
+        /* command */
         virtual v1bit_t remake() override;
         virtual v1nil_t on_draw() override;
     protected:
